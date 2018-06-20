@@ -2,7 +2,7 @@
 
 Code repository for farming on top of the ARA network.
 
-A javascript SDK which developers can integrate into their destributed applications and let their users request work and earn tokens for doing work, such as archiving / delivering / transcoding content or running other distributables, such as a game server. This SDK uses TBD SDK for peer discovery, and uses TBD algorithm for matching farmers with produce requesters. 
+A javascript SDK which developers can integrate into their distributed applications and let their users request work and earn tokens for doing work, such as archiving / delivering / transcoding content or running other distributables, such as a game server. This SDK uses TBD SDK for peer discovery, and uses TBD algorithm for matching farmers with produce requesters. 
 
 
 ## Status

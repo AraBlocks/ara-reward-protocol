@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+message IMessage {
+  
+}
+
+message Cost {
+  required int32 cost = 1;
+  required string workUnit = 2;
+}
+
+message Contract {
+  required int64 id = 1;
+  required Requester requester = 2;
+  optional Farmer farmer = 3;
+}
+
+message Requester {
+  required int64 id = 1;
+}
+
+message Farmer {
+  required int64 id = 1;
+}
