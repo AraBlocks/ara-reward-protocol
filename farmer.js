@@ -9,19 +9,52 @@ wss.on('connection', function connection(ws) {
   ws.send('Connection received.');
 });
 
-function handleMessage(message){
-  console.log('received: %s', message);
+function handleMessage(data){
+  try {
+      let message = messages.IMessage.decode(data);
+      switch(message.opcode){
+        case "None":
+          break;
+        case "GetCost":
+          break;
+        case ""
+      }
 
-  if('cost' === message){
-    sendCost(this);
+      if(defined(message.mCost)) sendCost(this);
+      else if (defined(message.mContract)) signContract(this, message.mContract);
+  }
+  catch (e) {
+      console.log('Error: ' + e + 'with data: ' + data);
   }
 }
 
 function sendCost(ws){
-  let c = messages.Cost.encode({
+  console.log('Message: sendCost');
+  let c = {
     cost: 15,
     workUnit: 'MB'
-  })
+  };
+
+  let m = messages.IMessage.encode({
+    mCost: c
+  });
   
-  ws.send(c);
+  ws.send(m);
+}
+
+function signContract(ws, contract){
+  console.log('Message: signContract');
+  contract.farmer = {
+    id: 105
+  };
+
+  let m = messages.IMessage.encode({
+    mContract: contract
+  });
+  
+  ws.send(m);
+}
+
+function defined (val) {
+  return 'undefined' != typeof(val);
 }
