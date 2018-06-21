@@ -1,60 +1,63 @@
-const messages = require('./messages');
-const WebSocket = require('ws');
+const PROTO_PATH = './messages.proto'
+const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
 
+const packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+const routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
 
-const wss = new WebSocket.Server({ port: 8080 });
- 
-wss.on('connection', function connection(ws) {
-  ws.on('message', handleMessage);
-  ws.send('Connection received.');
-});
+function checkQuote(sow){
+    let quote = {
+        cost: 10,
+        sow: sow
+    };
+    return quote;
+}
 
-function handleMessage(data){
-  try {
-      let message = messages.IMessage.decode(data);
-      switch(message.opcode){
-        case "None":
-          break;
-        case "GetCost":
-          break;
-        case ""
-      }
+function getQuote(call, callback){
+    console.log('Quote requested.');
+    callback(null, checkQuote(call.request));
+} 
 
-      if(defined(message.mCost)) sendCost(this);
-      else if (defined(message.mContract)) signContract(this, message.mContract);
+function checkProposal(sow){
+    let farmer = {
+        id: 15
+    };
+    return farmer;
+}
+
+function finalizeProposal(call, callback){
+    console.log('Received finalized proposal.');
+    callback(null, checkProposal(call.request));
+}
+
+function checkContract(contract){
+    return contract;
+}
+
+function awardContract(call, callback){
+    console.log('Received contract award.');
+    callback(null, checkContract(call.request));
+}
+
+function getServer() {
+    let server = new grpc.Server();
+    server.addService(routeguide.RFP.service, {
+      getQuote: getQuote,
+      finalizeProposal: finalizeProposal,
+      awardContract: awardContract
+    });
+    return server;
   }
-  catch (e) {
-      console.log('Error: ' + e + 'with data: ' + data);
-  }
-}
-
-function sendCost(ws){
-  console.log('Message: sendCost');
-  let c = {
-    cost: 15,
-    workUnit: 'MB'
-  };
-
-  let m = messages.IMessage.encode({
-    mCost: c
-  });
   
-  ws.send(m);
-}
+  const routeServer = getServer();
+  routeServer.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
+  routeServer.start();
 
-function signContract(ws, contract){
-  console.log('Message: signContract');
-  contract.farmer = {
-    id: 105
-  };
 
-  let m = messages.IMessage.encode({
-    mContract: contract
-  });
-  
-  ws.send(m);
-}
-
-function defined (val) {
-  return 'undefined' != typeof(val);
-}

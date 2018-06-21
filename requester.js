@@ -1,62 +1,55 @@
-const messages = require('./messages');
+const PROTO_PATH = './messages.proto'
+const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
 
-const WebSocket = require('ws');
- 
-const ws = new WebSocket('ws://127.0.0.1:8080');
+const packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+const routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
+const client = new routeguide.RFP('localhost:50051', grpc.credentials.createInsecure());
 
-ws.on('open', getCost);
-ws.on('message', handleMessage);
+function handleQuote(err, quote){
+    if (err){
 
-
-function getCost(){
-    console.log('Connection opened.');
-    let c = {cost: 2, workUnit:'none'};
-    let m = messages.IMessage.encode({
-        mCost: c
-      });
-
-    ws.send(m); // Replace with cost query
-}
-
-function handleMessage(data){
-    try {
-        let message = messages.IMessage.decode(data);
-        if(defined(message.mCost)) handleCost(this, message.mCost);
-        else if (defined(message.mContract)) handleContract(message.mContract);
-    }
-    catch (e) {
-        console.log('Error: ' + e);
-        console.log('Non IMessage: ' + data);
+    } else {
+        console.log("Received Quote: " + quote.cost + ' per ' + quote.sow.workUnit);
+        client.finalizeProposal(quote.sow, handleFinalProposal);
     }
 }
 
-function handleCost(ws, cost){
-    console.log('Message: Cost: ' + cost.cost + " per " + cost.workUnit);
-    sendContract(ws);
+function handleFinalProposal(err, farmer){
+    if (err){
+
+    } else {
+        console.log("Received Proposal from Farmer: " + farmer.id);
+        let contract = {
+            id: 103,
+            requester: {
+                id: 3
+            },
+            farmer: farmer
+        };
+    
+        client.awardContract(contract, handleSignedContract);
+    }
 }
 
-function handleContract(contract){
-    console.log('Message: Contract: ' + contract.id + " between farmer: " + contract.farmer.id 
-                + " and requester: " + contract.requester.id);
+function handleSignedContract(err, contract){
+    if (err){
+
+    } else {
+        console.log("Contract " + contract.id + " signed by farmer " + contract.farmer.id);
+    }
 }
 
-function sendContract(ws){
-    let r = {
-        id: 15
-    };
-
-    let c = {
-        id: 5,
-        requester: r
-    };
-
-    let m = messages.IMessage.encode({
-        mContract: c
-      });
-
-    ws.send(m);
+let sow = {
+    id: 2,
+    workUnit: "MB"
 }
 
-function defined (val) {
-    return 'undefined' != typeof(val);
-  }
+client.getQuote(sow, handleQuote);
