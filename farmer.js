@@ -1,63 +1,91 @@
-const PROTO_PATH = './messages.proto'
-const grpc = require('grpc');
-const protoLoader = require('@grpc/proto-loader');
+const { grpc, routeguide } = require('./proto');
 
-const packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {keepCase: true,
-     longs: String,
-     enums: String,
-     defaults: true,
-     oneofs: true
-    });
-const routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
+/*
+    Class defining the required working conditions demanded by a Farmer
+*/
+class Farmer {
+    constructor(price, id){
+        this.price = price;
+        this.id = id;
+    }
+    
+    // Proto RPC method for getting a quote for an SOW
+    getQuote(call, callback){
+        console.log('Farmer [' + this.id + '] quote requested.');
+        callback(null, this.checkQuote(call.request));
+    } 
 
-function checkQuote(sow){
-    let quote = {
-        cost: 10,
-        sow: sow
-    };
-    return quote;
+    checkQuote(sow){
+        let quote = {
+            cost: this.price,
+            sow: sow
+        };
+        return quote;
+    }
+    
+    // Proto RPC method for finalizing a proposal for work
+    finalizeProposal(call, callback){
+        console.log('Farmer [' + this.id + '] received finalized proposal.');
+        callback(null, this.checkProposal(call.request));
+    }
+
+    checkProposal(sow){
+        let sig = {
+            id: this.id
+        };
+        return sig;
+    }
+    
+    // Proto RPC method for being awarded a contract
+    awardContract(call, callback){
+        console.log('Farmer [' + this.id + '] received contract award.');
+        callback(null, this.checkContract(call.request));
+    }
+
+    checkContract(contract){
+        return contract;
+    }
 }
 
-function getQuote(call, callback){
-    console.log('Quote requested.');
-    callback(null, checkQuote(call.request));
-} 
+/*
+    Class containing a Farmer Server (using a gRPC server)
+*/
+class FarmerServer {
+    constructor(farmer, port){
+        this.server = this.createServer(farmer);
+        this.server.bind(port, grpc.ServerCredentials.createInsecure());
+    }
 
-function checkProposal(sow){
-    let farmer = {
-        id: 15
-    };
-    return farmer;
+    createServer(farmer) {
+        let server = new grpc.Server();
+        server.addService(routeguide.RFP.service, {
+          getQuote: farmer.getQuote.bind(farmer),
+          finalizeProposal: farmer.finalizeProposal.bind(farmer),
+          awardContract: farmer.awardContract.bind(farmer)
+        });
+        return server;
+      }
+
+    start(){
+        this.server.start();
+    }
 }
 
-function finalizeProposal(call, callback){
-    console.log('Received finalized proposal.');
-    callback(null, checkProposal(call.request));
+/*
+    Creates a Farmer Server (using gRPC) and broadcasts its availablity to work
+*/
+function broadcastFarmer(port, price, id){
+    let farmer = new Farmer(price, id);
+    let farmerServer = new FarmerServer(farmer, port);
+    
+    farmerServer.start();
 }
 
-function checkContract(contract){
-    return contract;
+/*
+    Connects to a Farmer Server and returns the client connection
+*/
+function connectToFarmer(port){
+    return new routeguide.RFP(port, grpc.credentials.createInsecure());
 }
 
-function awardContract(call, callback){
-    console.log('Received contract award.');
-    callback(null, checkContract(call.request));
-}
-
-function getServer() {
-    let server = new grpc.Server();
-    server.addService(routeguide.RFP.service, {
-      getQuote: getQuote,
-      finalizeProposal: finalizeProposal,
-      awardContract: awardContract
-    });
-    return server;
-  }
-  
-  const routeServer = getServer();
-  routeServer.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
-  routeServer.start();
-
-
+module.exports = {broadcastFarmer, connectToFarmer};

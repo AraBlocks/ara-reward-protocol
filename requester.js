@@ -1,55 +1,59 @@
-const PROTO_PATH = './messages.proto'
-const grpc = require('grpc');
-const protoLoader = require('@grpc/proto-loader');
-
-const packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {keepCase: true,
-     longs: String,
-     enums: String,
-     defaults: true,
-     oneofs: true
-    });
-const routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
-const client = new routeguide.RFP('localhost:50051', grpc.credentials.createInsecure());
-
-function handleQuote(err, quote){
-    if (err){
-
-    } else {
-        console.log("Received Quote: " + quote.cost + ' per ' + quote.sow.workUnit);
-        client.finalizeProposal(quote.sow, handleFinalProposal);
+class RequestArbiter {
+    constructor(sow, matcher){
+        this.sow = sow;
+        this.matcher = matcher;
     }
-}
 
-function handleFinalProposal(err, farmer){
-    if (err){
+    processFarmers(farmers){
+        farmers.forEach(farmer => {
+            let responseHandler = function(err, quote) {
+                this.handleQuoteResponse(err, quote, farmer);
+            }
+            farmer.getQuote(this.sow, responseHandler.bind(this))
+        });
+    }
 
-    } else {
-        console.log("Received Proposal from Farmer: " + farmer.id);
-        let contract = {
-            id: 103,
-            requester: {
-                id: 3
-            },
-            farmer: farmer
-        };
+    handleQuoteResponse(err, quote, farmer){
+        if (err){
     
-        client.awardContract(contract, handleSignedContract);
+        } else {
+            console.log("Received Quote: " + quote.cost + ' per ' + quote.sow.workUnit);
+            let responseHandler = function(err, farmerSig) {
+                this.handleFinalProposal(err, farmerSig, farmer);
+            }
+
+            let optionCallback = function(){
+                farmer.finalizeProposal(quote.sow, responseHandler.bind(this));
+            } 
+
+            this.matcher.considerQuoteOption(quote, optionCallback.bind(this));                
+        }
     }
-}
 
-function handleSignedContract(err, contract){
-    if (err){
-
-    } else {
-        console.log("Contract " + contract.id + " signed by farmer " + contract.farmer.id);
+    handleFinalProposal(err, farmerSig, farmer){
+        if (err){
+    
+        } else {
+            console.log("Received Proposal from Farmer: " + farmerSig.id);
+            let contract = {
+                id: 103,
+                requester: {
+                    id: 3
+                },
+                farmer: farmerSig
+            };
+        
+            farmer.awardContract(contract, this.handleSignedContract.bind(this));
+        }
     }
-}
 
-let sow = {
-    id: 2,
-    workUnit: "MB"
-}
+    handleSignedContract(err, contract){
+        if (err){
+    
+        } else {
+            console.log("Contract " + contract.id + " signed by farmer " + contract.farmer.id);
+        }
+    }
+} 
 
-client.getQuote(sow, handleQuote);
+module.exports = { RequestArbiter };
