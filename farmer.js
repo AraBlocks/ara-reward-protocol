@@ -20,23 +20,9 @@ class Farmer {
         return this.quoter.generateQuote(sow);
     }
     
-    // Proto RPC method for finalizing a proposal for work
-    finalizeProposal(call, callback){
-        console.log('Farmer [' + this.id + ']: Final proposal received.');
-        callback(null, this.checkProposal(call.request));
-    }
-
-    checkProposal(sow){
-        // TODO Need to validate that sow quote matches Farmer's quote
-        let sig = {
-            id: this.id
-        };
-        return sig;
-    }
-    
     // Proto RPC method for being awarded a contract
     awardContract(call, callback){
-        console.log('Farmer [' + this.id + ']: Final contract received.');
+        console.log('Farmer [' + this.id + ']: Contract received.');
         callback(null, this.checkContract(call.request));
     }
 
@@ -66,7 +52,6 @@ class FarmerServer {
         let server = new grpc.Server();
         server.addService(routeguide.RFP.service, {
           getQuote: farmer.getQuote.bind(farmer),
-          finalizeProposal: farmer.finalizeProposal.bind(farmer),
           awardContract: farmer.awardContract.bind(farmer)
         });
         return server;

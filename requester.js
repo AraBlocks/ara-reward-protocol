@@ -2,8 +2,7 @@
     Class that handles the communication for requesting a specific SOW for a single task.
 */
 class Requester {
-    constructor(id, sow, matcher){
-        this.id = id;
+    constructor(sow, matcher){
         this.sow = sow;
         this.matcher = matcher;
     }
@@ -22,43 +21,26 @@ class Requester {
 
     /*
         On receipt of a quote from a farmer, asks the defined Matcher to consider the quote. On the Matcher
-        selecting the quote, gets confirmation of final proposal from farmer.
+        selecting the quote, initializes a contract, signs it for the specific SOW and Farmer, then sends 
+        the contract to the farmer.
     */
     handleQuoteResponse(err, quote, farmer){
         if (err){
     
         } else {
-            console.log("Requester: Received Quote " + quote.cost + ' per ' + quote.sow.workUnit);
-            let responseHandler = function(err, farmerSig) {
-                this.handleFinalProposal(err, farmerSig, farmer);
-            }
+            console.log("Requester: Received Quote " + quote.cost + ' per ' + quote.sow.workUnit + ' from farmer ' + quote.farmer.id);
 
             let optionCallback = function(){
-                farmer.finalizeProposal(quote.sow, responseHandler.bind(this));
+                // TODO: generate contract
+                let contract = {
+                    id: 103,
+                    quote: quote,
+                };
+            
+                farmer.awardContract(contract, this.handleSignedContract.bind(this));            
             } 
 
             this.matcher.considerQuoteOption(quote, optionCallback.bind(this));                
-        }
-    }
-
-    /*
-        On receipt of final proposal confirmation from farmer, initializes a contract, signs it for the specific
-        SOW and Farmer, then sends the contract to the farmer.
-    */
-    handleFinalProposal(err, farmerSig, farmer){
-        if (err){
-    
-        } else {
-            console.log("Requester: Received confirmation from farmer: " + farmerSig.id);
-            let contract = {
-                id: 103,
-                requester: {
-                    id: this.id
-                },
-                farmer: farmerSig
-            };
-        
-            farmer.awardContract(contract, this.handleSignedContract.bind(this));
         }
     }
 
@@ -69,7 +51,7 @@ class Requester {
         if (err){
     
         } else {
-            console.log("Requester: Contract " + contract.id + " signed by farmer " + contract.farmer.id);
+            console.log("Requester: Contract " + contract.id + " signed by farmer " + contract.quote.farmer.id);
         }
     }
 } 
