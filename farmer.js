@@ -11,7 +11,7 @@ class Farmer {
     
     // Proto RPC method for getting a quote for an SOW
     getQuote(call, callback){
-        console.log('Farmer [' + this.id + '] quote requested.');
+        console.log('Farmer [' + this.id + ']: Quote request received.');
         callback(null, this.checkQuote(call.request));
     } 
 
@@ -25,7 +25,7 @@ class Farmer {
     
     // Proto RPC method for finalizing a proposal for work
     finalizeProposal(call, callback){
-        console.log('Farmer [' + this.id + '] received finalized proposal.');
+        console.log('Farmer [' + this.id + ']: Final proposal received.');
         callback(null, this.checkProposal(call.request));
     }
 
@@ -38,7 +38,7 @@ class Farmer {
     
     // Proto RPC method for being awarded a contract
     awardContract(call, callback){
-        console.log('Farmer [' + this.id + '] received contract award.');
+        console.log('Farmer [' + this.id + ']: Final contract received.');
         callback(null, this.checkContract(call.request));
     }
 

@@ -1,0 +1,27 @@
+{
+  "name": "farming-sdk",
+  "version": "0.0.1",
+  "description": "Example farming protocol for ARA.",
+  "main": "multifarmer-example.js",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.1.0",
+    "grpc": "^1.13.0-pre1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node multifarmer-example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littlstar/farming-sdk.git"
+  },
+  "keywords": [
+    "farming"
+  ],
+  "author": "@bplaster",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/littlstar/farming-sdk/issues"
+  },
+  "homepage": "https://github.com/littlstar/farming-sdk#readme"
+}

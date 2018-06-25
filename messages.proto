@@ -4,7 +4,7 @@ package routeguide;
 
 service RFP {
   rpc GetQuote(SOW) returns(Quote);
-  rpc FinalizeProposal(SOW) returns(FarmerSignature);
+  rpc FinalizeProposal(SOW) returns(ARAid);
   rpc AwardContract(Contract) returns(Contract);
 }
 
@@ -21,14 +21,11 @@ message Quote {
 
 message Contract {
   required int64 id = 1;
-  required RequesterSignature requester = 2;
-  required FarmerSignature farmer = 3;
+  required ARAid requester = 2;
+  required ARAid farmer = 3;
 }
 
-message RequesterSignature {
+message ARAid {
   required int64 id = 1;
-}
-
-message FarmerSignature {
-  required int64 id = 1;
+  optional int64 signature = 2;
 }

@@ -1,6 +1,22 @@
 const { broadcastFarmer, connectToFarmer } = require('./farmer');
-const { RequestArbiter } = require('./requester');
+const { Requester } = require('./requester');
 const { Matcher } = require('./matcher');
+
+class ExampleMatcher extends Matcher {
+    constructor(maxCost, maxWorkers){
+        super();
+        this.maxCost = maxCost;
+        this.maxWorkers = maxWorkers;
+        this.workers = 0;
+    }
+
+    considerQuoteOption(quote, hireFarmerCallback){
+        if (quote.cost < this.maxCost && this.workers < this.maxWorkers) {
+            hireFarmerCallback();
+            this.workers++;
+        }
+    }
+}
 
 /*
     Generates and connects to a number of Farmer Servers
@@ -32,6 +48,6 @@ let sow = {
     workUnit: "MB"
 }
 let farmers = generateFarmerConnections(50);
-let matcher = new Matcher();
-let arbiter = new RequestArbiter(sow, matcher);
-arbiter.processFarmers(farmers);
+let matcher = new ExampleMatcher(10, 7);
+let requester = new Requester(sow, matcher);
+requester.processFarmers(farmers);

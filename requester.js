@@ -1,4 +1,4 @@
-class RequestArbiter {
+class Requester {
     constructor(sow, matcher){
         this.sow = sow;
         this.matcher = matcher;
@@ -17,7 +17,7 @@ class RequestArbiter {
         if (err){
     
         } else {
-            console.log("Received Quote: " + quote.cost + ' per ' + quote.sow.workUnit);
+            console.log("Requester: Received Quote " + quote.cost + ' per ' + quote.sow.workUnit);
             let responseHandler = function(err, farmerSig) {
                 this.handleFinalProposal(err, farmerSig, farmer);
             }
@@ -34,7 +34,7 @@ class RequestArbiter {
         if (err){
     
         } else {
-            console.log("Received Proposal from Farmer: " + farmerSig.id);
+            console.log("Requester: Received confirmation from farmer: " + farmerSig.id);
             let contract = {
                 id: 103,
                 requester: {
@@ -51,9 +51,9 @@ class RequestArbiter {
         if (err){
     
         } else {
-            console.log("Contract " + contract.id + " signed by farmer " + contract.farmer.id);
+            console.log("Requester: Contract " + contract.id + " signed by farmer " + contract.farmer.id);
         }
     }
 } 
 
-module.exports = { RequestArbiter };
+module.exports = { Requester };
