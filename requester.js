@@ -1,9 +1,16 @@
+/*
+    Class that handles the communication for requesting a specific SOW for a single task.
+*/
 class Requester {
-    constructor(sow, matcher){
+    constructor(id, sow, matcher){
+        this.id = id;
         this.sow = sow;
         this.matcher = matcher;
     }
 
+    /* 
+        Iterates through an array of Farmers and gets quotes from them for the defined SOW
+    */
     processFarmers(farmers){
         farmers.forEach(farmer => {
             let responseHandler = function(err, quote) {
@@ -13,6 +20,10 @@ class Requester {
         });
     }
 
+    /*
+        On receipt of a quote from a farmer, asks the defined Matcher to consider the quote. On the Matcher
+        selecting the quote, gets confirmation of final proposal from farmer.
+    */
     handleQuoteResponse(err, quote, farmer){
         if (err){
     
@@ -30,6 +41,10 @@ class Requester {
         }
     }
 
+    /*
+        On receipt of final proposal confirmation from farmer, initializes a contract, signs it for the specific
+        SOW and Farmer, then sends the contract to the farmer.
+    */
     handleFinalProposal(err, farmerSig, farmer){
         if (err){
     
@@ -38,7 +53,7 @@ class Requester {
             let contract = {
                 id: 103,
                 requester: {
-                    id: 3
+                    id: this.id
                 },
                 farmer: farmerSig
             };
@@ -47,6 +62,9 @@ class Requester {
         }
     }
 
+    /*
+        On receipt of a signed (and staked) contract from farmer, can begin distribution of work.
+    */
     handleSignedContract(err, contract){
         if (err){
     

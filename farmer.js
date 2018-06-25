@@ -1,12 +1,13 @@
 const { grpc, routeguide } = require('./proto');
 
 /*
-    Class defining the required working conditions demanded by a Farmer
+    Class defining the required working conditions demanded by (and RPC methods of) a Farmer
 */
 class Farmer {
-    constructor(price, id){
+    constructor(price, id, autheticator){
         this.price = price;
         this.id = id;
+        this.autheticator = autheticator;
     }
     
     // Proto RPC method for getting a quote for an SOW
@@ -30,6 +31,7 @@ class Farmer {
     }
 
     checkProposal(sow){
+        // TODO Need to validate that sow quote matches Farmer's quote
         let sig = {
             id: this.id
         };
@@ -43,7 +45,15 @@ class Farmer {
     }
 
     checkContract(contract){
-        return contract;
+        // TODO Need to validate that sow quote matches Farmer's quote
+        if (this.autheticator.validateContract(contract))
+        {
+            // TODO Need to stake for the contract
+            return contract;
+        }
+        else {
+            return "Invalid Authentication";
+        } 
     }
 }
 
@@ -74,10 +84,8 @@ class FarmerServer {
 /*
     Creates a Farmer Server (using gRPC) and broadcasts its availablity to work
 */
-function broadcastFarmer(port, price, id){
-    let farmer = new Farmer(price, id);
-    let farmerServer = new FarmerServer(farmer, port);
-    
+function broadcastFarmer(farmer, port){
+    let farmerServer = new FarmerServer(farmer, port);    
     farmerServer.start();
 }
 
@@ -88,4 +96,4 @@ function connectToFarmer(port){
     return new routeguide.RFP(port, grpc.credentials.createInsecure());
 }
 
-module.exports = {broadcastFarmer, connectToFarmer};
+module.exports = {Farmer, broadcastFarmer, connectToFarmer};
