@@ -4,8 +4,8 @@ const { grpc, routeguide } = require('./proto');
     Class defining the required working conditions demanded by (and RPC methods of) a Farmer
 */
 class Farmer {
-    constructor(price, id, autheticator){
-        this.price = price;
+    constructor(quoter, id, autheticator){
+        this.quoter = quoter;
         this.id = id;
         this.autheticator = autheticator;
     }
@@ -17,11 +17,7 @@ class Farmer {
     } 
 
     checkQuote(sow){
-        let quote = {
-            cost: this.price,
-            sow: sow
-        };
-        return quote;
+        return this.quoter.generateQuote(sow);
     }
     
     // Proto RPC method for finalizing a proposal for work

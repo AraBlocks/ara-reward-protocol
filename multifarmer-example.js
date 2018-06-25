@@ -2,6 +2,7 @@ const { Farmer, broadcastFarmer, connectToFarmer } = require('./farmer');
 const { Requester } = require('./requester');
 const { Matcher } = require('./matcher');
 const { Authenticator } = require('./authenticator');
+const { Quoter } = require('./quoter')
 
 class ExampleMatcher extends Matcher {
     constructor(maxCost, maxWorkers){
@@ -36,6 +37,21 @@ class ExampleAuthenticator extends Authenticator {
     }
 }
 
+class ExampleQuoter extends Quoter {
+    constructor(price){
+        super();
+        this.price = price;
+    }
+
+    generateQuote(sow){
+        let quote = {
+            cost: this.price,
+            sow: sow
+        };
+        return quote;
+    }
+}
+
 /*
     Generates and connects to a number of Farmer Servers
 */
@@ -46,9 +62,10 @@ function generateFarmerConnections(count, authenticator){
     for (i = 0; i < count; i++){
         let port = 'localhost:' + (sPort + i).toString();
         let price = 5 + Math.floor(Math.random() * 10) + 1;
-        
+        let quoter = new ExampleQuoter(price);
+
         // Generate Servers
-        let farmer = new Farmer(price, i, authenticator);
+        let farmer = new Farmer(quoter, i, authenticator);
         broadcastFarmer(farmer, port);
 
         // Generate Client Connections
@@ -68,8 +85,11 @@ let sow = {
     workUnit: "MB"
 }
 
+// Farmers
 let authenticator = new ExampleAuthenticator(10056);
 let farmers = generateFarmerConnections(50, authenticator);
+
+// Requester
 let matcher = new ExampleMatcher(10, 7);
 let requester = new Requester(10056, sow, matcher);
 requester.processFarmers(farmers);
