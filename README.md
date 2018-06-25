@@ -1,77 +1,21 @@
-# farming-sdk
+# farming-protocol
 
-Code repository for farming on top of the ARA network.
-
-A javascript SDK which developers can integrate into their destributed applications and let their users request work and earn tokens for doing work, such as archiving / delivering / transcoding content or running other distributables, such as a game server. This SDK uses TBD SDK for peer discovery, and uses TBD algorithm for matching farmers with produce requesters. 
-
+ARA Farming Protocol (AFP) provides methods for distributed decentralized services, or decents, in the ARA Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details). 
 
 ## Status
 This project is still in alpha development.
 
-> **Important**: Important oddities and common gotchas.
+## Introduction
+AFP defines a set of methods in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript.
 
-## Dependencies
-- [dependency](link to download / other repo)
+For a farmer, AFP would be used to define that farmer’s minimum accepted rewards for providing a service, as well as other parameters more specific to the service. If a requester wishes to hire a farmer, AFP would handle signing a contract of work and sending a start signal for beginning the work.
 
-## Installation
-### Windows
-- open Windows
-- ...
-
-### Macos
-- open OS
-- ...
-
-## Usage
-```sh
-$ newcommand args
-```
-To show help menu: 
-```sh
-$ newcommand --help
-```
-
-## Local Developement Setup
-If applicable.
-### Windows
-- open Windows
-- ...
-
-### Macos
-- open OS
-- ...
-
-## Example
-```sh
-$ mycommand real "args" -verbose
-
-*EXAMPLE PRINT OUT OF RESPONSE HERE*
-
-```
-and or a 'Hello world-y type thing.' If possible include native language syntax highlighting.
-```js
-import { Geometry, Material, Context, Frame, Mesh } from 'axis3d'
-import quat from 'gl-quat'
-
-// the scene drawn every frame
-function scene({time}) {
-quat.setAxisAngle(angle, [0, 1, 0], 0.5*time)
-camera({rotation, position: [0, 0, 5]}() => {
-material(() => {
-bunny()
-})
-})
-}
-```
+For a requester, AFP would be used to define the maximum reward the requester is willing to give for a service, the number of farmers required, and other parameters specific to the service. AFP would also take in a matcher used to determine the peers. Once a set of peers is determined through the matcher, AFP would handle initiating and signing a contract of work, and sending a start signal to begin the distribution of work.
 
 ## Contributing
 - [How to contribute](CONTRIBUTING.md)
 - [Commit message format](COMMIT_FORMAT.md)
 - [Commit message examples](COMMIT_FORMAT_EXAMPLES.md)
-
-## See Also
-- links to external documentation pages
-- links to other repos
 
 ## License
 LGPL-3.0
