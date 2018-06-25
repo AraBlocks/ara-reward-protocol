@@ -3,37 +3,39 @@ pragma solidity 0.4.24;
 contract Auction {
     address public requester;
     address public hiredFarmer;
-    uint256 public hiredRate;
-    uint256 public stake;
-    uint256 public budget;
+    uint public hiredRate;
+    uint public stake;
+    uint public budget;
 
     struct Farmer {
-      uint256 rate;
+      uint rate;
+      uint stake;
     }
 
     mapping(address => Farmer) public farmers;
 
-    constructor (uint256 _stake) public payable {
+    constructor (uint _stake) public payable {
       requester = msg.sender;
       budget = msg.value;
       stake = _stake;
     }
 
-    function addFarmer(address farmerAddress, uint256 farmerRate) public {
+    function addFarmer(address farmerAddress, uint farmerRate) public {
       farmers[farmerAddress].rate = farmerRate;
     }
 
-    function acceptWork(uint256 rate) public payable {
-      if (farmers[msg.sender].rate != rate && stake != msg.value) revert();
+    function acceptWork(uint rate) public payable {
+      require (farmers[msg.sender].rate == rate && stake == msg.value);
+
       hiredFarmer = msg.sender;
-      hiredRate = farmers[msg.sender].rate + stake;
+      hiredRate = rate + msg.value;
     }
 
     function sendReward() public payable{
       hiredFarmer.transfer(hiredRate);
 
       //return leftover budget to requester
-      uint256 leftover = budget - hiredRate;
+      uint leftover = budget - hiredRate;
       msg.sender.transfer(leftover);
     }
 }
