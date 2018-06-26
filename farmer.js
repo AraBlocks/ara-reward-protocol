@@ -1,4 +1,7 @@
-const { grpc, routeguide } = require('./proto');
+var messages = require('./proto/messages_pb');
+var services = require('./proto/route_guide_grpc_pb');
+
+var grpc = require('grpc');
 
 /*
     Class defining the required working conditions demanded by (and RPC methods of) a Farmer
@@ -13,29 +16,23 @@ class Farmer {
     // Proto RPC method for getting a quote for an SOW
     getQuote(call, callback){
         console.log('Farmer [' + this.id + ']: Quote request received.');
-        callback(null, this.checkQuote(call.request));
+        let quote = this.quoter.generateQuote(call.request);
+        callback(null, quote);
     } 
-
-    checkQuote(sow){
-        return this.quoter.generateQuote(sow);
-    }
     
     // Proto RPC method for being awarded a contract
     awardContract(call, callback){
         console.log('Farmer [' + this.id + ']: Contract received.');
-        callback(null, this.checkContract(call.request));
-    }
-
-    checkContract(contract){
         // TODO Need to validate that sow quote matches Farmer's quote
+        let contract = call.request;
         if (this.autheticator.validateContract(contract))
         {
             // TODO Need to stake for the contract
-            return contract;
         }
         else {
-            return "Invalid Authentication";
-        } 
+            contract = "Invalid Authentication";
+        }
+        callback(null, contract);
     }
 }
 
@@ -50,7 +47,7 @@ class FarmerServer {
 
     createServer(farmer) {
         let server = new grpc.Server();
-        server.addService(routeguide.RFP.service, {
+        server.addService(services.RFPService, {
           getQuote: farmer.getQuote.bind(farmer),
           awardContract: farmer.awardContract.bind(farmer)
         });
@@ -74,7 +71,7 @@ function broadcastFarmer(farmer, port){
     Connects to a Farmer Server and returns the client connection
 */
 function connectToFarmer(port){
-    return new routeguide.RFP(port, grpc.credentials.createInsecure());
+    return new services.RFPClient(port, grpc.credentials.createInsecure());
 }
 
 module.exports = {Farmer, broadcastFarmer, connectToFarmer};

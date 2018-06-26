@@ -3,6 +3,7 @@ const { Requester } = require('./requester');
 const { Matcher } = require('./matcher');
 const { Authenticator } = require('./authenticator');
 const { Quoter } = require('./quoter')
+const messages = require('./proto/messages_pb');
 
 class ExampleMatcher extends Matcher {
     constructor(maxCost, maxWorkers){
@@ -13,7 +14,7 @@ class ExampleMatcher extends Matcher {
     }
 
     considerQuoteOption(quote, hireFarmerCallback){
-        if (quote.cost < this.maxCost && this.workers < this.maxWorkers) {
+        if (quote.getPerUnitCost() < this.maxCost && this.workers < this.maxWorkers) {
             hireFarmerCallback();
             this.workers++;
         }
@@ -27,12 +28,12 @@ class ExampleAuthenticator extends Authenticator {
     }
 
     validateContract(contract){
-        let contractRequester = contract.quote.sow.requester.id;
+        let contractRequester = contract.getQuote().getSow().getRequester().getId();
         if (contractRequester == this.requesterID){
             return true;
         }
         else {
-            console.log("Invalid contract: " + contract.id + ' from requester: ' + contractRequester);
+            console.log("Invalid contract: " + contract.getId() + ' from requester: ' + contractRequester);
             return false;
         }
     }
@@ -46,11 +47,12 @@ class ExampleQuoter extends Quoter {
     }
 
     generateQuote(sow){
-        let quote = {
-            farmer: this.farmerSig,
-            cost: this.price,
-            sow: sow
-        };
+        let quote = new messages.Quote();
+        quote.setId(1);
+        quote.setFarmer(this.farmerSig);
+        quote.setPerUnitCost(this.price);
+        quote.setSow(sow);
+
         return quote;
     }
 }
@@ -65,17 +67,18 @@ function simulateFarmerConnections(count, authenticator){
     for (i = 0; i < count; i++){
         let port = 'localhost:' + (sPort + i).toString();
         let price = 5 + Math.floor(Math.random() * 10) + 1;
-        let farmerSig = {
-            id: i,
-            sig: 1000 + 1000*Math.random()
-        }
+
+        let farmerSig = new messages.ARAid();
+        farmerSig.setId(i);
+        farmerSig.setSignature(Math.floor(1000 + 1000*Math.random()));
+
         let quoter = new ExampleQuoter(price, farmerSig);
 
-        // Generate Servers
+        // Generate Server
         let farmer = new Farmer(quoter, i, authenticator);
         broadcastFarmer(farmer, port);
 
-        // Generate Client Connections
+        // Generate Client Connection
         let connection = connectToFarmer(port);
         farmers.push(connection);
     }
@@ -94,14 +97,15 @@ let farmers = simulateFarmerConnections(50, authenticator);
 
 // Requester
 let matcher = new ExampleMatcher(10, 7);
-let requesterSig = {
-    id: 10056,
-    sig: 11111
-}
-let sow = {
-    id: 2,
-    workUnit: "MB",
-    requester: requesterSig
-}
+
+let requesterSig = new messages.ARAid();
+requesterSig.setId(10056);
+requesterSig.setSignature(11111);
+
+let sow = new messages.SOW();
+sow.setId(2);
+sow.setWorkUnit('MB');
+sow.setRequester(requesterSig);
+
 let requester = new Requester(sow, matcher);
 requester.processFarmers(farmers);

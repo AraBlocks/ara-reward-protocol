@@ -1,3 +1,5 @@
+var messages = require('./proto/messages_pb');
+
 /*
     Class that handles the communication for requesting a specific SOW for a single task.
 */
@@ -12,8 +14,8 @@ class Requester {
     */
     processFarmers(farmers){
         farmers.forEach(farmer => {
-            let responseHandler = function(err, quote) {
-                this.handleQuoteResponse(err, quote, farmer);
+            let responseHandler = function(err, response) {
+                this.handleQuoteResponse(err, response, farmer);
             }
             farmer.getQuote(this.sow, responseHandler.bind(this))
         });
@@ -24,34 +26,33 @@ class Requester {
         selecting the quote, initializes a contract, signs it for the specific SOW and Farmer, then sends 
         the contract to the farmer.
     */
-    handleQuoteResponse(err, quote, farmer){
+    handleQuoteResponse(err, response, farmer){
         if (err){
-    
+            console.log('Quote Response: ' + err);
         } else {
-            console.log("Requester: Received Quote " + quote.cost + ' per ' + quote.sow.workUnit + ' from farmer ' + quote.farmer.id);
+            console.log("Requester: Received Quote " + response.getPerUnitCost() + ' per ' + response.getSow().getWorkUnit() + ' from farmer ' + response.getFarmer().getId());
 
             let optionCallback = function(){
-                // TODO: generate contract
-                let contract = {
-                    id: 103,
-                    quote: quote,
-                };
+                // TODO: generate actual contract
+                let contract = new messages.Contract();
+                contract.setId(103);
+                contract.setQuote(response);
             
                 farmer.awardContract(contract, this.handleSignedContract.bind(this));            
             } 
 
-            this.matcher.considerQuoteOption(quote, optionCallback.bind(this));                
+            this.matcher.considerQuoteOption(response, optionCallback.bind(this));                
         }
     }
 
     /*
         On receipt of a signed (and staked) contract from farmer, can begin distribution of work.
     */
-    handleSignedContract(err, contract){
+    handleSignedContract(err, response){
         if (err){
-    
+            console.log('Award Response: ' + err);
         } else {
-            console.log("Requester: Contract " + contract.id + " signed by farmer " + contract.quote.farmer.id);
+            console.log("Requester: Contract " + response.getId() + " signed by farmer " + response.getQuote().getFarmer().getId());
         }
     }
 } 

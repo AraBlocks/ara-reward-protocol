@@ -1,0 +1,8 @@
+syntax = "proto3";
+package routeguide;
+import "messages.proto";
+
+service RFP {
+  rpc GetQuote(messages.SOW) returns(messages.Quote);
+  rpc AwardContract(messages.Contract) returns(messages.Contract);
+}

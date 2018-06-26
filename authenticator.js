@@ -1,7 +1,7 @@
+var messages = require('./proto/messages_pb');
+
 class Authenticator {
-    /*
-        Returns whether contract is valid.
-    */
+    // Returns whether contract is valid.
     validateContract(contract){
         throw new Error('Abstract function called. Extended classes must implement.')
         return true;
