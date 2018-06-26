@@ -53,21 +53,21 @@ contract Auction {
     }
 
     function sendReward() public payable onlyRequester notAborted{
-      // sends reward and gives back stake to farmer
-      hiredFarmer.transfer(hiredRate + stake);
+      // prevents reentry
+      uint reward = hiredRate + stake;
+      uint leftover = budget - reward;
+      budget = 0;
+      hiredRate = 0;
+      stake = 0;
+
+      //sends reward and gives back stake to farmer
+      hiredFarmer.transfer(reward);
 
       //return leftover budget to requester
-      uint leftover = budget - (hiredRate + stake);
       msg.sender.transfer(leftover);
 
-      delete requester;
+      //clean up
       delete hiredFarmer;
-      delete hiredRate;
-      delete stake;
-      delete budget;
-      delete workInProgress;
-      delete aborted;
-
       emit RewardSent();
     }
 

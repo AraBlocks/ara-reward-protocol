@@ -159,4 +159,4 @@ let Auction = new web3.eth.Contract(
 
 web3.eth.defaultAccount = "0xa151a089fc8f9f04cc5cea3062c7f0bd10e9e703"; //Requester address
 
-exports.Auction = Auction;
+module.exports = Auction;

@@ -1,7 +1,8 @@
 var Web3 = require("web3");
 var Auction = require("./contract");
 
-Auction.Auction.methods
+//Create new Contract
+Auction.methods
   .addFarmer("0xa34e9c6D2B1fF5b1a136DE7B09BAFCB808831E73", 10000)
   .send(
     {
