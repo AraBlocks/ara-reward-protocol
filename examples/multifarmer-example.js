@@ -1,9 +1,9 @@
-const { Farmer, broadcastFarmer, connectToFarmer } = require('./farmer')
-const { Requester } = require('./requester')
-const { Matcher } = require('./matcher')
-const { Authenticator } = require('./authenticator')
-const { Quoter } = require('./quoter')
-const messages = require('./proto/messages_pb')
+const { Farmer, broadcastFarmer, connectToFarmer } = require('../farmer')
+const { Requester } = require('../requester')
+const { Matcher } = require('../matcher')
+const { Authenticator } = require('../authenticator')
+const { Quoter } = require('../quoter')
+const messages = require('../proto/messages_pb')
 
 class ExampleMatcher extends Matcher {
   constructor(maxCost, maxWorkers) {
