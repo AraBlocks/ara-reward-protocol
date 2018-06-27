@@ -7,9 +7,11 @@
  */
 // GENERATED CODE -- DO NOT EDIT!
 
-var jspb = require('google-protobuf');
-var goog = jspb;
-var global = Function('return this')();
+const jspb = require('google-protobuf')
 
-var messages_pb = require('./messages_pb.js');
-goog.object.extend(exports, proto.routeguide);
+const goog = jspb
+const global = Function('return this')()
+
+const messages_pb = require('./messages_pb.js')
+
+goog.object.extend(exports, proto.routeguide)

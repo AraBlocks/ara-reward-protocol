@@ -1,11 +1,11 @@
-var messages = require('./proto/messages_pb');
+const messages = require('./proto/messages_pb')
 
 class Authenticator {
-    // Returns whether contract is valid.
-    validateContract(contract){
-        throw new Error('Abstract function called. Extended classes must implement.')
-        return true;
-    }
+  // Returns whether contract is valid.
+  validateContract(contract) {
+    throw new Error('Abstract function called. Extended classes must implement.')
+    return true
+  }
 }
 
-module.exports = { Authenticator };
+module.exports = { Authenticator }
