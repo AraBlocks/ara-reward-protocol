@@ -23,8 +23,11 @@ class Farmer {
    */
   getQuote(call, callback) {
     console.log(`Farmer [${this.id}]: Quote request received.`)
-    const quote = this.quoter.generateQuote(call.request)
-    callback(null, quote)
+    const sow = call.request
+    if (this.autheticator.validatePeer(sow.getRequester())) {
+      const quote = this.quoter.generateQuote(sow)
+      callback(null, quote)
+    }
   }
 
   /**

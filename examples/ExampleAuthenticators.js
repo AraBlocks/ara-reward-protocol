@@ -10,12 +10,17 @@ class ExampleFarmerAuth extends Authenticator {
     this.badFarmerId = badFarmerId
   }
 
-  validateContract(contract) {
-    const farmerId = contract.getQuote().getFarmer().getId()
+  validatePeer(peer) {
+    const farmerId = peer.getId()
     if (farmerId == this.badFarmerId) {
-      console.log(`Invalid contract: ${contract.getId()} from bad farmer: ${farmerId}`)
+      console.log(`Invalid farmer: ${farmerId}`)
       return false
     }
+    return true
+  }
+
+  validateContract(contract) {
+    // TODO validate contract and stake
     return true
   }
 }
@@ -29,14 +34,19 @@ class ExampleRequesterAuth extends Authenticator {
     this.badRequesterId = badRequesterId
   }
 
-  validateContract(contract) {
-    const requesterId = contract.getQuote().getSow().getRequester().getId()
+  validatePeer(peer) {
+    const requesterId = peer.getId()
     if (requesterId == this.badRequesterId) {
-      console.log(`Invalid contract: ${contract.getId()} from bad requester: ${requesterId}`)
+      console.log(`Invalid requester: ${requesterId}`)
       return false
     }
     return true
   }
+
+  validateContract(contract) {
+    // TODO validate contract and stake
+    return true
+  }
 }
 
-module.exports = {ExampleFarmerAuth, ExampleRequesterAuth}
+module.exports = { ExampleFarmerAuth, ExampleRequesterAuth }

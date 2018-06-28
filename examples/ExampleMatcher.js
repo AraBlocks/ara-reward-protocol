@@ -42,4 +42,4 @@ class ExampleMatcher extends Matcher {
   }
 }
 
-module.exports = {ExampleMatcher}
+module.exports = { ExampleMatcher }

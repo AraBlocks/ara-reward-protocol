@@ -22,4 +22,4 @@ class ExampleQuoter extends Quoter {
   }
 }
 
-module.exports = {ExampleQuoter}
+module.exports = { ExampleQuoter }

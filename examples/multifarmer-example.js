@@ -11,7 +11,7 @@ const messages = require('../proto/messages_pb')
 function simulateFarmerConnections(count, authenticator) {
   const sPort = 50051
 
-  const farmers = []
+  const farmerConnections = []
   for (let i = 0; i < count; i++) {
     const port = `localhost:${(sPort + i).toString()}`
     const price = 5 + Math.floor(Math.random() * 10)
@@ -28,9 +28,9 @@ function simulateFarmerConnections(count, authenticator) {
 
     // Generate Client Connection
     const connection = connectToFarmer(port)
-    farmers.push(connection)
+    farmerConnections.push(connection)
   }
-  return farmers
+  return farmerConnections
 }
 
 /*
@@ -42,7 +42,7 @@ function simulateFarmerConnections(count, authenticator) {
 
 // Farmers
 const requestAuth = new ExampleRequesterAuth(10057)
-const farmers = simulateFarmerConnections(50, requestAuth)
+const farmerConnections = simulateFarmerConnections(50, requestAuth)
 
 // Requester
 const matcher = new ExampleMatcher(10, 7)
@@ -58,4 +58,4 @@ sow.setWorkUnit('MB')
 sow.setRequester(requesterSig)
 
 const requester = new Requester(sow, matcher, farmAuth)
-requester.processFarmers(farmers)
+requester.processFarmers(farmerConnections)

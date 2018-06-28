@@ -16,18 +16,28 @@ For a requester, AFP would be used to define the maximum reward the requester is
 
 ### Generating gRPC and Protobuf files 
 
-This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found here: https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen
-
+This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found here: https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen 
 
 ```bash
 cd proto
 
 grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` messages.proto
-
 grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` route_guide.proto
 ```
 
 Note: For Windows, you may need to replace `which grpc_tools_node_protoc_plugin` with the full path to grpc_node_plugin.exe (including the .exe extension)  
+
+## Tests
+
+## Examples
+
+### Multifarmer Simulation
+
+This example generates and connects to 50 local farmers, then hires up to 7 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
+
+```
+node multifarmer-example.js
+```
 
 ## Contributing
 - [How to contribute](CONTRIBUTING.md)

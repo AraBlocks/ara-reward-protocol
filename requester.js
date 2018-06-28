@@ -50,7 +50,9 @@ class Requester {
         farmer.awardContract(contract, this.handleSignedContract.bind(this))
       }
 
-      this.matcher.considerQuoteOption(response, optionCallback.bind(this))
+      if (this.authenticator.validatePeer(response.getFarmer())) {
+        this.matcher.considerQuoteOption(response, optionCallback.bind(this))
+      }
     }
   }
 
