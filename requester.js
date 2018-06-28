@@ -1,17 +1,23 @@
 const messages = require('./proto/messages_pb')
+const services = require('./proto/route_guide_grpc_pb')
 
-/*
-    Class that handles the communication for requesting a specific SOW for a single task.
-*/
 class Requester {
-  constructor(sow, matcher) {
+  /**
+   * Class that handles the communication for requesting a specific SOW for a single task.
+   * @param {messages.SOW} sow
+   * @param {Matcher} matcher
+   * @param {Authenticator} authenticator
+   */
+  constructor(sow, matcher, authenticator) {
     this.sow = sow
     this.matcher = matcher
+    this.authenticator = authenticator
   }
 
-  /*
-        Iterates through an array of Farmers and gets quotes from them for the defined SOW
-    */
+  /**
+   * Iterates through an array of Farmers and gets quotes from them for the defined SOW
+   * @param {services.RFPClient} farmers
+   */
   processFarmers(farmers) {
     farmers.forEach((farmer) => {
       const responseHandler = function (err, response) {
@@ -21,11 +27,14 @@ class Requester {
     })
   }
 
-  /*
-        On receipt of a quote from a farmer, asks the defined Matcher to consider the quote.
-        On the Matcher selecting the quote, initializes a contract, signs it for the specific
-        SOW and Farmer, then sends the contract to the farmer.
-    */
+  /**
+   * On receipt of a quote from a farmer, asks the defined Matcher to consider the quote.
+   * On the Matcher selecting the quote, initializes a contract, signs it for the specific
+   * SOW and Farmer, then sends the contract to the farmer.
+   * @param {Error} err
+   * @param {messages.Quote} response
+   * @param {services.RFPClient} farmer
+   */
   handleQuoteResponse(err, response, farmer) {
     if (err) {
       console.log(`Quote Response: ${err}`)
@@ -33,7 +42,7 @@ class Requester {
       console.log(`Requester: Received Quote ${response.getPerUnitCost()} per ${response.getSow().getWorkUnit()} from farmer ${response.getFarmer().getId()}`)
 
       const optionCallback = function () {
-        // TODO: generate actual contract
+        // TODO generate actual contract
         const contract = new messages.Contract()
         contract.setId(103)
         contract.setQuote(response)
@@ -45,14 +54,20 @@ class Requester {
     }
   }
 
-  /*
-        On receipt of a signed (and staked) contract from farmer, can begin distribution of work.
-    */
+  /**
+   * On receipt of a signed (and staked) contract from farmer, can begin distribution of work.
+   * @param {Error} err
+   * @param {messages.Contract} response
+   */
   handleSignedContract(err, response) {
     if (err) {
       console.log(`Award Response: ${err}`)
-    } else {
+    } else if (this.authenticator.validateContract(response)) {
+      // TODO Validate stake
+      // TODO Start task
       console.log(`Requester: Contract ${response.getId()} signed by farmer ${response.getQuote().getFarmer().getId()}`)
+    } else {
+      this.matcher.invalidateQuoteOption(response.getQuote())
     }
   }
 }

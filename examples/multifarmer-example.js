@@ -5,39 +5,88 @@ const { Authenticator } = require('../authenticator')
 const { Quoter } = require('../quoter')
 const messages = require('../proto/messages_pb')
 
+/**
+ * Example Matcher which hires a maximum number of workers for a maximum cost
+ */
 class ExampleMatcher extends Matcher {
   constructor(maxCost, maxWorkers) {
     super()
     this.maxCost = maxCost
     this.maxWorkers = maxWorkers
-    this.workers = 0
+    this.hiredWorkers = new Map()
+    this.reserveWorkers = []
   }
 
   considerQuoteOption(quote, hireFarmerCallback) {
-    if (quote.getPerUnitCost() < this.maxCost && this.workers < this.maxWorkers) {
+    if (quote.getPerUnitCost() > this.maxCost) return
+
+    const farmerId = quote.getFarmer().getId()
+
+    if (this.hiredWorkers.size < this.maxWorkers) {
+      this.hiredWorkers.set(farmerId, hireFarmerCallback)
       hireFarmerCallback()
-      this.workers++
+    } else {
+      this.reserveWorkers.push({ id: farmerId, cb: hireFarmerCallback })
+    }
+  }
+
+  invalidateQuoteOption(quote) {
+    const farmerId = quote.getFarmer().getId()
+    this.hiredWorkers.delete(farmerId)
+
+    if (this.hiredWorkers.size < this.maxWorkers) this.hireFromReserve()
+  }
+
+  hireFromReserve() {
+    if (this.reserveWorkers.length > 0) {
+      const reserveWorker = this.reserveWorkers.pop()
+      this.hiredWorkers.set(reserveWorker.id, reserveWorker.cb)
+      reserveWorker.cb()
     }
   }
 }
 
-class ExampleAuthenticator extends Authenticator {
-  constructor(requesterID) {
+/**
+ * Example authenticator to validate a farmer
+ */
+class ExampleFarmerAuth extends Authenticator {
+  constructor(badFarmerId) {
     super()
-    this.requesterID = requesterID
+    this.badFarmerId = badFarmerId
   }
 
   validateContract(contract) {
-    const contractRequester = contract.getQuote().getSow().getRequester().getId()
-    if (contractRequester == this.requesterID) {
-      return true
+    const farmerId = contract.getQuote().getFarmer().getId()
+    if (farmerId == this.badFarmerId) {
+      console.log(`Invalid contract: ${contract.getId()} from bad farmer: ${farmerId}`)
+      return false
     }
-
-    console.log(`Invalid contract: ${contract.getId()} from requester: ${contractRequester}`)
-    return false
+    return true
   }
 }
 
+/**
+ * Example authenticator to validate a requester
+ */
+class ExampleRequesterAuth extends Authenticator {
+  constructor(badRequesterId) {
+    super()
+    this.badRequesterId = badRequesterId
+  }
+
+  validateContract(contract) {
+    const requesterId = contract.getQuote().getSow().getRequester().getId()
+    if (requesterId == this.badRequesterId) {
+      console.log(`Invalid contract: ${contract.getId()} from bad requester: ${requesterId}`)
+      return false
+    }
+    return true
+  }
+}
+
+/**
+ * Example quoter which gives back a specific cost for a farmer
+ */
 class ExampleQuoter extends Quoter {
   constructor(price, farmerSig) {
     super()
@@ -65,11 +114,11 @@ function simulateFarmerConnections(count, authenticator) {
   const farmers = []
   for (let i = 0; i < count; i++) {
     const port = `localhost:${(sPort + i).toString()}`
-    const price = 5 + Math.floor(Math.random() * 10) + 1
+    const price = 5 + Math.floor(Math.random() * 10)
 
     const farmerSig = new messages.ARAid()
     farmerSig.setId(i)
-    farmerSig.setSignature(Math.floor(1000 + 1000 * Math.random()))
+    farmerSig.setSignature(Math.floor(1000 * Math.random()))
 
     const quoter = new ExampleQuoter(price, farmerSig)
 
@@ -91,11 +140,12 @@ function simulateFarmerConnections(count, authenticator) {
 */
 
 // Farmers
-const authenticator = new ExampleAuthenticator(10056)
-const farmers = simulateFarmerConnections(50, authenticator)
+const requestAuth = new ExampleRequesterAuth(10057)
+const farmers = simulateFarmerConnections(50, requestAuth)
 
 // Requester
 const matcher = new ExampleMatcher(10, 7)
+const farmAuth = new ExampleFarmerAuth(2)
 
 const requesterSig = new messages.ARAid()
 requesterSig.setId(10056)
@@ -106,5 +156,5 @@ sow.setId(2)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterSig)
 
-const requester = new Requester(sow, matcher)
+const requester = new Requester(sow, matcher, farmAuth)
 requester.processFarmers(farmers)
