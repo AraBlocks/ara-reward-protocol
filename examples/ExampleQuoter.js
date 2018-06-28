@@ -1,4 +1,4 @@
-const { Quoter } = require('../quoter')
+const { Quoter } = require('../src/quoter')
 const messages = require('../proto/messages_pb')
 
 /**

@@ -1,4 +1,4 @@
-const { Authenticator } = require('../authenticator')
+const { Authenticator } = require('../src/authenticator')
 const messages = require('../proto/messages_pb')
 
 /**

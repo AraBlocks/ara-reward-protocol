@@ -1,4 +1,4 @@
-const { Matcher } = require('../matcher')
+const { Matcher } = require('../src/matcher')
 const messages = require('../proto/messages_pb')
 
 /**

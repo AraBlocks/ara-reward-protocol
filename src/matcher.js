@@ -1,4 +1,4 @@
-const messages = require('./proto/messages_pb')
+const messages = require('../proto/messages_pb')
 
 class Matcher {
   /**

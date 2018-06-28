@@ -1,5 +1,5 @@
-const { Farmer, broadcastFarmer, connectToFarmer } = require('../farmer')
-const { Requester } = require('../requester')
+const { Farmer, broadcastFarmer, connectToFarmer } = require('../src/farmer')
+const { Requester } = require('../src/requester')
 const { ExampleMatcher } = require('./ExampleMatcher')
 const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./ExampleAuthenticators')
 const { ExampleQuoter } = require('./ExampleQuoter')

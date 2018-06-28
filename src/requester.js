@@ -1,5 +1,5 @@
-const messages = require('./proto/messages_pb')
-const services = require('./proto/route_guide_grpc_pb')
+const messages = require('../proto/messages_pb')
+const services = require('../proto/route_guide_grpc_pb')
 
 class Requester {
   /**
