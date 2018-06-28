@@ -1,103 +1,112 @@
 pragma solidity 0.4.24;
 
-contract Auction {
-    address public requester;
-    address public hiredFarmer;
-    uint public hiredRate;
-    uint public stake;
-    uint public budget;
-    bool public workInProgress;
-    bool public aborted;
+contract FarmingContract {
+    address moderator;
+    mapping(uint => Job) public jobs;
+    mapping(address => Participant) public participants;
+
+    struct Job {
+      address requester;
+      mapping(address => Farmer) farmers;
+      uint budget;
+      bool workInProgress;
+      bool aborted;
+    }
 
     struct Farmer {
       uint rate;
+      bool acceptedWork;
     }
 
-    mapping(address => Farmer) public farmers;
+    struct Participant {
+      uint balance;
+    }
 
-    event WorkAccepted(address farmer, uint rate);
     event RewardSent();
 
-    constructor (uint _stake) public payable {
-      requester = msg.sender;
-      budget = msg.value;
-      stake = _stake;
-      workInProgress = false;
-      aborted = false;
+    constructor () public {
+      moderator = msg.sender;
     }
 
-    function abortWork() public onlyRequester returns (bool) {
-      if (workInProgress && !aborted) {
-        return false;
-      } else {
-        aborted = true;
-        requester.transfer(budget);
-        return true;
-      }
+    function createJob(uint jobId) public payable{
+      jobs[jobId].requester = msg.sender;
+      jobs[jobId].budget = msg.value;
+      jobs[jobId].workInProgress = false;
+      jobs[jobId].aborted = false;
+      participants[msg.sender].balance += msg.value;
     }
 
-    function addFarmer(address farmerAddress, uint farmerRate)
-      public onlyRequester notAborted stillOpen {
-      farmers[farmerAddress].rate = farmerRate;
+    function addFarmer(uint jobId, uint rate, address farmerAddress)
+      public onlyRequester(jobId) notAborted(jobId) stillOpen(jobId) {
+      // put a check so that once job has started, requester cannot change the rate
+      jobs[jobId].farmers[farmerAddress].rate = rate;
+      jobs[jobId].farmers[farmerAddress].acceptedWork = false;
     }
 
-    function acceptWork(uint rate)
-    public payable onlyFarmer notAborted stillOpen{
-      require (farmers[msg.sender].rate == rate, "Rate must equal to \(farmers[msg.sender].rate)");
-      require (stake == msg.value, "Stake value must equal to \(stake)");
-      workInProgress = true;
-      hiredFarmer = msg.sender;
-      hiredRate = rate;
-
-      emit WorkAccepted(msg.sender, rate);
+    function acceptJob(uint jobId)
+    public payable onlyFarmer(jobId) stillOpen(jobId) notAborted(jobId) availableToFarm(jobId, msg.sender){
+      jobs[jobId].farmers[msg.sender].acceptedWork = true;
     }
 
-    function sendReward() public payable onlyRequester notAborted{
-      // prevents reentry
-      uint reward = hiredRate + stake;
-      uint leftover = budget - reward;
-      budget = 0;
-      hiredRate = 0;
-      stake = 0;
-
-      //sends reward and gives back stake to farmer
-      hiredFarmer.transfer(reward);
-
-      //return leftover budget to requester
-      msg.sender.transfer(leftover);
-
-      //clean up
-      delete hiredFarmer;
-      emit RewardSent();
+    function startJob(uint jobId)
+    public onlyRequester(jobId){
+      jobs[jobId].workInProgress = true;
     }
 
-    modifier stillOpen() {
+    function getRate(uint jobId) public view returns(uint rate){
+      return (jobs[jobId].farmers[msg.sender].rate);
+    }
+
+    function abortJob(uint jobId) public onlyRequester(jobId) {
+      jobs[jobId].aborted = true;
+    }
+
+    function withdrawFromJob(uint jobId) public stillOpen(jobId) notAborted(jobId){
+      participants[msg.sender].balance += jobs[jobId].farmers[msg.sender].rate;
+      jobs[jobId].farmers[msg.sender].acceptedWork = false;
+      delete jobs[jobId].farmers[msg.sender].rate;
+    }
+
+    // function sendReward(string jobId) public payable onlyRequester(jobId){
+    //   //TODO
+    // }
+
+    modifier stillOpen(uint jobId) {
       require(
-          !workInProgress,
+          !(jobs[jobId].workInProgress),
           "Work has been started and no longer open for bid"
       );
       _;
     }
 
-    modifier notAborted() {
+    modifier availableToFarm(uint jobId, address farmerAddress){
       require(
-          !aborted,
+        !(jobs[jobId].farmers[farmerAddress].acceptedWork),
+          "Has accepted this job"
+      );
+      _;
+    }
+
+    modifier notAborted(uint jobId) {
+      require(
+        !(jobs[jobId].aborted),
           "The requester has aborted this contract"
       );
       _;
     }
 
-    modifier onlyFarmer() {
+
+    modifier onlyFarmer(uint jobId) {
       require(
-          msg.sender != requester,
-          "Only farmer can bid"
+        jobs[jobId].requester != msg.sender,
+          "Only farmers can bid"
       );
       _;
     }
 
-    modifier onlyRequester() {
+    modifier onlyRequester(uint jobId) {
       require(
-          msg.sender == requester,
+        jobs[jobId].requester == msg.sender,
           "Only requester can call this"
       );
       _;
