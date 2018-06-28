@@ -74,7 +74,7 @@ contract FarmingContract {
     modifier stillOpen(uint jobId) {
       require(
           !(jobs[jobId].workInProgress),
-          "Work has been started and no longer open for bid"
+          "Work has been started. You cannot further bid or withdraw"
       );
       _;
     }

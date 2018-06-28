@@ -1,16 +1,8 @@
-var Web3 = require("web3");
-var Auction = require("./contract");
+let Contract = require("./contract");
 
-//Create new Contract
-Auction.methods
-  .addFarmer("0xa34e9c6D2B1fF5b1a136DE7B09BAFCB808831E73", 10000)
-  .send(
-    {
-      from: web3.eth.defaultAccount,
-      gas: 1000000
-    },
-    function(error, result) {
-      console.log(error, result);
-      // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
-    }
-  );
+const contract = new Contract(
+  "0x371428bab36185de7adc44c3bd03a2a85a734e85",
+  "0xa151a089fc8f9f04cc5cea3062c7f0bd10e9e703"
+);
+
+console.log(contract);
