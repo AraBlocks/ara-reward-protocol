@@ -1,94 +1,94 @@
 const test = require('ava')
 const sinon = require('sinon')
-const messages = require('../../proto/messages_pb')
-const { Farmer } = require('../../src/farmer')
-const { Authenticator } = require('../../src/authenticator')
-const { Quoter } = require('../../src/quoter')
+const messages = require('../../lib/proto/messages_pb')
+const { Farmer } = require('../../lib/farmer')
+const { Authenticator } = require('../../lib/authenticator')
+const { QuoteGenerator } = require('../../lib/quote-generator')
 
-test('farmer.getQuote.ValidPeer', t => {
-    const quoteId = 1234
-    const sow = new messages.SOW();
-    
-    const quote = new messages.Quote();
-    quote.setId(quoteId)
+test('farmer.getQuote.ValidPeer', (t) => {
+  const quoteId = 1234
+  const sow = new messages.SOW()
 
-    const stubQuote = new Quoter()
-    sinon.stub(stubQuote, 'generateQuote').returns(quote)
+  const quote = new messages.Quote()
+  quote.setId(quoteId)
 
-    const stubAuth = new Authenticator()
-    sinon.stub(stubAuth, 'validatePeer').returns(true)
+  const stubQuoteGen = new QuoteGenerator()
+  sinon.stub(stubQuoteGen, 'generateQuote').returns(quote)
 
-    const stubCall = {
-        request: sow
-    }
+  const stubAuth = new Authenticator()
+  sinon.stub(stubAuth, 'validatePeer').returns(true)
 
-    const farmer = new Farmer(1, stubQuote, stubAuth)
-    farmer.getQuote(stubCall, (error, response) => {
-        t.true(null === error)
-        t.true(quote === response)
-        t.true(quoteId === response.getId())
-    })
+  const stubCall = {
+    request: sow
+  }
+
+  const farmer = new Farmer(1, stubQuoteGen, stubAuth)
+  farmer.getQuote(stubCall, (error, response) => {
+    t.true(null === error)
+    t.true(quote === response)
+    t.true(quoteId === response.getId())
+  })
 })
 
-test('farmer.getQuote.InvalidPeer', t => {
-    const sow = new messages.SOW();
-    const quote = new messages.Quote();
+test('farmer.getQuote.InvalidPeer', (t) => {
+  const sow = new messages.SOW()
+  const quote = new messages.Quote()
 
-    const stubQuote = new Quoter()
-    sinon.stub(stubQuote, 'generateQuote').returns(quote)
+  const stubQuoteGen = new QuoteGenerator()
+  sinon.stub(stubQuoteGen, 'generateQuote').returns(quote)
 
-    const stubAuth = new Authenticator()
-    sinon.stub(stubAuth, 'validatePeer').returns(false)
+  const stubAuth = new Authenticator()
+  sinon.stub(stubAuth, 'validatePeer').returns(false)
 
-    const stubCall = {
-        request: sow
-    }
+  const stubCall = {
+    request: sow
+  }
 
-    const farmer = new Farmer(1, stubQuote, stubAuth)
-    farmer.getQuote(stubCall, (error, response) => {
-        t.true(null != error)
-        t.true(null === response)
-    })
+  const farmer = new Farmer(1, stubQuoteGen, stubAuth)
+  farmer.getQuote(stubCall, (error, response) => {
+    t.true(null != error)
+    t.true(null === response)
+  })
 })
 
-test('farmer.awardContract.ValidContract', t => {
-    const contractId = 1234
-    
-    const contract = new messages.Contract();
-    contract.setId(contractId)
+test('farmer.awardContract.ValidContract', (t) => {
+  const contractId = 1234
 
-    const stubQuote = new Quoter()
+  const contract = new messages.Contract()
+  contract.setId(contractId)
 
-    const stubAuth = new Authenticator()
-    sinon.stub(stubAuth, 'validateContract').returns(true)
+  const stubQuoteGen = new QuoteGenerator()
 
-    const stubCall = {
-        request: contract
-    }
+  const stubAuth = new Authenticator()
+  sinon.stub(stubAuth, 'validateContract').returns(true)
 
-    const farmer = new Farmer(1, stubQuote, stubAuth)
-    farmer.awardContract(stubCall, (error, response) => {
-        t.true(null === error)
-        t.true(contract === response)
-        t.true(contractId === response.getId())
-    })
+  const stubCall = {
+    request: contract
+  }
+
+  const farmer = new Farmer(1, stubQuoteGen, stubAuth)
+  farmer.awardContract(stubCall, (error, response) => {
+    t.true(null === error)
+    t.true(contract === response)
+    t.true(contractId === response.getId())
+  })
 })
 
-test('farmer.awardContract.InvalidContract', t => {
-    const contract = new messages.Contract();
+test('farmer.awardContract.InvalidContract', (t) => {
+  const contract = new messages.Contract()
 
-    const stubQuote = new Quoter()
+  const stubQuoteGen = new QuoteGenerator()
 
-    const stubAuth = new Authenticator()
-    sinon.stub(stubAuth, 'validateContract').returns(false)
+  const stubAuth = new Authenticator()
+  sinon.stub(stubAuth, 'validateContract').returns(false)
 
-    const stubCall = {
-        request: contract
-    }
+  const stubCall = {
+    request: contract
+  }
 
-    const farmer = new Farmer(1, stubQuote, stubAuth)
-    farmer.awardContract(stubCall, (error, response) => {
-        t.true(null != error)
-        t.true(null === response)
-    })
+  const farmer = new Farmer(1, stubQuoteGen, stubAuth)
+  farmer.awardContract(stubCall, (error, response) => {
+    t.true(null != error)
+    t.true(null === response)
+  })
 })

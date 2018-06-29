@@ -1,10 +1,10 @@
-const { Quoter } = require('../src/quoter')
-const messages = require('../proto/messages_pb')
+const { QuoteGenerator } = require('../../lib/quote-generator')
+const messages = require('../../lib/proto/messages_pb')
 
 /**
  * Example quoter which gives back a specific cost for a farmer
  */
-class ExampleQuoter extends Quoter {
+class ExampleQuoteGenerator extends QuoteGenerator {
   constructor(price, farmerSig) {
     super()
     this.price = price
@@ -22,4 +22,4 @@ class ExampleQuoter extends Quoter {
   }
 }
 
-module.exports = { ExampleQuoter }
+module.exports = { ExampleQuoteGenerator }

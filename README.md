@@ -13,10 +13,10 @@ For a requester, AFP would be used to define the maximum reward the requester is
 This project is still in alpha development.
 
 ## Dependencies
-- node
-- grpc
-- grpc-tools
-- google-protobuf
+- [node](https://nodejs.org)
+- [grpc](https://www.npmjs.com/package/grpc)
+- [grpc-tools](https://www.npmjs.com/package/grpc-tools)
+- [google-protobuf](https://www.npmjs.com/package/google-protobuf)
 
 ## Installation
 

@@ -1,9 +1,9 @@
-const { Farmer, broadcastFarmer, connectToFarmer } = require('../src/farmer')
-const { Requester } = require('../src/requester')
-const { ExampleMatcher } = require('./ExampleMatcher')
-const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./ExampleAuthenticators')
-const { ExampleQuoter } = require('./ExampleQuoter')
-const messages = require('../proto/messages_pb')
+const { Farmer, broadcastFarmer, connectToFarmer } = require('../../lib/farmer')
+const { Requester } = require('../../lib/requester')
+const { ExampleMatcher } = require('./matcher')
+const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./authenticators')
+const { ExampleQuoteGenerator } = require('./quote-generator')
+const messages = require('../../lib/proto/messages_pb')
 
 /*
     Simulates and connects to a number of Farmer Servers
@@ -20,10 +20,10 @@ function simulateFarmerConnections(count, authenticator) {
     farmerSig.setId(i)
     farmerSig.setSignature(Math.floor(1000 * Math.random()))
 
-    const quoter = new ExampleQuoter(price, farmerSig)
+    const quoteGenerator = new ExampleQuoteGenerator(price, farmerSig)
 
     // Generate Server
-    const farmer = new Farmer(i, quoter, authenticator)
+    const farmer = new Farmer(i, quoteGenerator, authenticator)
     broadcastFarmer(farmer, port)
 
     // Generate Client Connection
@@ -34,7 +34,7 @@ function simulateFarmerConnections(count, authenticator) {
 }
 
 /*
-    Example: generate and connect to 50 farmers, then hire up to
+    Example: generate and connect to 10 farmers, then hire up to
     7 farmers who charge <= 10 Ara per MB. Requester Authenticator
     considers user 10057 as invalid requester. Farmer Authenticator
     considers uder 2 as an invalid farmer.
@@ -42,7 +42,7 @@ function simulateFarmerConnections(count, authenticator) {
 
 // Farmers
 const requestAuth = new ExampleRequesterAuth(10057)
-const farmerConnections = simulateFarmerConnections(50, requestAuth)
+const farmerConnections = simulateFarmerConnections(10, requestAuth)
 
 // Requester
 const matcher = new ExampleMatcher(10, 7)

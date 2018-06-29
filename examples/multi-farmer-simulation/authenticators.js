@@ -1,5 +1,5 @@
-const { Authenticator } = require('../src/authenticator')
-const messages = require('../proto/messages_pb')
+const { Authenticator } = require('../../lib/authenticator')
+const messages = require('../../lib/proto/messages_pb')
 
 /**
  * Example authenticator to validate a farmer

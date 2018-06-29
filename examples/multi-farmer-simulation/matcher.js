@@ -1,5 +1,5 @@
-const { Matcher } = require('../src/matcher')
-const messages = require('../proto/messages_pb')
+const { Matcher } = require('../../lib/matcher')
+const messages = require('../../lib/proto/messages_pb')
 
 /**
  * Example Matcher which hires a maximum number of workers for a maximum cost
