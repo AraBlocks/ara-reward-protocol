@@ -24,11 +24,10 @@ $ npm i
 ```
 
 ## Usage
-The expected usage is for an application to implement their own extensions to the following classes:
+The expected usage is for an application to implement its own extensions to the following classes:
 - Authenticator
 - Matcher
 - QuoteGenerator
-The application would then use these classes in the following way.
 
 ### Farmers
 For broadcasting the ability to farm.

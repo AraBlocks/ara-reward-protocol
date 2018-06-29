@@ -9,36 +9,50 @@ class ExampleMatcher extends Matcher {
     super()
     this.maxCost = maxCost
     this.maxWorkers = maxWorkers
-    this.hiredWorkers = new Map()
+    this.quoteOptions = new Map()
+    this.hiredWorkerContracts = new Map()
     this.reserveWorkers = []
   }
 
   considerQuoteOption(quote, hireFarmerCallback) {
+    const farmerId = quote.getFarmer().getId()
+    this.quoteOptions.set(farmerId, { quote, cb: hireFarmerCallback })
+
     if (quote.getPerUnitCost() > this.maxCost) return
 
-    const farmerId = quote.getFarmer().getId()
-
-    if (this.hiredWorkers.size < this.maxWorkers) {
-      this.hiredWorkers.set(farmerId, hireFarmerCallback)
-      hireFarmerCallback()
+    if (this.hiredWorkerContracts.size < this.maxWorkers) {
+      this.hireFarmer(farmerId)
     } else {
-      this.reserveWorkers.unshift({ id: farmerId, cb: hireFarmerCallback })
+      this.reserveWorkers.unshift(farmerId)
     }
   }
 
   invalidateQuoteOption(quote) {
     const farmerId = quote.getFarmer().getId()
-    this.hiredWorkers.delete(farmerId)
+    this.hiredWorkerContracts.delete(farmerId)
 
-    if (this.hiredWorkers.size < this.maxWorkers) this.hireFromReserve()
+    if (this.hiredWorkerContracts.size < this.maxWorkers) this.hireFromReserve()
   }
 
   hireFromReserve() {
     if (this.reserveWorkers.length > 0) {
       const reserveWorker = this.reserveWorkers.pop()
-      this.hiredWorkers.set(reserveWorker.id, reserveWorker.cb)
-      reserveWorker.cb()
+      this.hireFarmer(reserveWorker)
     }
+  }
+
+  hireFarmer(farmerId) {
+    const quoteOption = this.quoteOptions.get(farmerId)
+    const contract = this.generateContract(quoteOption.quote)
+    this.hiredWorkerContracts.set(farmerId, contract)
+    quoteOption.cb(contract)
+  }
+
+  generateContract(quote) {
+    const contract = new messages.Contract()
+    contract.setId(103)
+    contract.setQuote(quote)
+    return contract
   }
 }
 
