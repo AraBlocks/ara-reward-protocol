@@ -19,7 +19,9 @@ This project is still in alpha development.
 - [google-protobuf](https://www.npmjs.com/package/google-protobuf)
 
 ## Installation
-
+```
+$ npm i
+```
 ### Windows
 -
 
@@ -31,15 +33,15 @@ This project is still in alpha development.
 ## Examples
 
 ### Multifarmer Simulation
-This example generates and connects to 50 local farmers, then hires up to 7 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
+This example generates and connects to 10 local farmers, then hires up to 5 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
 
 ```
-$ node multifarmer-example.js
+$ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 ```
 
 ## Local Development Setup
 ### Generating gRPC and Protobuf files 
-This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found here: https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen 
+This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found [here](https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen) 
 
 ```bash
 $ cd proto
