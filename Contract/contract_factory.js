@@ -1,8 +1,10 @@
 let Contract = require("./contract");
 
 const contract = new Contract(
-  "0x371428bab36185de7adc44c3bd03a2a85a734e85",
+  "0xfd1966eb78390209c49767a05c6c799ba2e37fad",
   "0xa151a089fc8f9f04cc5cea3062c7f0bd10e9e703"
 );
 
-console.log(contract);
+contract.createJob(100, 100);
+contract.getJob(100);
+contract.getBalance();

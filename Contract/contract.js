@@ -11,20 +11,69 @@ class FarmingContract {
         new Web3.providers.HttpProvider("http://192.168.128.232:7545")
       );
     }
+    this.contract = new this.web3.eth.Contract(ABI, contractAddress);
     this.web3.eth.defaultAccount = personalAddress;
+    this.personalAddress = personalAddress;
   }
 
-  getBalance() {}
+  getBalance() {
+    this.contract.methods
+      .getBalance()
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
 
-  getRate(jobId) {}
+  getRate(jobId) {
+    this.contract.methods
+      .getRate(jobId)
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
 
-  createJob(jobId, budget) {}
+  getJob(jobId) {
+    this.contract.methods
+      .getJob(jobId)
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
 
-  acceptJob(jobId) {}
+  createJob(jobId, budget) {
+    this.contract.methods
+      .createJob(jobId)
+      .send(
+        { from: this.personalAddress, value: budget, gas: 3000000 },
+        function(error, result) {
+          console.log("error: ", error, "\nresult: ", result);
+        }
+      );
+  }
 
-  startJob(jobId) {}
+  acceptJob(jobId) {
+    this.contract.methods
+      .acceptJob(jobId)
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
 
-  abortJob(jobId) {}
+  startJob(jobId) {
+    this.contract.methods
+      .startJob(jobId)
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
+
+  abortJob(jobId) {
+    this.contract.methods
+      .startJob(jobId)
+      .call({ from: this.personalAddress }, function(error, result) {
+        console.log("error: ", error, "\nresult: ", result);
+      });
+  }
 }
 
 module.exports = FarmingContract;

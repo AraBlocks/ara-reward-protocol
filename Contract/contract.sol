@@ -61,6 +61,15 @@ contract FarmingContract {
       jobs[jobId].aborted = true;
     }
 
+    function getBalance() public view returns(uint balance) {
+      return participants[msg.sender].balance;
+    }
+
+    function getJob(uint jobId) public view returns(uint budget, bool workdInProgress, bool aborted){
+        Job storage job = jobs[jobId];
+        return (job.budget, job.workInProgress, job.aborted);
+    }
+
     function withdrawFromJob(uint jobId) public stillOpen(jobId) notAborted(jobId){
       participants[msg.sender].balance += jobs[jobId].farmers[msg.sender].rate;
       jobs[jobId].farmers[msg.sender].acceptedWork = false;
