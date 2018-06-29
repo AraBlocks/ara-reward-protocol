@@ -10,7 +10,7 @@ class Farmer {
    * @param {int64} id
    * @param {Autheticator} autheticator
    */
-  constructor(quoter, id, autheticator) {
+  constructor(id, quoter, autheticator) {
     this.quoter = quoter
     this.id = id
     this.autheticator = autheticator
@@ -18,30 +18,34 @@ class Farmer {
 
   /**
    * Proto RPC method for getting a quote for an SOW
-   * @param {*} call
-   * @param {*} callback
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.Quote)} callback Response callback
    */
   getQuote(call, callback) {
-    console.log(`Farmer [${this.id}]: Quote request received.`)
     const sow = call.request
     if (this.autheticator.validatePeer(sow.getRequester())) {
       const quote = this.quoter.generateQuote(sow)
       callback(null, quote)
     }
+    else{
+      callback('Error: Invalid Auth', null)
+    }
   }
 
   /**
    * Proto RPC method for being awarded a contract
-   * @param {*} call
-   * @param {*} callback
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.Contract)} callback Response callback
    */
   awardContract(call, callback) {
-    console.log(`Farmer [${this.id}]: Contract received.`)
     // TODO Need to validate that sow quote matches Farmer's quote
     const contract = call.request
     if (this.autheticator.validateContract(contract)) {
       // TODO Need to stake for the contract
       callback(null, contract)
+    }
+    else{
+      callback('Error: Invalid Contract', null)
     }
   }
 }

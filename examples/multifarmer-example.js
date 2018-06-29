@@ -23,7 +23,7 @@ function simulateFarmerConnections(count, authenticator) {
     const quoter = new ExampleQuoter(price, farmerSig)
 
     // Generate Server
-    const farmer = new Farmer(quoter, i, authenticator)
+    const farmer = new Farmer(i, quoter, authenticator)
     broadcastFarmer(farmer, port)
 
     // Generate Client Connection
