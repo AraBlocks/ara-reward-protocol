@@ -22,13 +22,48 @@ This project is still in alpha development.
 ```
 $ npm i
 ```
-### Windows
--
-
-### MacOS
--
 
 ## Usage
+The expected usage is for an application to implement their own extensions to the following classes:
+- Authenticator
+- Matcher
+- QuoteGenerator
+The application would then use these classes in the following way.
+
+### Farmers
+For broadcasting the ability to farm.
+```js
+// The credentials of the farmer
+const farmerCredentials;
+
+// The application's custom classes
+const authenticator = new ExampleRequesterAuthenticator() 
+const quoteGenerator = new ExampleQuoteGenerator()
+
+// Broadcast on a specific port
+const port = `localhost:50051` 
+const farmer = new Farmer(farmerCredentials, quoteGenerator, authenticator)
+broadcastFarmer(farmer, port)
+```
+
+### Requesters
+For requesting a farming job.
+```js
+// The credentials of the requester
+const requesterCredentials;
+
+// The application's custom classes
+const matcher = new ExampleMatcher()
+const authenticator = new ExampleFarmerAuthenticator()
+
+// The SOW of the request
+const sow = new messages.SOW()
+
+// Connect to a farmer (or set of farmers)
+const connection = connectToFarmer(port)
+const requester = new Requester(sow, matcher, authenticator)
+requester.processFarmers([connection])
+```
 
 ## Examples
 
@@ -53,6 +88,9 @@ $ grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ 
 Note: For Windows, you may need to replace `which grpc_tools_node_protoc_plugin` with the full path to grpc_node_plugin.exe (including the .exe extension)  
 
 ### Tests
+```
+$ npm run test
+```
 
 ## Contributing
 - [How to contribute](/.github/CONTRIBUTING.md)
