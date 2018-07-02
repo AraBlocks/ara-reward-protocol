@@ -46,7 +46,7 @@ const requestAuth = new ExampleRequesterAuth(10057)
 const farmerConnections = simulateFarmerConnections(10, requestAuth)
 
 // Requester
-const contractGen = new ExampleContractGenerator(104);
+const contractGen = new ExampleContractGenerator(104)
 const matcher = new ExampleMatcher(10, 5)
 const farmAuth = new ExampleFarmerAuth(2)
 

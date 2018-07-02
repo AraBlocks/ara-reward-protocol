@@ -24,7 +24,7 @@ class ExampleQuoteGenerator extends QuoteGenerator {
   validateContract(contract) {
     const quote = contract.getQuote()
     if (quote.getPerUnitCost() == this.price) return true
-    else return false
+    return false
   }
 }
 
