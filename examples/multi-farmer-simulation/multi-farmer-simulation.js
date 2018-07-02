@@ -1,8 +1,9 @@
 const { Farmer, broadcastFarmer, connectToFarmer } = require('../../lib/farmer')
 const { Requester } = require('../../lib/requester')
 const { ExampleMatcher } = require('./matcher')
-const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./authenticators')
+const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./peer-authenticators')
 const { ExampleQuoteGenerator } = require('./quote-generator')
+const { ExampleContractGenerator } = require('./contract-generator')
 const messages = require('../../lib/proto/messages_pb')
 
 /*
@@ -35,9 +36,9 @@ function simulateFarmerConnections(count, authenticator) {
 
 /*
     Example: generate and connect to 10 farmers, then hire up to
-    7 farmers who charge <= 10 Ara per MB. Requester Authenticator
+    5 farmers who charge <= 10 Ara per MB. Requester Authenticator
     considers user 10057 as invalid requester. Farmer Authenticator
-    considers uder 2 as an invalid farmer.
+    considers user 2 as an invalid farmer.
 */
 
 // Farmers
@@ -45,7 +46,8 @@ const requestAuth = new ExampleRequesterAuth(10057)
 const farmerConnections = simulateFarmerConnections(10, requestAuth)
 
 // Requester
-const matcher = new ExampleMatcher(10, 7)
+const contractGen = new ExampleContractGenerator(104);
+const matcher = new ExampleMatcher(10, 5)
 const farmAuth = new ExampleFarmerAuth(2)
 
 const requesterSig = new messages.ARAid()
@@ -57,5 +59,5 @@ sow.setId(2)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterSig)
 
-const requester = new Requester(sow, matcher, farmAuth)
+const requester = new Requester(sow, matcher, farmAuth, contractGen)
 requester.processFarmers(farmerConnections)

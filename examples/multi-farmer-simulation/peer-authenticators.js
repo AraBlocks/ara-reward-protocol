@@ -1,10 +1,10 @@
-const { Authenticator } = require('../../lib/authenticator')
+const { PeerAuthenticator } = require('../../lib/peer-authenticator')
 const messages = require('../../lib/proto/messages_pb')
 
 /**
  * Example authenticator to validate a farmer
  */
-class ExampleFarmerAuth extends Authenticator {
+class ExampleFarmerAuth extends PeerAuthenticator {
   constructor(badFarmerId) {
     super()
     this.badFarmerId = badFarmerId
@@ -13,14 +13,9 @@ class ExampleFarmerAuth extends Authenticator {
   validatePeer(peer) {
     const farmerId = peer.getId()
     if (farmerId == this.badFarmerId) {
-      console.log(`Invalid farmer: ${farmerId}`)
+      console.log(`Requester: Invalid farmer ${farmerId}`)
       return false
     }
-    return true
-  }
-
-  validateContract(contract) {
-    // TODO validate contract and stake
     return true
   }
 }
@@ -28,7 +23,7 @@ class ExampleFarmerAuth extends Authenticator {
 /**
  * Example authenticator to validate a requester
  */
-class ExampleRequesterAuth extends Authenticator {
+class ExampleRequesterAuth extends PeerAuthenticator {
   constructor(badRequesterId) {
     super()
     this.badRequesterId = badRequesterId
@@ -37,14 +32,9 @@ class ExampleRequesterAuth extends Authenticator {
   validatePeer(peer) {
     const requesterId = peer.getId()
     if (requesterId == this.badRequesterId) {
-      console.log(`Invalid requester: ${requesterId}`)
+      console.log(`Farmer: Invalid requester ${requesterId}`)
       return false
     }
-    return true
-  }
-
-  validateContract(contract) {
-    // TODO validate contract and stake
     return true
   }
 }

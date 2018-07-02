@@ -25,9 +25,10 @@ $ npm i
 
 ## Usage
 The expected usage is for an application to implement its own extensions to the following classes:
-- Authenticator
+- PeerAuthenticator
 - Matcher
 - QuoteGenerator
+- ContractGenerator
 
 ### Farmers
 For broadcasting the ability to farm.
@@ -54,13 +55,14 @@ const requesterCredentials;
 // The application's custom classes
 const matcher = new ExampleMatcher()
 const authenticator = new ExampleFarmerAuthenticator()
+const contractGen = new ExampleContractGenerator()
 
 // The SOW of the request
 const sow = new messages.SOW()
 
 // Connect to a farmer (or set of farmers)
 const connection = connectToFarmer(port)
-const requester = new Requester(sow, matcher, authenticator)
+const requester = new Requester(sow, matcher, authenticator, contractGen)
 requester.processFarmers([connection])
 ```
 

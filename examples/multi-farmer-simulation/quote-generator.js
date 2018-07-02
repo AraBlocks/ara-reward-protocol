@@ -20,6 +20,12 @@ class ExampleQuoteGenerator extends QuoteGenerator {
 
     return quote
   }
+
+  validateContract(contract) {
+    const quote = contract.getQuote()
+    if (quote.getPerUnitCost() == this.price) return true
+    else return false
+  }
 }
 
 module.exports = { ExampleQuoteGenerator }

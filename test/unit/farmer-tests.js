@@ -2,7 +2,7 @@ const test = require('ava')
 const sinon = require('sinon')
 const messages = require('../../lib/proto/messages_pb')
 const { Farmer } = require('../../lib/farmer')
-const { Authenticator } = require('../../lib/authenticator')
+const { PeerAuthenticator } = require('../../lib/peer-authenticator')
 const { QuoteGenerator } = require('../../lib/quote-generator')
 
 test('farmer.getQuote.ValidPeer', (t) => {
@@ -15,7 +15,7 @@ test('farmer.getQuote.ValidPeer', (t) => {
   const stubQuoteGen = new QuoteGenerator()
   sinon.stub(stubQuoteGen, 'generateQuote').returns(quote)
 
-  const stubAuth = new Authenticator()
+  const stubAuth = new PeerAuthenticator()
   sinon.stub(stubAuth, 'validatePeer').returns(true)
 
   const stubCall = {
@@ -37,7 +37,7 @@ test('farmer.getQuote.InvalidPeer', (t) => {
   const stubQuoteGen = new QuoteGenerator()
   sinon.stub(stubQuoteGen, 'generateQuote').returns(quote)
 
-  const stubAuth = new Authenticator()
+  const stubAuth = new PeerAuthenticator()
   sinon.stub(stubAuth, 'validatePeer').returns(false)
 
   const stubCall = {
@@ -58,9 +58,9 @@ test('farmer.awardContract.ValidContract', (t) => {
   contract.setId(contractId)
 
   const stubQuoteGen = new QuoteGenerator()
+  sinon.stub(stubQuoteGen, 'validateContract').returns(true)
 
-  const stubAuth = new Authenticator()
-  sinon.stub(stubAuth, 'validateContract').returns(true)
+  const stubAuth = new PeerAuthenticator()
 
   const stubCall = {
     request: contract
@@ -78,9 +78,9 @@ test('farmer.awardContract.InvalidContract', (t) => {
   const contract = new messages.Contract()
 
   const stubQuoteGen = new QuoteGenerator()
+  sinon.stub(stubQuoteGen, 'validateContract').returns(false)
 
-  const stubAuth = new Authenticator()
-  sinon.stub(stubAuth, 'validateContract').returns(false)
+  const stubAuth = new PeerAuthenticator()
 
   const stubCall = {
     request: contract

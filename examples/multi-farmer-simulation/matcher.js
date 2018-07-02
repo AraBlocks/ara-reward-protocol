@@ -10,7 +10,7 @@ class ExampleMatcher extends Matcher {
     this.maxCost = maxCost
     this.maxWorkers = maxWorkers
     this.quoteOptions = new Map()
-    this.hiredWorkerContracts = new Map()
+    this.hiredWorkerQuoteOptions = new Map()
     this.reserveWorkers = []
   }
 
@@ -20,7 +20,7 @@ class ExampleMatcher extends Matcher {
 
     if (quote.getPerUnitCost() > this.maxCost) return
 
-    if (this.hiredWorkerContracts.size < this.maxWorkers) {
+    if (this.hiredWorkerQuoteOptions.size < this.maxWorkers) {
       this.hireFarmer(farmerId)
     } else {
       this.reserveWorkers.unshift(farmerId)
@@ -29,9 +29,9 @@ class ExampleMatcher extends Matcher {
 
   invalidateQuoteOption(quote) {
     const farmerId = quote.getFarmer().getId()
-    this.hiredWorkerContracts.delete(farmerId)
+    this.hiredWorkerQuoteOptions.delete(farmerId)
 
-    if (this.hiredWorkerContracts.size < this.maxWorkers) this.hireFromReserve()
+    if (this.hiredWorkerQuoteOptions.size < this.maxWorkers) this.hireFromReserve()
   }
 
   hireFromReserve() {
@@ -43,16 +43,12 @@ class ExampleMatcher extends Matcher {
 
   hireFarmer(farmerId) {
     const quoteOption = this.quoteOptions.get(farmerId)
-    const contract = this.generateContract(quoteOption.quote)
-    this.hiredWorkerContracts.set(farmerId, contract)
-    quoteOption.cb(contract)
+    this.hiredWorkerQuoteOptions.set(farmerId, quoteOption)
+    quoteOption.cb()
   }
 
-  generateContract(quote) {
-    const contract = new messages.Contract()
-    contract.setId(103)
-    contract.setQuote(quote)
-    return contract
+  onHireConfirmed(contract) {
+    console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract.getQuote().getFarmer().getId()}`)
   }
 }
 
