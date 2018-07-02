@@ -1,23 +1,29 @@
-const { ContractGenerator } = require('../../lib/contract-generator')
-const messages = require('../../lib/proto/messages_pb')
+const { ContractGenerator } = require('../../lib/contract-generator');
+const messages = require('../../lib/proto/messages_pb');
+const smartContract = require('./contract-factory.js');
 
 class ExampleContractGenerator extends ContractGenerator {
-  constructor(id) {
-    super()
-    this.id = id
+  constructor(id, budget) {
+    super();
+    this.id = id;
+    this.budget = budget;
   }
 
   validateContract(contract) {
-    if (contract.getId() == this.id) return true
-    return false
+    if (contract.getId() == this.id) return true;
+    return false;
   }
 
   generateContract(quote) {
-    const contract = new messages.Contract()
-    contract.setId(this.id)
-    contract.setQuote(quote)
-    return contract
+    const contract = new messages.Contract();
+    contract.setId(this.id);
+    contract.setQuote(quote);
+    return contract;
+  }
+
+  deploySmartContract() {
+    smartContract.createJob(this.id, this.budget);
   }
 }
 
-module.exports = { ExampleContractGenerator }
+module.exports = { ExampleContractGenerator };
