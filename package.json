@@ -1,21 +1,36 @@
 {
-  "name": "farming-sdk",
+  "name": "farming-protocol",
   "version": "0.0.1",
   "description": "Example farming protocol for ARA.",
   "main": "multifarmer-example.js",
   "dependencies": {
+<<<<<<< HEAD
     "@grpc/proto-loader": "^0.1.0",
     "ethereumjs-tx": "^1.3.5",
     "grpc": "^1.13.0-pre1",
     "web3": "^1.0.0-beta.34"
+=======
+    "google-protobuf": "^3.6.0",
+    "grpc": "^1.13.0-pre1",
+    "grpc-tools": "^1.6.6",
+    "web3": "^1.0.0-beta.34"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "eslint": "^4.19.1",
+    "eslint-config-ara": "github:arablocks/eslint-config-ara",
+    "eslint-plugin-import": "^2.12.0",
+    "sinon": "^6.0.1"
+>>>>>>> bap-PE-104-Handshake
+  },
   "scripts": {
-    "test": "node multifarmer-example.js"
+    "test": "ava test",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/littlstar/farming-sdk.git"
+    "url": "git+https://github.com/littlstar/farming-protocol.git"
   },
   "keywords": [
     "farming"
@@ -23,7 +38,7 @@
   "author": "@bplaster",
   "license": "LGPL-3.0",
   "bugs": {
-    "url": "https://github.com/littlstar/farming-sdk/issues"
+    "url": "https://github.com/littlstar/farming-protocol/issues"
   },
-  "homepage": "https://github.com/littlstar/farming-sdk#readme"
+  "homepage": "https://github.com/littlstar/farming-protocol#readme"
 }
