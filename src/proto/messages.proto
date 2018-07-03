@@ -1,0 +1,33 @@
+syntax = "proto3";
+package messages;
+
+// Statement of Work
+message SOW {
+	int32 id = 1;
+  string work_unit = 2;
+  ARAid requester = 3;
+  bytes data = 4;
+}
+
+message Quote {
+  int64 id = 1;
+  int32 per_unit_cost = 2;
+  SOW sow = 3;
+  ARAid farmer = 4;
+}
+
+message Contract {
+  int64 id = 1;
+  Quote quote = 2;
+  Signature requester_signature = 3;
+  Signature farmer_signature = 4;
+}
+
+message Signature {
+  string ARAid = 1;
+  bytes data = 2;
+}
+
+message ARAid {
+  string did = 1;
+}
