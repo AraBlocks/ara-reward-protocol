@@ -1,8 +1,8 @@
 {
-  "name": "farming-protocol",
+  "name": "ara-farming-protocol",
   "version": "0.0.1",
-  "description": "Example farming protocol for ARA.",
-  "main": "multifarmer-example.js",
+  "description": "ARA Farming Protocol",
+  "main": "index.js",
   "dependencies": {
     "google-protobuf": "^3.6.0",
     "grpc": "^1.13.0-pre1",
