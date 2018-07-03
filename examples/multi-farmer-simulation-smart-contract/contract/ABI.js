@@ -2,215 +2,215 @@ module.exports = [
   {
     anonymous: false,
     inputs: [],
-    name: "RewardSent",
-    type: "event"
+    name: 'RewardSent',
+    type: 'event'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "abortJob",
+    name: 'abortJob',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "acceptJob",
+    name: 'acceptJob',
     outputs: [],
     payable: true,
-    stateMutability: "payable",
-    type: "function"
+    stateMutability: 'payable',
+    type: 'function'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       },
       {
-        name: "rate",
-        type: "uint256"
+        name: 'rate',
+        type: 'uint256'
       },
       {
-        name: "farmerAddress",
-        type: "address"
+        name: 'farmerAddress',
+        type: 'address'
       }
     ],
-    name: "addFarmer",
+    name: 'addFarmer',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "createJob",
+    name: 'createJob',
     outputs: [],
     payable: true,
-    stateMutability: "payable",
-    type: "function"
+    stateMutability: 'payable',
+    type: 'function'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "startJob",
+    name: 'startJob',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "constructor"
+    stateMutability: 'nonpayable',
+    type: 'constructor'
   },
   {
     constant: false,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "withdrawFromJob",
+    name: 'withdrawFromJob',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [],
-    name: "getBalance",
+    name: 'getBalance',
     outputs: [
       {
-        name: "balance",
-        type: "uint256"
+        name: 'balance',
+        type: 'uint256'
       }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "getJob",
+    name: 'getJob',
     outputs: [
       {
-        name: "budget",
-        type: "uint256"
+        name: 'budget',
+        type: 'uint256'
       },
       {
-        name: "workdInProgress",
-        type: "bool"
+        name: 'workdInProgress',
+        type: 'bool'
       },
       {
-        name: "aborted",
-        type: "bool"
+        name: 'aborted',
+        type: 'bool'
       }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [
       {
-        name: "jobId",
-        type: "uint256"
+        name: 'jobId',
+        type: 'uint256'
       }
     ],
-    name: "getRate",
+    name: 'getRate',
     outputs: [
       {
-        name: "rate",
-        type: "uint256"
+        name: 'rate',
+        type: 'uint256'
       }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [
       {
-        name: "",
-        type: "uint256"
+        name: '',
+        type: 'uint256'
       }
     ],
-    name: "jobs",
+    name: 'jobs',
     outputs: [
       {
-        name: "requester",
-        type: "address"
+        name: 'requester',
+        type: 'address'
       },
       {
-        name: "budget",
-        type: "uint256"
+        name: 'budget',
+        type: 'uint256'
       },
       {
-        name: "workInProgress",
-        type: "bool"
+        name: 'workInProgress',
+        type: 'bool'
       },
       {
-        name: "aborted",
-        type: "bool"
+        name: 'aborted',
+        type: 'bool'
       }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [
       {
-        name: "",
-        type: "address"
+        name: '',
+        type: 'address'
       }
     ],
-    name: "participants",
+    name: 'participants',
     outputs: [
       {
-        name: "balance",
-        type: "uint256"
+        name: 'balance',
+        type: 'uint256'
       }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function"
+    stateMutability: 'view',
+    type: 'function'
   }
-];
+]

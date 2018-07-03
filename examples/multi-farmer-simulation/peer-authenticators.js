@@ -1,22 +1,22 @@
-const { PeerAuthenticator } = require('../../lib/peer-authenticator');
-const messages = require('../../lib/proto/messages_pb');
+const { PeerAuthenticator } = require('../../lib/peer-authenticator')
+const messages = require('../../lib/proto/messages_pb')
 
 /**
  * Example authenticator to validate a farmer
  */
 class ExampleFarmerAuth extends PeerAuthenticator {
   constructor(badFarmerId) {
-    super();
-    this.badFarmerId = badFarmerId;
+    super()
+    this.badFarmerId = badFarmerId
   }
 
   validatePeer(peer) {
-    const farmerId = peer.getId();
+    const farmerId = peer.getId()
     if (farmerId == this.badFarmerId) {
-      console.log(`Requester: Invalid farmer ${farmerId}`);
-      return false;
+      console.log(`Requester: Invalid farmer ${farmerId}`)
+      return false
     }
-    return true;
+    return true
   }
 }
 
@@ -25,18 +25,18 @@ class ExampleFarmerAuth extends PeerAuthenticator {
  */
 class ExampleRequesterAuth extends PeerAuthenticator {
   constructor(badRequesterId) {
-    super();
-    this.badRequesterId = badRequesterId;
+    super()
+    this.badRequesterId = badRequesterId
   }
 
   validatePeer(peer) {
-    const requesterId = peer.getId();
+    const requesterId = peer.getId()
     if (requesterId == this.badRequesterId) {
-      console.log(`Farmer: Invalid requester ${requesterId}`);
-      return false;
+      console.log(`Farmer: Invalid requester ${requesterId}`)
+      return false
     }
-    return true;
+    return true
   }
 }
 
-module.exports = { ExampleFarmerAuth, ExampleRequesterAuth };
+module.exports = { ExampleFarmerAuth, ExampleRequesterAuth }
