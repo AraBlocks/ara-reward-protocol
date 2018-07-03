@@ -71,7 +71,9 @@ class FarmingContract {
       .send(
         { from: this.personalAddress, value: budget, gas: 3000000 },
         function(error, result) {
-          console.log('error: ', error, '\nresult: ', result);
+          if (error == null) {
+            console.log('Contract: job', jobId, 'has been created');
+          }
         }
       );
   }
@@ -98,6 +100,10 @@ class FarmingContract {
       .call({ from: this.personalAddress }, function(error, result) {
         console.log('error: ', error, '\nresult: ', result);
       });
+  }
+
+  submitReward(farmerId, jobId, reward) {
+    console.log('Contract: reward submitted: ', reward);
   }
 }
 

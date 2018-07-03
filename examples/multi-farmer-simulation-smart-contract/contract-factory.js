@@ -1,4 +1,4 @@
-let Contract = require('../../contract/contract.js');
+let Contract = require('./contract/contract.js');
 
 module.exports = new Contract(
   '0xfd1966eb78390209c49767a05c6c799ba2e37fad',
