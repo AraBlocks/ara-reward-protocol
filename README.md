@@ -87,7 +87,7 @@ This section describes the classes that must be extended for AFP.
 #### Requester
 ```js
   /**
-   * Returns whether a user is valid.
+   * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
@@ -96,7 +96,7 @@ This section describes the classes that must be extended for AFP.
   }
 
   /**
-   * Generates a contract for quote
+   * This should generate and return a contract for a quote.
    * @param {messages.Quote} quote
    * @returns {messages.Contract}
    */
@@ -105,7 +105,7 @@ This section describes the classes that must be extended for AFP.
   }
 
   /**
-   * Returns whether a contract is valid.
+   * This should return whether a contract is valid.
    * @param {messages.Contract} contract
    * @returns {boolean}
    */
@@ -114,7 +114,8 @@ This section describes the classes that must be extended for AFP.
   }
 
   /**
-   * Called when a contract has been marked as valid and ready to start work
+   * This is called when a contract has been marked as valid and a farmer
+   * is ready to start work
    * @param {messages.Contract} contract
    */
   onHireConfirmed(contract) {
@@ -123,8 +124,17 @@ This section describes the classes that must be extended for AFP.
 ```
 #### Farmer
 ```js
-/**
-   * Returns a quote given an SOW.
+  /**
+   * This should returns whether a user is valid.
+   * @param {messages.ARAid} peer
+   * @returns {boolean}
+   */
+  validatePeer(peer) {
+    throw new Error('Extended classes must implement validatePeer.')
+  }
+  
+  /**
+   * This should return a quote given an SOW.
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
@@ -133,7 +143,7 @@ This section describes the classes that must be extended for AFP.
   }
 
   /**
-   * Returns whether a contract is valid
+   * This should returns whether or not a contract is valid.
    * @param {messages.Contract} contract
    * @returns {boolean}
    */
@@ -142,21 +152,12 @@ This section describes the classes that must be extended for AFP.
   }
 
   /**
-   * Sign and return a contract
+   * This should sign and return a contract.
    * @param {messages.Contract} contract
    * @returns {messages.Contract}
    */
   signContract(contract) {
     throw new Error('Extended classes must implement signContract.')
-  }
-
-  /**
-   * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
-   * @returns {boolean}
-   */
-  validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.')
   }
 ```
 
@@ -164,7 +165,9 @@ This section describes the classes that must be extended for AFP.
 Different service requesters may have different needs when selecting peers, such as selecting the cheapest set, the fastest set, the first set number of peers, etc. To allow for this, each service may implement their own matcher (or use one of a set of predefined matchers) that extends the Matcher class. This class describes an object that, given a set of options, selects a subset of peers using a matching strategy specific to the service.
 ```js
   /**
-   * Calls hireFarmerCallback if quote is acceptable
+   * This is called to validate a quote. If a quote is considered
+   * valid, then this should calls hireFarmerCallback to continue
+   * contract award process.
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */
@@ -174,7 +177,7 @@ Different service requesters may have different needs when selecting peers, such
   }
 
   /**
-   * Removes quote from pool of options
+   * This is called when a quote is no longer valid.
    * @param {messages.Quote} quote
    */
   invalidateQuote(quote) {
