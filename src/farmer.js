@@ -32,7 +32,7 @@ class Farmer {
   }
 
   /**
-   * Returns a quote given an SOW.
+   * This should return a quote given an SOW.
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
@@ -41,7 +41,7 @@ class Farmer {
   }
 
   /**
-   * Returns whether a contract is valid
+   * This should returns whether or not a contract is valid.
    * @param {messages.Contract} contract
    * @returns {boolean}
    */
@@ -50,7 +50,7 @@ class Farmer {
   }
 
   /**
-   * Sign and return a contract
+   * This should sign and return a contract.
    * @param {messages.Contract} contract
    * @returns {messages.Contract}
    */
@@ -59,7 +59,7 @@ class Farmer {
   }
 
   /**
-   * Returns whether a user is valid.
+   * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */

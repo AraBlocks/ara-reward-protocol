@@ -1,7 +1,7 @@
 const { ExampleFarmer } = require('./farmer')
 const { broadcastFarmer, connectToFarmer } = require('../../src/farmer-server')
 const { ExampleRequester } = require('./requester')
-const { ExampleMatcher } = require('./matcher')
+const { MaxCostMatcher } = require('../../src/matchers/max-cost-matcher')
 const messages = require('../../src/proto/messages_pb')
 
 // Simulates and connects to a number of Farmer Servers
@@ -42,7 +42,7 @@ function simulateFarmerConnections(count) {
 const farmerConnections = simulateFarmerConnections(10)
 
 // Requester
-const matcher = new ExampleMatcher(10, 5)
+const matcher = new MaxCostMatcher(10, 5)
 
 const requesterID = new messages.ARAid()
 requesterID.setDid('ara:did:10056')

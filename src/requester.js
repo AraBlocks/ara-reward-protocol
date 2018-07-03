@@ -3,7 +3,8 @@ const services = require('./proto/route-guide_grpc_pb')
 
 class Requester {
   /**
-   * Class that handles the communication for requesting a specific SOW for a single task.
+   * Class that handles the communication for requesting a specific SOW
+   * for a single task.
    * @param {messages.SOW} sow
    * @param {Matcher} matcher
    */
@@ -13,7 +14,8 @@ class Requester {
   }
 
   /**
-   * Iterates through an array of Farmers and gets quotes from them for the defined SOW
+   * Iterates through an array of Farmers and gets quotes from them for
+   * the defined SOW
    * @param {services.RFPClient} farmers
    */
   processFarmers(farmers) {
@@ -26,8 +28,9 @@ class Requester {
   }
 
   /**
-   * On receipt of a quote from a farmer, asks the defined Matcher to consider the quote
-   * and passes to the Matcher a callback for hiring the farmer.
+   * On receipt of a quote from a farmer, asks the defined Matcher to
+   * consider the quote and passes to the Matcher a callback for hiring
+   * the farmer.
    * @param {Error} err
    * @param {messages.Quote} response
    * @param {services.RFPClient} farmer
@@ -52,7 +55,8 @@ class Requester {
   }
 
   /**
-   * On receipt of a signed (and staked) contract from farmer, can begin distribution of work.
+   * On receipt of a signed (and staked) contract from farmer, can begin
+   * distribution of work.
    * @param {Error} err
    * @param {messages.Contract} response
    */
@@ -67,7 +71,7 @@ class Requester {
   }
 
   /**
-   * Returns whether a user is valid.
+   * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
@@ -76,7 +80,7 @@ class Requester {
   }
 
   /**
-   * Generates a contract for quote
+   * This should generate and return a contract for a quote.
    * @param {messages.Quote} quote
    * @returns {messages.Contract}
    */
@@ -85,7 +89,7 @@ class Requester {
   }
 
   /**
-   * Returns whether a contract is valid.
+   * This should return whether a contract is valid.
    * @param {messages.Contract} contract
    * @returns {boolean}
    */
@@ -94,7 +98,8 @@ class Requester {
   }
 
   /**
-   * Called when a contract has been marked as valid and ready to start work
+   * This is called when a contract has been marked as valid and a farmer
+   * is ready to start work
    * @param {messages.Contract} contract
    */
   onHireConfirmed(contract) {

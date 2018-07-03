@@ -1,8 +1,8 @@
-const { Matcher } = require('../../src/matcher')
+const { Matcher } = require('../matcher')
 const messages = require('../../src/proto/messages_pb')
 
-// Example Matcher which hires a maximum number of workers for a maximum cost
-class ExampleMatcher extends Matcher {
+// Matcher which hires a maximum number of workers for a maximum cost
+class MaxCostMatcher extends Matcher {
   constructor(maxCost, maxWorkers) {
     super()
     this.maxCost = maxCost
@@ -16,7 +16,7 @@ class ExampleMatcher extends Matcher {
     const farmerId = quote.getFarmer().getDid()
     this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, hireFarmerCallback))
 
-    if (quote.getPerUnitCost() >= this.maxCost) return
+    if (quote.getPerUnitCost() > this.maxCost) return
 
     if (this.hiredQuoteCallbacks.size < this.maxWorkers) {
       this.hireFarmer(farmerId)
@@ -51,4 +51,4 @@ function QuoteCallback(quote, callback) {
   this.callback = callback
 }
 
-module.exports = { ExampleMatcher }
+module.exports = { MaxCostMatcher }

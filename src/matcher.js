@@ -2,7 +2,9 @@ const messages = require('./proto/messages_pb')
 
 class Matcher {
   /**
-   * Calls hireFarmerCallback if quote is acceptable
+   * This is called to validate a quote. If a quote is considered
+   * valid, then this should calls hireFarmerCallback to continue
+   * contract award process.
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */
@@ -12,7 +14,7 @@ class Matcher {
   }
 
   /**
-   * Removes quote from pool of options
+   * This is called when a quote is no longer valid.
    * @param {messages.Quote} quote
    */
   invalidateQuote(quote) {
