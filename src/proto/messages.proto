@@ -19,9 +19,15 @@ message Quote {
 message Contract {
   int64 id = 1;
   Quote quote = 2;
+  Signature requester_signature = 3;
+  Signature farmer_signature = 4;
+}
+
+message Signature {
+  string ARAid = 1;
+  bytes data = 2;
 }
 
 message ARAid {
-  int64 id = 1;
-  int64 signature = 2;
+  string did = 1;
 }

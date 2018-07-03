@@ -1,37 +1,35 @@
-const { Matcher } = require('../../lib/matcher')
-const messages = require('../../lib/proto/messages_pb')
+const { Matcher } = require('../../src/matcher')
+const messages = require('../../src/proto/messages_pb')
 
-/**
- * Example Matcher which hires a maximum number of workers for a maximum cost
- */
+// Example Matcher which hires a maximum number of workers for a maximum cost
 class ExampleMatcher extends Matcher {
   constructor(maxCost, maxWorkers) {
     super()
     this.maxCost = maxCost
     this.maxWorkers = maxWorkers
-    this.quoteOptions = new Map()
-    this.hiredWorkerQuoteOptions = new Map()
+    this.allQuoteCallbacks = new Map()
+    this.hiredQuoteCallbacks = new Map()
     this.reserveWorkers = []
   }
 
-  considerQuoteOption(quote, hireFarmerCallback) {
-    const farmerId = quote.getFarmer().getId()
-    this.quoteOptions.set(farmerId, { quote, cb: hireFarmerCallback })
+  validateQuote(quote, hireFarmerCallback) {
+    const farmerId = quote.getFarmer().getDid()
+    this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, hireFarmerCallback))
 
-    if (quote.getPerUnitCost() > this.maxCost) return
+    if (quote.getPerUnitCost() >= this.maxCost) return
 
-    if (this.hiredWorkerQuoteOptions.size < this.maxWorkers) {
+    if (this.hiredQuoteCallbacks.size < this.maxWorkers) {
       this.hireFarmer(farmerId)
     } else {
       this.reserveWorkers.unshift(farmerId)
     }
   }
 
-  invalidateQuoteOption(quote) {
-    const farmerId = quote.getFarmer().getId()
-    this.hiredWorkerQuoteOptions.delete(farmerId)
+  invalidateQuote(quote) {
+    const farmerId = quote.getFarmer().getDid()
+    this.hiredQuoteCallbacks.delete(farmerId)
 
-    if (this.hiredWorkerQuoteOptions.size < this.maxWorkers) this.hireFromReserve()
+    if (this.hiredQuoteCallbacks.size < this.maxWorkers) this.hireFromReserve()
   }
 
   hireFromReserve() {
@@ -42,14 +40,15 @@ class ExampleMatcher extends Matcher {
   }
 
   hireFarmer(farmerId) {
-    const quoteOption = this.quoteOptions.get(farmerId)
-    this.hiredWorkerQuoteOptions.set(farmerId, quoteOption)
-    quoteOption.cb()
+    const quoteCallback = this.allQuoteCallbacks.get(farmerId)
+    this.hiredQuoteCallbacks.set(farmerId, quoteCallback)
+    quoteCallback.callback()
   }
+}
 
-  onHireConfirmed(contract) {
-    console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract.getQuote().getFarmer().getId()}`)
-  }
+function QuoteCallback(quote, callback) {
+  this.quote = quote
+  this.callback = callback
 }
 
 module.exports = { ExampleMatcher }
