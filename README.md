@@ -59,6 +59,9 @@ For an application that enables a user to participate in distributed work reques
 ### Farming
 For broadcasting the ability to farm.
 ```js
+const { ExampleFarmer } = require('./farmer')
+const { broadcastFarmer } = require('../../src/farmer-server')
+
 // The application's custom classes
 const farmer = new ExampleFarmer()
 
@@ -70,6 +73,9 @@ broadcastFarmer(farmer, port)
 ### Requesting
 For requesting a farming job.
 ```js
+const { ExampleRequester } = require('./requester')
+const { connectToFarmer } = require('../../src/farmer-server')
+
 // The statement of work for the request
 const sow = new messages.SOW()
 
