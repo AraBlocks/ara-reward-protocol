@@ -17,21 +17,22 @@ A peer in the network who participates in farming.
 A peer in the network who intends to distribute work amoungst farmers.
 
 ### Introduction
-AFP defines a set of methods in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript.
+AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript. 
 
-For a [farmer](#farmer), AFP would be used to define that farmer’s minimum accepted rewards for providing a service, as well as other parameters more specific to the service. If a requester wishes to hire a farmer, AFP would handle signing a contract of work and sending a start signal for beginning the work.
+A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 
-For a [requester](#requester), AFP would be used to define the maximum reward the requester is willing to give for a service, the number of farmers required, and other parameters specific to the service. AFP would also take in a matcher used to determine the peers. Once a set of peers is determined through the matcher, AFP would handle initiating and signing a contract of work, and sending a start signal to begin the distribution of work.
+A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use the default gRPC implementation to connect to peers for discussing a task.
 
 ### Real World Examples
-
 #### A Decentralized Content Distribution Service
+In the case of content distribution, a content requester is looking for a set of peers that have a specific piece of content who are willing to transfer that content to the requester. The requester is willing to reward a certain amount per GB for the file transfer.
 
-In the case of content distribution, the content requester would first find a set of farmers that have the specific desired content. The requester would then pass those farmers to AFP. AFP would then ask each peer their cost per unit-of-work (for example, the cost the farmer requires to deliver a GB of data). If the cost is less than or equal to the requester’s maximum amount they are willing to pay, then the requester will employ the farmer. AFP would then pass a subset of farmers back to the service who have contractually agreed to do work for the requester.
+The content requester would first find a set of farmers that have the specific desired content. The requester would then pass those farmers to their implemenatation of AFP. AFP would then ask each peer their transfer cost per GB of data. If the cost is less than or equal the maximum amount the requester is willing to pay, then the requester would employ the farmer. The AFP implementation could then take subset of farmers who have contractually agreed to do work for the requester and start file transfer.
 
 #### A Video Transcoding Service
+In the case of video transcoding, a requester is looking for a set of peers that are able to transcode videos. The requester is willing to reward a certain amount per frame that is transcoded.
 
-In the case of video transcoding, the requester would first find a set of farmers who have the correct software for transcoding a video. The requester would then pass those farmers to AFP. AFP would then ask each peer their cost per unit-of-work (for example, the cost the farmer requires to transcode a single frame). 
+The requester would first find a set of farmers who have the correct software for transcoding a video. The requester would then pass those farmers to their AFP implementation. AFP would then ask each peer their transcode cost per frame. The matcher implementation could then find a set of peers whose total cost is less than a desired amount and then hire that set of farmers. The AFP implementation could then take subset of farmers who have contractually agreed to do work for the requester and start the video transcode.
 
 ## Status
 This project is still in alpha development.
@@ -85,6 +86,7 @@ requester.processFarmers([connection])
 This section describes the classes that must be extended for AFP.
 
 #### Requester
+A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task.
 ```js
   /**
    * This should returns whether a user is valid.
@@ -123,6 +125,7 @@ This section describes the classes that must be extended for AFP.
   }
 ```
 #### Farmer
+A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task.
 ```js
   /**
    * This should returns whether a user is valid.
@@ -132,7 +135,7 @@ This section describes the classes that must be extended for AFP.
   validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
   }
-  
+
   /**
    * This should return a quote given an SOW.
    * @param {messages.SOW} sow
@@ -171,7 +174,6 @@ Different service requesters may have different needs when selecting peers, such
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */
-  //
   validateQuote(quote, hireFarmerCallback) {
     throw new Error('Extended classes must implement validateQuote')
   }

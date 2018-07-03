@@ -8,7 +8,6 @@ class Matcher {
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */
-  //
   validateQuote(quote, hireFarmerCallback) {
     throw new Error('Extended classes must implement validateQuote')
   }
