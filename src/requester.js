@@ -7,10 +7,12 @@ class Requester {
    * for a single task.
    * @param {messages.SOW} sow
    * @param {Matcher} matcher
+   * @param {services.RFPClient} farmers
    */
   constructor(sow, matcher) {
     this.sow = sow;
     this.matcher = matcher;
+    this.farmers = [];
   }
 
   /**
@@ -52,6 +54,7 @@ class Requester {
   hireFarmer(quote, farmer) {
     const contract = this.generateContract(quote);
     farmer.awardContract(contract, this.handleSignedContract.bind(this));
+    this.farmers.push(farmer);
   }
 
   /**
@@ -64,6 +67,7 @@ class Requester {
     if (err) {
       console.log(`Award Response Error: ${err}`);
     } else if (this.validateContract(response)) {
+      // this.farmers.push(farmer);
       this.onHireConfirmed(response);
     } else {
       this.matcher.invalidateQuote(response.getQuote());

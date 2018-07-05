@@ -53,7 +53,7 @@ class ExampleRequester extends Requester {
   }
 
   /**
-   * On receipt of a signed (and staked) contract from farmer, begins distribution of work and submits the job to the contract along with allocated budget
+   * On receipt of a signed (and staked) contract from farmer, begins distribution of work
    */
   onHireConfirmed(contract) {
     console.log(
@@ -62,6 +62,21 @@ class ExampleRequester extends Requester {
         .getFarmer()
         .getDid()}`
     );
+  }
+
+  /**
+   * After a job is finished, submits reward for each farmer to contract and notifies the farmers that their reward is ready to be withdrawn
+   */
+  sendReward() {
+    const smartContract = this.smartContract;
+    const sow = this.sow;
+    this.farmers.forEach(farmer => {
+      farmer.getQuote(this.sow, (error, quote) => {
+        const reward = quote.getPerUnitCost();
+        smartContract.submitReward(farmer.getId, sow.getId(), reward);
+      });
+    });
+    // farmer.notifyAvailableReward();
   }
 }
 

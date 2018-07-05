@@ -1,4 +1,4 @@
-const messages = require('./proto/messages_pb')
+const messages = require('./proto/messages_pb');
 
 // Class defining the required working conditions demanded by (and RPC methods of) a Farmer
 class Farmer {
@@ -8,12 +8,12 @@ class Farmer {
    * @param {function(Error, messages.Quote)} callback Response callback
    */
   handleQuoteRequest(call, callback) {
-    const sow = call.request
+    const sow = call.request;
     if (this.validatePeer(sow.getRequester())) {
-      const quote = this.generateQuote(sow)
-      callback(null, quote)
+      const quote = this.generateQuote(sow);
+      callback(null, quote);
     } else {
-      callback('Error: Invalid Auth', null)
+      callback('Error: Invalid Auth', null);
     }
   }
 
@@ -23,21 +23,21 @@ class Farmer {
    * @param {function(Error, messages.Contract)} callback Response callback
    */
   handleContractAward(call, callback) {
-    const contract = call.request
+    const contract = call.request;
     if (this.validateContract(contract)) {
-      callback(null, this.signContract(contract))
+      callback(null, this.signContract(contract));
     } else {
-      callback('Error: Invalid Contract', null)
+      callback('Error: Invalid Contract', null);
     }
   }
-  
+
   /**
    * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
   validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.')
+    throw new Error('Extended classes must implement validatePeer.');
   }
 
   /**
@@ -46,7 +46,7 @@ class Farmer {
    * @returns {messages.Quote}
    */
   generateQuote(sow) {
-    throw new Error('Extended classes must implement generateQuote.')
+    throw new Error('Extended classes must implement generateQuote.');
   }
 
   /**
@@ -55,7 +55,7 @@ class Farmer {
    * @returns {boolean}
    */
   validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.')
+    throw new Error('Extended classes must implement validateContract.');
   }
 
   /**
@@ -64,8 +64,8 @@ class Farmer {
    * @returns {messages.Contract}
    */
   signContract(contract) {
-    throw new Error('Extended classes must implement signContract.')
+    throw new Error('Extended classes must implement signContract.');
   }
 }
 
-module.exports = { Farmer }
+module.exports = { Farmer };

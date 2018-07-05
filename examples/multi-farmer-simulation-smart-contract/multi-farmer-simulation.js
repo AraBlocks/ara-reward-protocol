@@ -71,3 +71,7 @@ const requester = new ExampleRequester(
 const totalCost = matcher.maxCost * 10;
 requester.submitJob(totalCost);
 requester.processFarmers(farmerConnections);
+
+setTimeout(() => {
+  requester.sendReward();
+}, 1000);

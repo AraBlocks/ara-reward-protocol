@@ -93,6 +93,10 @@ class FarmingContract {
         console.log('error: ', error, '\nresult: ', result);
       });
   }
+
+  submitReward(farmerId, jobId, reward) {
+    console.log('Contract: reward submitted: ', reward);
+  }
 }
 
 module.exports = FarmingContract;
