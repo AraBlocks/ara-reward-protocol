@@ -53,8 +53,10 @@ class Requester {
    */
   hireFarmer(quote, farmer) {
     const contract = this.generateContract(quote);
-    farmer.awardContract(contract, this.handleSignedContract.bind(this));
-    this.farmers.push(farmer);
+    const responseHandler = function(err, response) {
+      this.handleSignedContract(err, response, farmer);
+    };
+    farmer.awardContract(contract, responseHandler.bind(this));
   }
 
   /**
@@ -62,13 +64,13 @@ class Requester {
    * distribution of work.
    * @param {Error} err
    * @param {messages.Contract} response
+   * @param {services.RFPClient} farmer
    */
-  handleSignedContract(err, response) {
+  handleSignedContract(err, response, farmer) {
     if (err) {
       console.log(`Award Response Error: ${err}`);
     } else if (this.validateContract(response)) {
-      // this.farmers.push(farmer);
-      this.onHireConfirmed(response);
+      this.onHireConfirmed(response, farmer);
     } else {
       this.matcher.invalidateQuote(response.getQuote());
     }
@@ -105,8 +107,9 @@ class Requester {
    * This is called when a contract has been marked as valid and a farmer
    * is ready to start work
    * @param {messages.Contract} contract
+   * @param {services.RFPClient} farmer
    */
-  onHireConfirmed(contract) {
+  onHireConfirmed(contract, farmer) {
     throw new Error('Extended classes must implement onHireConfirmed');
   }
 }
