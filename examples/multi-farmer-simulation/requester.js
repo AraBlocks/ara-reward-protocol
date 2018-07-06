@@ -46,7 +46,13 @@ class ExampleRequester extends Requester {
     return false
   }
 
-  onHireConfirmed(contract) {
+    /**
+   * This is called when a contract has been marked as valid and a farmer
+   * is ready to start work
+   * @param {messages.Contract} contract
+   * @param {services.RFPClient} farmer
+   */
+  onHireConfirmed(contract, farmer) {
     console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract.getQuote().getFarmer().getDid()}`)
   }
 }
