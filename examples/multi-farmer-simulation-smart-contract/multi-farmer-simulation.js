@@ -9,12 +9,13 @@ function simulateFarmerConnections(count) {
   const sPort = 50051;
 
   const farmerConnections = [];
+  const farmerIDs = [];
   for (let i = 0; i < count; i++) {
     const port = `localhost:${(sPort + i).toString()}`;
     const price = 5 + Math.floor(Math.random() * 10);
-
+    const id = `ara:did:${i}`;
     const farmerID = new messages.ARAid();
-    farmerID.setDid(`ara:did:${i}`);
+    farmerID.setDid(id);
 
     const farmerSig = new messages.Signature();
     farmerSig.setId = farmerID;
@@ -27,8 +28,9 @@ function simulateFarmerConnections(count) {
     // Generate Client Connection
     const connection = connectToFarmer(port);
     farmerConnections.push(connection);
+    farmerIDs.push(id);
   }
-  return farmerConnections;
+  return { farmerConnections, farmerIDs };
 }
 
 /*
@@ -39,7 +41,7 @@ function simulateFarmerConnections(count) {
 */
 
 // Farmers
-const farmerConnections = simulateFarmerConnections(10);
+const { farmerConnections, farmerIDs } = simulateFarmerConnections(10);
 
 // Requester
 const matcher = new MaxCostMatcher(10, 5);
@@ -72,6 +74,13 @@ const totalCost = matcher.maxCost * 10;
 requester.submitJob(totalCost);
 requester.processFarmers(farmerConnections);
 
+// simulate a report for when the job is finished
+const report = new Map();
+farmerIDs.forEach(farmerId => {
+  report.set(farmerId, Math.floor(Math.random() * 10));
+});
+
+// send the job report to the requester
 setTimeout(() => {
-  requester.sendReward();
+  requester.onJobFinished(report);
 }, 1000);

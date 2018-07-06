@@ -5,5 +5,5 @@ import "messages.proto";
 service RFP {
   rpc GetQuote(messages.SOW) returns(messages.Quote);
   rpc AwardContract(messages.Contract) returns(messages.Contract);
-  rpc DeliverReward(messages.Contract) returns(messages.Contract);
+  rpc DeliverReward(messages.SOW) returns(messages.ARAid);
 }

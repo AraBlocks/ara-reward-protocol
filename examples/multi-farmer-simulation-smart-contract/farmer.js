@@ -1,14 +1,14 @@
-const { Farmer } = require('../../src/farmer')
-const messages = require('../../src/proto/messages_pb')
+const { Farmer } = require('../../src/farmer');
+const messages = require('../../src/proto/messages_pb');
 
 class ExampleFarmer extends Farmer {
   constructor(farmerId, farmerSig, price) {
-    super()
-    this.badRequesterId = 10057
-    this.quoteId = 1
-    this.price = price
-    this.farmerId = farmerId
-    this.farmerSig = farmerSig
+    super();
+    this.badRequesterId = 10057;
+    this.quoteId = 1;
+    this.price = price;
+    this.farmerId = farmerId;
+    this.farmerSig = farmerSig;
   }
 
   /**
@@ -17,12 +17,12 @@ class ExampleFarmer extends Farmer {
    * @returns {messages.Quote}
    */
   generateQuote(sow) {
-    const quote = new messages.Quote()
-    quote.setId(this.quoteId)
-    quote.setFarmer(this.farmerId)
-    quote.setPerUnitCost(this.price)
-    quote.setSow(sow)
-    return quote
+    const quote = new messages.Quote();
+    quote.setId(this.quoteId);
+    quote.setFarmer(this.farmerId);
+    quote.setPerUnitCost(this.price);
+    quote.setSow(sow);
+    return quote;
   }
 
   /**
@@ -31,9 +31,9 @@ class ExampleFarmer extends Farmer {
    * @returns {boolean}
    */
   validateContract(contract) {
-    const quote = contract.getQuote()
-    if (quote.getPerUnitCost() == this.price) return true
-    return false
+    const quote = contract.getQuote();
+    if (quote.getPerUnitCost() == this.price) return true;
+    return false;
   }
 
   /**
@@ -42,8 +42,8 @@ class ExampleFarmer extends Farmer {
    * @returns {messages.Contract}
    */
   signContract(contract) {
-    contract.setFarmerSignature(this.farmerSig)
-    return contract
+    contract.setFarmerSignature(this.farmerSig);
+    return contract;
   }
 
   /**
@@ -52,13 +52,17 @@ class ExampleFarmer extends Farmer {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    const requesterId = peer.getDid()
+    const requesterId = peer.getDid();
     if (requesterId == this.badRequesterId) {
-      console.log(`Farmer: Invalid requester ${requesterId}`)
-      return false
+      console.log(`Farmer: Invalid requester ${requesterId}`);
+      return false;
     }
-    return true
+    return true;
+  }
+
+  handleRewardDelivery(call, callback) {
+    callback(null, this.farmerId);
   }
 }
 
-module.exports = { ExampleFarmer }
+module.exports = { ExampleFarmer };

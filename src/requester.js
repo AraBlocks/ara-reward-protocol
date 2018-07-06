@@ -12,7 +12,6 @@ class Requester {
   constructor(sow, matcher) {
     this.sow = sow;
     this.matcher = matcher;
-    this.farmers = [];
   }
 
   /**

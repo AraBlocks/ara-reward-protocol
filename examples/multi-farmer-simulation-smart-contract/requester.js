@@ -9,6 +9,8 @@ class ExampleRequester extends Requester {
     this.requesterSig = requesterSig;
     this.contractId = 101;
     this.smartContract = new Contract(requesterId, requesterKey);
+
+    this.farmers = [];
   }
 
   submitJob(budget) {
@@ -55,7 +57,8 @@ class ExampleRequester extends Requester {
   /**
    * On receipt of a signed (and staked) contract from farmer, begins distribution of work
    */
-  onHireConfirmed(contract) {
+  onHireConfirmed(contract, farmer) {
+    this.farmers.push(farmer);
     console.log(
       `Requester: Contract ${contract.getId()} signed by farmer ${contract
         .getQuote()
@@ -65,18 +68,25 @@ class ExampleRequester extends Requester {
   }
 
   /**
-   * After a job is finished, submits reward for each farmer to contract and notifies the farmers that their reward is ready to be withdrawn
+   * Submit reward for each farmer to the contract after a job is done
    */
-  sendReward() {
+  onJobFinished(report) {
     const smartContract = this.smartContract;
     const sow = this.sow;
     this.farmers.forEach(farmer => {
       farmer.getQuote(this.sow, (error, quote) => {
-        const reward = quote.getPerUnitCost();
-        smartContract.submitReward(farmer.getId, sow.getId(), reward);
+        const farmerId = quote.getFarmer().getDid();
+        const unitsDone = report.get(farmerId);
+        const reward = quote.getPerUnitCost() * unitsDone;
+        smartContract.submitReward(farmerId, sow.getId(), reward);
+
+        farmer.deliverReward(this.sow, (err, response) => {
+          console.log(
+            `Requester: farmer ${response.getDid()} has been notified about the reward delivery`
+          );
+        });
       });
     });
-    // farmer.notifyAvailableReward();
   }
 }
 

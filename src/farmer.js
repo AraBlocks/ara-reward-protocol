@@ -34,17 +34,11 @@ class Farmer {
   /**
    * Proto RPC method for being awarded a contract
    * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.Contract)} callback Response callback
+   * @param {function(Error, messages.ARAid)} callback Response callback
    */
   handleRewardDelivery(call, callback) {
-    const contract = call.request;
-    if (this.validateContract(contract)) {
-      callback(null, this.signContract(contract));
-    } else {
-      callback('Error: Invalid Contract', null);
-    }
+    throw new Error('Extended classes must implement handleRewardDelivery.');
   }
-  //TODO: change this method
 
   /**
    * This should returns whether a user is valid.

@@ -4,6 +4,17 @@
 var grpc = require('grpc');
 var messages_pb = require('./messages_pb.js');
 
+function serialize_messages_ARAid(arg) {
+  if (!(arg instanceof messages_pb.ARAid)) {
+    throw new Error('Expected argument of type messages.ARAid');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_messages_ARAid(buffer_arg) {
+  return messages_pb.ARAid.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_messages_Contract(arg) {
   if (!(arg instanceof messages_pb.Contract)) {
     throw new Error('Expected argument of type messages.Contract');
@@ -65,12 +76,12 @@ var RFPService = exports.RFPService = {
     path: '/routeguide.RFP/DeliverReward',
     requestStream: false,
     responseStream: false,
-    requestType: messages_pb.Contract,
-    responseType: messages_pb.Contract,
-    requestSerialize: serialize_messages_Contract,
-    requestDeserialize: deserialize_messages_Contract,
-    responseSerialize: serialize_messages_Contract,
-    responseDeserialize: deserialize_messages_Contract,
+    requestType: messages_pb.SOW,
+    responseType: messages_pb.ARAid,
+    requestSerialize: serialize_messages_SOW,
+    requestDeserialize: deserialize_messages_SOW,
+    responseSerialize: serialize_messages_ARAid,
+    responseDeserialize: deserialize_messages_ARAid,
   },
 };
 
