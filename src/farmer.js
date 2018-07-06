@@ -32,6 +32,21 @@ class Farmer {
   }
 
   /**
+   * Proto RPC method for being awarded a contract
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.Contract)} callback Response callback
+   */
+  handleRewardDelivery(call, callback) {
+    const contract = call.request;
+    if (this.validateContract(contract)) {
+      callback(null, this.signContract(contract));
+    } else {
+      callback('Error: Invalid Contract', null);
+    }
+  }
+  //TODO: change this method
+
+  /**
    * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
    * @returns {boolean}

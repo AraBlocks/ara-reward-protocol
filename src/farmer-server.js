@@ -1,6 +1,6 @@
-const services = require('./proto/route-guide_grpc_pb')
-const grpc = require('grpc')
-const { Farmer } = require('./farmer')
+const services = require('./proto/route-guide_grpc_pb');
+const grpc = require('grpc');
+const { Farmer } = require('./farmer');
 
 class FarmerServer {
   /**
@@ -9,8 +9,8 @@ class FarmerServer {
    * @param {string} port
    */
   constructor(farmer, port) {
-    this.server = this.createServer(farmer)
-    this.server.bind(port, grpc.ServerCredentials.createInsecure())
+    this.server = this.createServer(farmer);
+    this.server.bind(port, grpc.ServerCredentials.createInsecure());
   }
 
   /**
@@ -19,16 +19,17 @@ class FarmerServer {
    * @returns {grpc.Server}
    */
   createServer(farmer) {
-    const server = new grpc.Server()
+    const server = new grpc.Server();
     server.addService(services.RFPService, {
       getQuote: farmer.handleQuoteRequest.bind(farmer),
-      awardContract: farmer.handleContractAward.bind(farmer)
-    })
-    return server
+      awardContract: farmer.handleContractAward.bind(farmer),
+      deliverReward: farmer.handleRewardDelivery.bind(farmer)
+    });
+    return server;
   }
 
   start() {
-    this.server.start()
+    this.server.start();
   }
 }
 
@@ -38,8 +39,8 @@ class FarmerServer {
  * @param {string} port
  */
 function broadcastFarmer(farmer, port) {
-  const farmerServer = new FarmerServer(farmer, port)
-  farmerServer.start()
+  const farmerServer = new FarmerServer(farmer, port);
+  farmerServer.start();
 }
 
 /**
@@ -48,11 +49,11 @@ function broadcastFarmer(farmer, port) {
  * @returns {services.RFPClient}
  */
 function connectToFarmer(port) {
-  return new services.RFPClient(port, grpc.credentials.createInsecure())
+  return new services.RFPClient(port, grpc.credentials.createInsecure());
 }
 
 module.exports = {
   FarmerServer,
   broadcastFarmer,
   connectToFarmer
-}
+};

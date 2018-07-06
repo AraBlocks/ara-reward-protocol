@@ -61,6 +61,17 @@ var RFPService = exports.RFPService = {
     responseSerialize: serialize_messages_Contract,
     responseDeserialize: deserialize_messages_Contract,
   },
+  deliverReward: {
+    path: '/routeguide.RFP/DeliverReward',
+    requestStream: false,
+    responseStream: false,
+    requestType: messages_pb.Contract,
+    responseType: messages_pb.Contract,
+    requestSerialize: serialize_messages_Contract,
+    requestDeserialize: deserialize_messages_Contract,
+    responseSerialize: serialize_messages_Contract,
+    responseDeserialize: deserialize_messages_Contract,
+  },
 };
 
 exports.RFPClient = grpc.makeGenericClientConstructor(RFPService);
