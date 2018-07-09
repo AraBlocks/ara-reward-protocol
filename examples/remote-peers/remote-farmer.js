@@ -26,7 +26,7 @@ const port = `${ip.address()}:50051`
 const farmerServer = new grpcUtil.FarmerServer(farmer, port)
 farmerServer.start()
 
-// Discovery Channel
-const discoveryAID = 'did:ara:desiredContent'
+// Broadcast on the discovery channel for what the farmer can produce
+const discoveryAID = 'did:ara:1000'
 const channel = ann.discovery.createChannel()
 channel.join(discoveryAID, 19000)

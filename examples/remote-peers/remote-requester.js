@@ -8,19 +8,19 @@ const ann = require('ara-network')
  * Uses the MaxCostMatcher to determine peers.
  */
     
-// Matcher
+// A default matcher which will match for a max cost of 10 to a max of 5 farmers
 const matcher = new MaxCostMatcher(10, 5)
 
-// Requester ID
+// The ARAid of the Requester
 const requesterID = new messages.ARAid()
 requesterID.setDid('did:ara:1')
 
-// Requester Signature
+// A signature that a farmer can use to verify that the requester has signed a contract 
 const requesterSig = new messages.Signature()
 requesterSig.setId = requesterID
 requesterSig.setData('avalidsignature')
 
-// SOW
+// Create the statement of work
 const sow = new messages.SOW()
 sow.setId(2)
 sow.setWorkUnit('MB')
@@ -28,16 +28,16 @@ sow.setRequester(requesterID)
 
 const requester = new ExampleRequester(sow, matcher, requesterSig)
 
-// RPC Connections
+// The RPC Connections to the farmers
 const farmerConnections = new Map()
 
-// Discovery Channel
-const discoveryAID = 'did:ara:desiredContent'
+// Join the discovery channel for the requested content
+const discoveryAID = 'did:ara:1000'
 const channel = ann.discovery.createChannel()
 channel.join(discoveryAID)
 channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
-// Process peer on new peers
+// Process each peer when a new peer is discovered
 function handlePeer(id, peer, type, requester) {
   const key = peer.host
   if (!farmerConnections.has(key)) {
