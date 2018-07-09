@@ -1,5 +1,4 @@
-const { Requester } = require('../../src/requester')
-const messages = require('../../src/proto/messages_pb')
+const { messages, Requester } = require('ara-farming-protocol')
 
 class ExampleRequester extends Requester {
   constructor(sow, matcher, requesterSig) {

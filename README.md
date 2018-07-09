@@ -194,6 +194,10 @@ Different service requesters may have different needs when selecting peers, such
 ```
 
 ## Examples
+Note: as ara-farming-protocol is not yet on npm, you may need to run the following command prior to running an example:
+```
+$ npm link ara-farming-protocol
+```
 
 ### Multifarmer Simulation
 This example generates and connects to 10 local farmers, then hires up to 5 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
@@ -203,7 +207,7 @@ $ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 ```
 
 ### Remote Peers
-The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on the port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on port 19000 on discovery channel did:ara:desiredContent, and on farming port 50051.
+The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
 
 On the farmer's computer/terminal:
 ```

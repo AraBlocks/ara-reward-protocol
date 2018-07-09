@@ -1,29 +1,30 @@
 const { ExampleFarmer } = require('./farmer')
-const { broadcastFarmer } = require('../../src/farmer-server')
-const messages = require('../../src/proto/messages_pb')
+const { messages, grpcUtil } = require('ara-farming-protocol')
 const ann = require('ara-network')
 const ip = require('ip')
 
-/*
-    Example: Broadcasts availability on discovery channel did:ara:desiredChannel,
-    and runs farmer server on port 50051.
-*/
+/**
+ * Example: Broadcasts availability on discovery channel did:ara:desiredChannel,
+ * and runs farmer server on example port 50051.
+ */
 
-const port = `${ip.address()}:50051`
-const price = 6
-
-// Farmer ID
+// The ARAid of the Farmer
 const farmerID = new messages.ARAid()
 farmerID.setDid('did:ara:2')
 
-// Farmer Signature
+// A signature that a requester can use to verify that the farmer has signed a contract 
 const farmerSig = new messages.Signature()
 farmerSig.setId = farmerID
 farmerSig.setData('avalidsignature')
 
-// Farmer Server
+// The Farmer instance which sets a specific price, an ID, and a signature
+const price = 6
 const farmer = new ExampleFarmer(farmerID, farmerSig, price)
-broadcastFarmer(farmer, port)
+
+// Start broadcasting the willingness to farm
+const port = `${ip.address()}:50051`
+const farmerServer = new grpcUtil.FarmerServer(farmer, port)
+farmerServer.start()
 
 // Discovery Channel
 const discoveryAID = 'did:ara:desiredContent'

@@ -1,5 +1,4 @@
-const { Farmer } = require('../../src/farmer')
-const messages = require('../../src/proto/messages_pb')
+const { messages, Farmer } = require('ara-farming-protocol')
 
 class ExampleFarmer extends Farmer {
   constructor(farmerId, farmerSig, price) {
@@ -32,8 +31,7 @@ class ExampleFarmer extends Farmer {
    */
   validateContract(contract) {
     const quote = contract.getQuote()
-    if (quote.getPerUnitCost() == this.price) return true
-    return false
+    return quote.getPerUnitCost() == this.price
   }
 
   /**
@@ -53,11 +51,7 @@ class ExampleFarmer extends Farmer {
    */
   validatePeer(peer) {
     const requesterId = peer.getDid()
-    if (requesterId == this.badRequesterId) {
-      console.log(`Farmer: Invalid requester ${requesterId}`)
-      return false
-    }
-    return true
+    return requesterId != this.badRequesterId
   }
 }
 

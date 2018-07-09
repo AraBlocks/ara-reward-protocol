@@ -1,15 +1,13 @@
-const { connectToFarmer } = require('../../src/farmer-server')
 const { ExampleRequester } = require('./requester')
-const { MaxCostMatcher } = require('../../src/matchers/max-cost-matcher')
-const messages = require('../../src/proto/messages_pb')
+const { messages, grpcUtil, MaxCostMatcher } = require('ara-farming-protocol')
 const ann = require('ara-network')
 
-/*
-    Example: Finds peers on the discovery channel did:ara:desiredContent,
-    then connects to each peer on the port 50051 to determine costs. Uses
-    the MaxCostMatcher to determine peers.
-*/
-
+/**
+ * Example: Finds peers on the discovery channel did:ara:desiredContent,
+ * then connects to each peer on example port 50051 to determine costs. 
+ * Uses the MaxCostMatcher to determine peers.
+ */
+    
 // Matcher
 const matcher = new MaxCostMatcher(10, 5)
 
@@ -45,7 +43,7 @@ function handlePeer(id, peer, type, requester) {
   if (!farmerConnections.has(key)) {
     console.log(`New peer: ${peer.host} on port: ${peer.port}`)
     const port = `${peer.host}:50051`
-    const farmerConnection = connectToFarmer(port)
+    const farmerConnection = grpcUtil.connectToFarmer(port)
     farmerConnections.set(key, farmerConnection)
     requester.processFarmer(farmerConnection)
   }
