@@ -1,107 +1,143 @@
-const test = require('ava')
-const sinon = require('sinon')
-const messages = require('../../src/proto/messages_pb')
-const { Requester } = require('../../src/requester')
-const { Matcher } = require('../../src/matcher')
+const test = require('ava');
+const sinon = require('sinon');
+const messages = require('../../src/proto/messages_pb');
+const { Requester } = require('../../src/requester');
+const { Matcher } = require('../../src/matcher');
+const {
+  ExampleRequester
+} = require('../../examples/multi-farmer-simulation-smart-contract/requester.js');
 
-test('requester.handleQuoteResponse.ValidPeer', (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
+test('requester.submitJob.succeed', async t => {
+  const sow = new messages.SOW();
+  const matcher = new Matcher();
+  const sig = new messages.Signature();
 
-  const stubMatcher = new Matcher()
-  const quoteMatchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
+  const requester = new ExampleRequester(sow, matcher, sig, '', '');
 
-  const requester = new Requester(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').returns(true)
+  const stubContract = {
+    createJob: sinon.stub().resolves(true)
+  };
 
-  requester.handleQuoteResponse(null, quote, null)
+  requester.smartContract = stubContract;
+  await requester.submitJob(100).then(result => {
+    t.true(requester.hasJob);
+  });
+});
 
-  t.true(quoteMatchFake.calledOnce)
-})
+test('requester.submitJob.fail', async t => {
+  const sow = new messages.SOW();
+  const matcher = new Matcher();
+  const sig = new messages.Signature();
 
-test('requester.handleQuoteResponse.InvalidPeer', (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
+  const requester = new ExampleRequester(sow, matcher, sig, '', '');
 
-  const stubMatcher = new Matcher()
-  const quoteMatchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
+  const stubContract = {
+    createJob: sinon.stub().resolves(false)
+  };
 
-  const requester = new Requester(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').returns(false)
+  requester.smartContract = stubContract;
+  await requester.submitJob(100).then(result => {
+    t.true(!requester.hasJob);
+  });
+});
 
-  requester.handleQuoteResponse(null, quote, null)
+test('requester.handleQuoteResponse.ValidPeer', t => {
+  const sow = new messages.SOW();
+  const quote = new messages.Quote();
 
-  t.true(quoteMatchFake.notCalled)
-})
+  const stubMatcher = new Matcher();
+  const quoteMatchFake = sinon.fake();
+  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake);
 
-test('requester.handleSignedContract.ValidContract', (t) => {
-  const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const requester = new Requester(sow, stubMatcher);
+  sinon.stub(requester, 'validatePeer').returns(true);
 
-  const stubMatcher = new Matcher()
+  requester.handleQuoteResponse(null, quote, null);
 
-  const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(true)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  t.true(quoteMatchFake.calledOnce);
+});
 
-  requester.handleSignedContract(null, contract)
+test('requester.handleQuoteResponse.InvalidPeer', t => {
+  const sow = new messages.SOW();
+  const quote = new messages.Quote();
 
-  t.true(contractConfirmFake.calledOnce)
-})
+  const stubMatcher = new Matcher();
+  const quoteMatchFake = sinon.fake();
+  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake);
 
-test('requester.handleSignedContract.InvalidContract', (t) => {
-  const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const requester = new Requester(sow, stubMatcher);
+  sinon.stub(requester, 'validatePeer').returns(false);
 
-  const stubMatcher = new Matcher()
-  const invalidQuoteFake = sinon.fake()
-  sinon.stub(stubMatcher, 'invalidateQuote').callsFake(invalidQuoteFake)
+  requester.handleQuoteResponse(null, quote, null);
 
-  const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(false)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  t.true(quoteMatchFake.notCalled);
+});
 
-  requester.handleSignedContract(null, contract)
+test('requester.handleSignedContract.ValidContract', t => {
+  const sow = new messages.SOW();
+  const contract = new messages.Contract();
 
-  t.true(contractConfirmFake.notCalled)
-  t.true(invalidQuoteFake.calledOnce)
-})
+  const stubMatcher = new Matcher();
 
-test('requester.hireFarmer', (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
-  const stubMatcher = new Matcher()
-  const requester = new Requester(sow, stubMatcher)
+  const requester = new Requester(sow, stubMatcher);
+  const contractConfirmFake = sinon.fake();
+  sinon.stub(requester, 'validateContract').returns(true);
+  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake);
 
-  const genContractFake = sinon.fake()
-  sinon.stub(requester, 'generateContract').callsFake(genContractFake)
+  requester.handleSignedContract(null, contract);
 
-  const awardContractFake = sinon.fake()
+  t.true(contractConfirmFake.calledOnce);
+});
+
+test('requester.handleSignedContract.InvalidContract', t => {
+  const sow = new messages.SOW();
+  const contract = new messages.Contract();
+
+  const stubMatcher = new Matcher();
+  const invalidQuoteFake = sinon.fake();
+  sinon.stub(stubMatcher, 'invalidateQuote').callsFake(invalidQuoteFake);
+
+  const requester = new Requester(sow, stubMatcher);
+  const contractConfirmFake = sinon.fake();
+  sinon.stub(requester, 'validateContract').returns(false);
+  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake);
+
+  requester.handleSignedContract(null, contract);
+
+  t.true(contractConfirmFake.notCalled);
+  t.true(invalidQuoteFake.calledOnce);
+});
+
+test('requester.hireFarmer', t => {
+  const sow = new messages.SOW();
+  const quote = new messages.Quote();
+  const stubMatcher = new Matcher();
+  const requester = new Requester(sow, stubMatcher);
+  const genContractFake = sinon.fake();
+  sinon.stub(requester, 'generateContract').callsFake(genContractFake);
+
+  const awardContractFake = sinon.fake();
 
   const stubRFP = {
     awardContract: awardContractFake
-  }
+  };
 
-  requester.hireFarmer(quote, stubRFP)
+  requester.hireFarmer(quote, stubRFP);
 
-  t.true(genContractFake.calledOnce)
-  t.true(awardContractFake.calledOnce)
-})
+  t.true(genContractFake.calledOnce);
+  t.true(awardContractFake.calledOnce);
+});
 
-test('requester.processFarmers', (t) => {
-  const sow = new messages.SOW()
-  const stubMatcher = new Matcher()
-  const requester = new Requester(sow, stubMatcher)
+test('requester.processFarmers', t => {
+  const sow = new messages.SOW();
+  const stubMatcher = new Matcher();
+  const requester = new Requester(sow, stubMatcher);
 
-  const getQuoteFake = sinon.fake()
+  const getQuoteFake = sinon.fake();
   const stubRFP = {
     getQuote: getQuoteFake
-  }
+  };
 
-  requester.processFarmers([ stubRFP ])
-  t.true(getQuoteFake.calledOnce)
-})
+  requester.processFarmers([stubRFP]);
+  t.true(getQuoteFake.calledOnce);
+});

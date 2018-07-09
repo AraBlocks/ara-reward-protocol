@@ -11,10 +11,20 @@ class ExampleRequester extends Requester {
     this.smartContract = new Contract(requesterId, requesterKey);
 
     this.farmers = [];
+    this.hasJob = false;
   }
 
-  submitJob(budget) {
-    this.smartContract.createJob(this.contractId, budget);
+  async submitJob(budget) {
+    const response = await this.smartContract.createJob(
+      this.contractId,
+      budget
+    );
+
+    if (response) {
+      this.hasJob = true;
+    }
+
+    return response;
   }
 
   /**

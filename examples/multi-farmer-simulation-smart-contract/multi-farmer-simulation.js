@@ -71,7 +71,14 @@ const requester = new ExampleRequester(
 
 // totalCost = Unit_Cost * Unit
 const totalCost = matcher.maxCost * 10;
-requester.submitJob(totalCost);
+requester.submitJob(totalCost).then(result => {
+  if (result) {
+    console.log('Job has been submitted to the contract');
+  } else {
+    console.log('Job submission failed');
+  }
+});
+
 requester.processFarmers(farmerConnections);
 
 // simulate a report for when the job is finished

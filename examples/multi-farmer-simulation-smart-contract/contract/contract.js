@@ -65,10 +65,14 @@ class FarmingContract {
   }
 
   createJob(jobId, budget) {
-    console.log('Create Job');
-    // const encodedMethod = this.contract.methods.createJob(jobId).encodeABI();
-    // this.sign(encodedMethod, budget);
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(true);
+      }, 3000);
+    });
   }
+  // const encodedMethod = this.contract.methods.createJob(jobId).encodeABI();
+  // this.sign(encodedMethod, budget);
 
   acceptJob(jobId) {
     this.contract.methods
