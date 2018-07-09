@@ -25,23 +25,23 @@ class ExampleFarmer extends Farmer {
   }
 
   /**
-   * Returns whether a contract is valid
-   * @param {messages.Contract} contract
+   * Returns whether a agreement is valid
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    const quote = contract.getQuote()
+  validateAgreement(agreement) {
+    const quote = agreement.getQuote()
     return quote.getPerUnitCost() == this.price
   }
 
   /**
-   * Sign and return a contract
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * Sign and return a agreement
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    contract.setFarmerSignature(this.farmerSig)
-    return contract
+  signAgreement(agreement) {
+    agreement.setFarmerSignature(this.farmerSig)
+    return agreement
   }
 
   /**

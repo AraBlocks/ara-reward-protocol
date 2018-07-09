@@ -1,13 +1,13 @@
-const { ExampleRequester } = require('./requester')
 const { messages, grpcUtil, MaxCostMatcher } = require('ara-farming-protocol')
+const { ExampleRequester } = require('./requester')
 const ann = require('ara-network')
 
 /**
  * Example: Finds peers on the discovery channel did:ara:desiredContent,
- * then connects to each peer on example port 50051 to determine costs. 
+ * then connects to each peer on example port 50051 to determine costs.
  * Uses the MaxCostMatcher to determine peers.
  */
-    
+
 // A default matcher which will match for a max cost of 10 to a max of 5 farmers
 const matcher = new MaxCostMatcher(10, 5)
 
@@ -15,7 +15,7 @@ const matcher = new MaxCostMatcher(10, 5)
 const requesterID = new messages.ARAid()
 requesterID.setDid('did:ara:1')
 
-// A signature that a farmer can use to verify that the requester has signed a contract 
+// A signature that a farmer can use to verify that the requester has signed an agreement
 const requesterSig = new messages.Signature()
 requesterSig.setId = requesterID
 requesterSig.setData('avalidsignature')

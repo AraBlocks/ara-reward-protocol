@@ -12,7 +12,7 @@ var goog = jspb;
 var global = Function('return this')();
 
 goog.exportSymbol('proto.messages.ARAid', null, global);
-goog.exportSymbol('proto.messages.Contract', null, global);
+goog.exportSymbol('proto.messages.Agreement', null, global);
 goog.exportSymbol('proto.messages.Quote', null, global);
 goog.exportSymbol('proto.messages.SOW', null, global);
 goog.exportSymbol('proto.messages.Signature', null, global);
@@ -548,12 +548,12 @@ proto.messages.Quote.prototype.hasFarmer = function() {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.messages.Contract = function(opt_data) {
+proto.messages.Agreement = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.messages.Contract, jspb.Message);
+goog.inherits(proto.messages.Agreement, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.messages.Contract.displayName = 'proto.messages.Contract';
+  proto.messages.Agreement.displayName = 'proto.messages.Agreement';
 }
 
 
@@ -568,8 +568,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.messages.Contract.prototype.toObject = function(opt_includeInstance) {
-  return proto.messages.Contract.toObject(opt_includeInstance, this);
+proto.messages.Agreement.prototype.toObject = function(opt_includeInstance) {
+  return proto.messages.Agreement.toObject(opt_includeInstance, this);
 };
 
 
@@ -578,16 +578,17 @@ proto.messages.Contract.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.messages.Contract} msg The msg instance to transform.
+ * @param {!proto.messages.Agreement} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.messages.Contract.toObject = function(includeInstance, msg) {
+proto.messages.Agreement.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     quote: (f = msg.getQuote()) && proto.messages.Quote.toObject(includeInstance, f),
     requesterSignature: (f = msg.getRequesterSignature()) && proto.messages.Signature.toObject(includeInstance, f),
-    farmerSignature: (f = msg.getFarmerSignature()) && proto.messages.Signature.toObject(includeInstance, f)
+    farmerSignature: (f = msg.getFarmerSignature()) && proto.messages.Signature.toObject(includeInstance, f),
+    data: msg.getData_asB64()
   };
 
   if (includeInstance) {
@@ -601,23 +602,23 @@ proto.messages.Contract.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.messages.Contract}
+ * @return {!proto.messages.Agreement}
  */
-proto.messages.Contract.deserializeBinary = function(bytes) {
+proto.messages.Agreement.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.messages.Contract;
-  return proto.messages.Contract.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.messages.Agreement;
+  return proto.messages.Agreement.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.messages.Contract} msg The message object to deserialize into.
+ * @param {!proto.messages.Agreement} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.messages.Contract}
+ * @return {!proto.messages.Agreement}
  */
-proto.messages.Contract.deserializeBinaryFromReader = function(msg, reader) {
+proto.messages.Agreement.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -643,6 +644,10 @@ proto.messages.Contract.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.messages.Signature.deserializeBinaryFromReader);
       msg.setFarmerSignature(value);
       break;
+    case 5:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setData(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -656,9 +661,9 @@ proto.messages.Contract.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.messages.Contract.prototype.serializeBinary = function() {
+proto.messages.Agreement.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.messages.Contract.serializeBinaryToWriter(this, writer);
+  proto.messages.Agreement.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -666,11 +671,11 @@ proto.messages.Contract.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.messages.Contract} message
+ * @param {!proto.messages.Agreement} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.messages.Contract.serializeBinaryToWriter = function(message, writer) {
+proto.messages.Agreement.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
   if (f !== 0) {
@@ -703,6 +708,13 @@ proto.messages.Contract.serializeBinaryToWriter = function(message, writer) {
       proto.messages.Signature.serializeBinaryToWriter
     );
   }
+  f = message.getData_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      5,
+      f
+    );
+  }
 };
 
 
@@ -710,13 +722,13 @@ proto.messages.Contract.serializeBinaryToWriter = function(message, writer) {
  * optional int64 id = 1;
  * @return {number}
  */
-proto.messages.Contract.prototype.getId = function() {
+proto.messages.Agreement.prototype.getId = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /** @param {number} value */
-proto.messages.Contract.prototype.setId = function(value) {
+proto.messages.Agreement.prototype.setId = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
@@ -725,19 +737,19 @@ proto.messages.Contract.prototype.setId = function(value) {
  * optional Quote quote = 2;
  * @return {?proto.messages.Quote}
  */
-proto.messages.Contract.prototype.getQuote = function() {
+proto.messages.Agreement.prototype.getQuote = function() {
   return /** @type{?proto.messages.Quote} */ (
     jspb.Message.getWrapperField(this, proto.messages.Quote, 2));
 };
 
 
 /** @param {?proto.messages.Quote|undefined} value */
-proto.messages.Contract.prototype.setQuote = function(value) {
+proto.messages.Agreement.prototype.setQuote = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
 
 
-proto.messages.Contract.prototype.clearQuote = function() {
+proto.messages.Agreement.prototype.clearQuote = function() {
   this.setQuote(undefined);
 };
 
@@ -746,7 +758,7 @@ proto.messages.Contract.prototype.clearQuote = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.messages.Contract.prototype.hasQuote = function() {
+proto.messages.Agreement.prototype.hasQuote = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
@@ -755,19 +767,19 @@ proto.messages.Contract.prototype.hasQuote = function() {
  * optional Signature requester_signature = 3;
  * @return {?proto.messages.Signature}
  */
-proto.messages.Contract.prototype.getRequesterSignature = function() {
+proto.messages.Agreement.prototype.getRequesterSignature = function() {
   return /** @type{?proto.messages.Signature} */ (
     jspb.Message.getWrapperField(this, proto.messages.Signature, 3));
 };
 
 
 /** @param {?proto.messages.Signature|undefined} value */
-proto.messages.Contract.prototype.setRequesterSignature = function(value) {
+proto.messages.Agreement.prototype.setRequesterSignature = function(value) {
   jspb.Message.setWrapperField(this, 3, value);
 };
 
 
-proto.messages.Contract.prototype.clearRequesterSignature = function() {
+proto.messages.Agreement.prototype.clearRequesterSignature = function() {
   this.setRequesterSignature(undefined);
 };
 
@@ -776,7 +788,7 @@ proto.messages.Contract.prototype.clearRequesterSignature = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.messages.Contract.prototype.hasRequesterSignature = function() {
+proto.messages.Agreement.prototype.hasRequesterSignature = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 
@@ -785,19 +797,19 @@ proto.messages.Contract.prototype.hasRequesterSignature = function() {
  * optional Signature farmer_signature = 4;
  * @return {?proto.messages.Signature}
  */
-proto.messages.Contract.prototype.getFarmerSignature = function() {
+proto.messages.Agreement.prototype.getFarmerSignature = function() {
   return /** @type{?proto.messages.Signature} */ (
     jspb.Message.getWrapperField(this, proto.messages.Signature, 4));
 };
 
 
 /** @param {?proto.messages.Signature|undefined} value */
-proto.messages.Contract.prototype.setFarmerSignature = function(value) {
+proto.messages.Agreement.prototype.setFarmerSignature = function(value) {
   jspb.Message.setWrapperField(this, 4, value);
 };
 
 
-proto.messages.Contract.prototype.clearFarmerSignature = function() {
+proto.messages.Agreement.prototype.clearFarmerSignature = function() {
   this.setFarmerSignature(undefined);
 };
 
@@ -806,8 +818,47 @@ proto.messages.Contract.prototype.clearFarmerSignature = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.messages.Contract.prototype.hasFarmerSignature = function() {
+proto.messages.Agreement.prototype.hasFarmerSignature = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional bytes data = 5;
+ * @return {!(string|Uint8Array)}
+ */
+proto.messages.Agreement.prototype.getData = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * optional bytes data = 5;
+ * This is a type-conversion wrapper around `getData()`
+ * @return {string}
+ */
+proto.messages.Agreement.prototype.getData_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getData()));
+};
+
+
+/**
+ * optional bytes data = 5;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getData()`
+ * @return {!Uint8Array}
+ */
+proto.messages.Agreement.prototype.getData_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getData()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Agreement.prototype.setData = function(value) {
+  jspb.Message.setField(this, 5, value);
 };
 
 

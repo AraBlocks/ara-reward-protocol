@@ -1,6 +1,6 @@
-const { ExampleFarmer } = require('./farmer')
-const { ExampleRequester } = require('./requester')
 const { messages, MaxCostMatcher, grpcUtil } = require('ara-farming-protocol')
+const { ExampleRequester } = require('./requester')
+const { ExampleFarmer } = require('./farmer')
 
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(count) {

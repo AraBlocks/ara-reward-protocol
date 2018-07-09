@@ -16,12 +16,20 @@ A peer in the network who participates in farming.
 
 A peer in the network who intends to distribute work amoungst farmers.
 
+### Job
+
+A task whose scope is defined by a statement of work.
+
+#### Agreement
+
+An agreed upon statement of work for a specific job between a farmer and a requester. This may reference a specific smart contract, or some other verifiable source, which can verify the details of an agreement.
+
 ### Introduction
 AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript. 
 
-A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
+A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 
-A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use the default gRPC implementation to connect to peers for discussing a task.
+A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use the default gRPC implementation to connect to peers for discussing a task.
 
 ### Real World Examples
 #### A Decentralized Content Distribution Service
@@ -60,21 +68,21 @@ For an application that enables a user to participate in distributed work reques
 For broadcasting the ability to farm.
 ```js
 const { ExampleFarmer } = require('./farmer')
-const { broadcastFarmer } = require('../../src/farmer-server')
+const { grpcUtil } = require('ara-farming-protocol')
 
 // The application's custom classes
 const farmer = new ExampleFarmer()
 
 // Broadcast on a specific port
 const port = `localhost:50051` 
-broadcastFarmer(farmer, port)
+grpcUtil.broadcastFarmer(farmer, port)
 ```
 
 ### Requesting
 For requesting a farming job.
 ```js
 const { ExampleRequester } = require('./requester')
-const { connectToFarmer } = require('../../src/farmer-server')
+const { grpcUtil } = require('ara-farming-protocol')
 
 // The statement of work for the request
 const sow = new messages.SOW()
@@ -84,7 +92,7 @@ const matcher = new ExampleMatcher()
 const requester = new ExampleRequester(sow, matcher)
 
 // Connect to a farmer (or set of farmers)
-const connection = connectToFarmer(port)
+const connection = grpcUtil.connectToFarmer(port)
 requester.processFarmers([connection])
 ```
 
@@ -92,7 +100,7 @@ requester.processFarmers([connection])
 This section describes the classes that must be extended for AFP.
 
 #### Requester
-A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task.
+A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task.
 ```js
   /**
    * This should returns whether a user is valid.
@@ -104,34 +112,34 @@ A requester would extend the AFP Requester class to define the requester's speci
   }
 
   /**
-   * This should generate and return a contract for a quote.
+   * This should generate and return an agreement for a quote.
    * @param {messages.Quote} quote
-   * @returns {messages.Contract}
+   * @returns {messages.Agreement}
    */
-  generateContract(quote) {
-    throw new Error('Extended classes must implement generateContract.')
+  generateAgreement(quote) {
+    throw new Error('Extended classes must implement generateAgreement.')
   }
 
   /**
-   * This should return whether a contract is valid.
-   * @param {messages.Contract} contract
+   * This should return whether an agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.')
+  validateAgreement(agreement) {
+    throw new Error('Extended classes must implement validateAgreement.')
   }
 
   /**
-   * This is called when a contract has been marked as valid and a farmer
+   * This is called when an agreement has been marked as valid and a farmer
    * is ready to start work
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    */
-  onHireConfirmed(contract) {
-    throw new Error('Extended classes must implement onHireConfirmed')
+  onHireConfirmed(agreement) {
+    throw new Error('Extended classes must implement onHireConfirmed.')
   }
 ```
 #### Farmer
-A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task.
+A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task.
 ```js
   /**
    * This should returns whether a user is valid.
@@ -152,21 +160,21 @@ A farmer would extend the AFP Farmer class to define that farmer’s specificati
   }
 
   /**
-   * This should returns whether or not a contract is valid.
-   * @param {messages.Contract} contract
+   * This should return whether an agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
+  validateAgreement(agreement) {
     throw new Error('Extended classes must implement validateContract.')
   }
 
   /**
-   * This should sign and return a contract.
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * This should sign and return an agreement.
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    throw new Error('Extended classes must implement signContract.')
+  signAgreement(agreement) {
+    throw new Error('Extended classes must implement signAgreement.')
   }
 ```
 
@@ -176,7 +184,7 @@ Different service requesters may have different needs when selecting peers, such
   /**
    * This is called to validate a quote. If a quote is considered
    * valid, then this should calls hireFarmerCallback to continue
-   * contract award process.
+   * agreement award process.
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */

@@ -43,42 +43,42 @@ test('farmer.handleQuoteRequest.InvalidPeer', (t) => {
   })
 })
 
-test('farmer.handleContractAward.ValidContract', (t) => {
-  const contractId = 1234
+test('farmer.handleAgreementReceipt.ValidAgreement', (t) => {
+  const agreementId = 1234
 
-  const contract = new messages.Contract()
-  contract.setId(contractId)
+  const agreement = new messages.Agreement()
+  agreement.setId(agreementId)
 
   const farmer = new Farmer()
-  sinon.stub(farmer, 'validateContract').returns(true)
-  sinon.stub(farmer, 'signContract').returns(contract)
+  sinon.stub(farmer, 'validateAgreement').returns(true)
+  sinon.stub(farmer, 'signAgreement').returns(agreement)
 
   const stubCall = {
-    request: contract
+    request: agreement
   }
 
-  farmer.handleContractAward(stubCall, (error, response) => {
+  farmer.handleAgreementReceipt(stubCall, (error, response) => {
     t.true(null === error)
-    t.true(contract === response)
-    t.true(contractId === response.getId())
+    t.true(agreement === response)
+    t.true(agreementId === response.getId())
   })
 })
 
-test('farmer.handleContractAward.InvalidContract', (t) => {
-  const contract = new messages.Contract()
+test('farmer.handleAgreementReceipt.InvalidAgreement', (t) => {
+  const agreement = new messages.Agreement()
 
   const farmer = new Farmer()
-  const signContractFake = sinon.fake()
-  sinon.stub(farmer, 'validateContract').returns(false)
-  sinon.stub(farmer, 'signContract').callsFake(signContractFake)
+  const signAgreementFake = sinon.fake()
+  sinon.stub(farmer, 'validateAgreement').returns(false)
+  sinon.stub(farmer, 'signAgreement').callsFake(signAgreementFake)
 
   const stubCall = {
-    request: contract
+    request: agreement
   }
 
-  farmer.handleContractAward(stubCall, (error, response) => {
+  farmer.handleAgreementReceipt(stubCall, (error, response) => {
     t.true(null != error)
     t.true(null === response)
-    t.true(signContractFake.notCalled)
+    t.true(signAgreementFake.notCalled)
   })
 })

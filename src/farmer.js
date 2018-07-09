@@ -18,16 +18,16 @@ class Farmer {
   }
 
   /**
-   * Proto RPC method for being awarded a contract
+   * Proto RPC method for being awarded a agreement
    * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.Contract)} callback Response callback
+   * @param {function(Error, messages.Agreement)} callback Response callback
    */
-  handleContractAward(call, callback) {
-    const contract = call.request
-    if (this.validateContract(contract)) {
-      callback(null, this.signContract(contract))
+  handleAgreementReceipt(call, callback) {
+    const agreement = call.request
+    if (this.validateAgreement(agreement)) {
+      callback(null, this.signAgreement(agreement))
     } else {
-      callback('Error: Invalid Contract', null)
+      callback('Error: Invalid Agreement', null)
     }
   }
 
@@ -50,21 +50,21 @@ class Farmer {
   }
 
   /**
-   * This should returns whether or not a contract is valid.
-   * @param {messages.Contract} contract
+   * This should returns whether or not a agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.')
+  validateAgreement(agreement) {
+    throw new Error('Extended classes must implement validateAgreement.')
   }
 
   /**
-   * This should sign and return a contract.
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * This should sign and return a agreement.
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    throw new Error('Extended classes must implement signContract.')
+  signAgreement(agreement) {
+    throw new Error('Extended classes must implement signAgreement.')
   }
 }
 

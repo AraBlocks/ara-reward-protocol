@@ -1,5 +1,5 @@
-const { ExampleFarmer } = require('./farmer')
 const { messages, grpcUtil } = require('ara-farming-protocol')
+const { ExampleFarmer } = require('./farmer')
 const ann = require('ara-network')
 const ip = require('ip')
 
@@ -12,7 +12,7 @@ const ip = require('ip')
 const farmerID = new messages.ARAid()
 farmerID.setDid('did:ara:2')
 
-// A signature that a requester can use to verify that the farmer has signed a contract 
+// A signature that a requester can use to verify that the farmer has signed an agreement
 const farmerSig = new messages.Signature()
 farmerSig.setId = farmerID
 farmerSig.setData('avalidsignature')

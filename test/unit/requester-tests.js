@@ -36,38 +36,38 @@ test('requester.handleQuoteResponse.InvalidPeer', (t) => {
   t.true(quoteMatchFake.notCalled)
 })
 
-test('requester.handleSignedContract.ValidContract', (t) => {
+test('requester.handleSignedAgreement.ValidAgreement', (t) => {
   const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const agreement = new messages.Agreement()
 
   const stubMatcher = new Matcher()
 
   const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(true)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  const agreementConfirmFake = sinon.fake()
+  sinon.stub(requester, 'validateAgreement').returns(true)
+  sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  requester.handleSignedContract(null, contract)
+  requester.handleSignedAgreement(null, agreement)
 
-  t.true(contractConfirmFake.calledOnce)
+  t.true(agreementConfirmFake.calledOnce)
 })
 
-test('requester.handleSignedContract.InvalidContract', (t) => {
+test('requester.handleSignedAgreement.InvalidAgreement', (t) => {
   const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const agreement = new messages.Agreement()
 
   const stubMatcher = new Matcher()
   const invalidQuoteFake = sinon.fake()
   sinon.stub(stubMatcher, 'invalidateQuote').callsFake(invalidQuoteFake)
 
   const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(false)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  const agreementConfirmFake = sinon.fake()
+  sinon.stub(requester, 'validateAgreement').returns(false)
+  sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  requester.handleSignedContract(null, contract)
+  requester.handleSignedAgreement(null, agreement)
 
-  t.true(contractConfirmFake.notCalled)
+  t.true(agreementConfirmFake.notCalled)
   t.true(invalidQuoteFake.calledOnce)
 })
 
@@ -77,19 +77,19 @@ test('requester.hireFarmer', (t) => {
   const stubMatcher = new Matcher()
   const requester = new Requester(sow, stubMatcher)
 
-  const genContractFake = sinon.fake()
-  sinon.stub(requester, 'generateContract').callsFake(genContractFake)
+  const genAgreementFake = sinon.fake()
+  sinon.stub(requester, 'generateAgreement').callsFake(genAgreementFake)
 
-  const awardContractFake = sinon.fake()
+  const sendAgreementFake = sinon.fake()
 
   const stubRFP = {
-    awardContract: awardContractFake
+    sendAgreement: sendAgreementFake
   }
 
   requester.hireFarmer(quote, stubRFP)
 
-  t.true(genContractFake.calledOnce)
-  t.true(awardContractFake.calledOnce)
+  t.true(genAgreementFake.calledOnce)
+  t.true(sendAgreementFake.calledOnce)
 })
 
 test('requester.processFarmers', (t) => {
