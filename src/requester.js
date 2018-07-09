@@ -16,15 +16,23 @@ class Requester {
   /**
    * Iterates through an array of Farmers and gets quotes from them for
    * the defined SOW
-   * @param {services.RFPClient} farmers
+   * @param {[services.RFPClient]} farmers
    */
   processFarmers(farmers) {
     farmers.forEach((farmer) => {
-      const responseHandler = function (err, response) {
-        this.handleQuoteResponse(err, response, farmer)
-      }
-      farmer.getQuote(this.sow, responseHandler.bind(this))
+      this.processFarmer(farmer)
     })
+  }
+
+    /**
+   * Gets quotes from a single farmer for the defined SOW
+   * @param {services.RFPClient} farmer
+   */
+  processFarmer(farmer) {
+    const responseHandler = function (err, response) {
+      this.handleQuoteResponse(err, response, farmer)
+    }
+    farmer.getQuote(this.sow, responseHandler.bind(this))
   }
 
   /**

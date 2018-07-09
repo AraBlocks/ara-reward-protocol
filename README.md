@@ -202,6 +202,19 @@ This example generates and connects to 10 local farmers, then hires up to 5 farm
 $ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 ```
 
+### Remote Peers
+The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on the port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on port 19000 on discovery channel did:ara:desiredContent, and on farming port 50051.
+
+On the farmer's computer/terminal:
+```
+$ node examples/remote-peers/remote-farmer.js
+```
+
+On the requester's computer/terminal:
+```
+$ node examples/remote-peers/remote-requester.js
+```
+
 ## Local Development Setup
 ### Generating gRPC and Protobuf files 
 This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found [here](https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen) 
