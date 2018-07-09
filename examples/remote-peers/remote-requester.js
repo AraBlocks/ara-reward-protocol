@@ -5,9 +5,9 @@ const messages = require('../../src/proto/messages_pb')
 const ann = require('ara-network')
 
 /*
-    Example: Finds peers on the discovery channel did:ara:desiredContent, 
+    Example: Finds peers on the discovery channel did:ara:desiredContent,
     then connects to each peer on the port 50051 to determine costs. Uses
-    the MaxCostMatcher to determine peers. 
+    the MaxCostMatcher to determine peers.
 */
 
 // Matcher
@@ -34,19 +34,19 @@ const requester = new ExampleRequester(sow, matcher, requesterSig)
 const farmerConnections = new Map()
 
 // Discovery Channel
-const discoveryAID = `did:ara:desiredContent`
+const discoveryAID = 'did:ara:desiredContent'
 const channel = ann.discovery.createChannel()
 channel.join(discoveryAID)
 channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
 // Process peer on new peers
-function handlePeer (id, peer, type, requester){
-    const key = peer.host
-    if(!farmerConnections.has(key)){
-        console.log(`New peer: ${peer.host} on port: ${peer.port}`)
-        const port = `${peer.host}:50051`
-        const farmerConnection = connectToFarmer(port)
-        farmerConnections.set(key, farmerConnection)
-        requester.processFarmer(farmerConnection)
-    }
+function handlePeer(id, peer, type, requester) {
+  const key = peer.host
+  if (!farmerConnections.has(key)) {
+    console.log(`New peer: ${peer.host} on port: ${peer.port}`)
+    const port = `${peer.host}:50051`
+    const farmerConnection = connectToFarmer(port)
+    farmerConnections.set(key, farmerConnection)
+    requester.processFarmer(farmerConnection)
+  }
 }

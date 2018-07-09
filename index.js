@@ -6,10 +6,10 @@ const messages = require('./src/proto/messages_pb')
 const services = require('./src/proto/route-guide_grpc_pb')
 
 module.exports = {
-    Farmer,
-    FarmerServer,
-    Requester,
-    Matcher,
-    messages,
-    services
+  Farmer,
+  FarmerServer,
+  Requester,
+  Matcher,
+  messages,
+  services
 }

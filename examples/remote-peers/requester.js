@@ -46,7 +46,7 @@ class ExampleRequester extends Requester {
     return false
   }
 
-    /**
+  /**
    * This is called when a contract has been marked as valid and a farmer
    * is ready to start work
    * @param {messages.Contract} contract

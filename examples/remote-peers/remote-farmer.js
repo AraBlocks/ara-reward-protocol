@@ -6,7 +6,7 @@ const ip = require('ip')
 
 /*
     Example: Broadcasts availability on discovery channel did:ara:desiredChannel,
-    and runs farmer server on port 50051. 
+    and runs farmer server on port 50051.
 */
 
 const port = `${ip.address()}:50051`
@@ -14,7 +14,7 @@ const price = 6
 
 // Farmer ID
 const farmerID = new messages.ARAid()
-farmerID.setDid(`did:ara:2`)
+farmerID.setDid('did:ara:2')
 
 // Farmer Signature
 const farmerSig = new messages.Signature()
@@ -26,6 +26,6 @@ const farmer = new ExampleFarmer(farmerID, farmerSig, price)
 broadcastFarmer(farmer, port)
 
 // Discovery Channel
-const discoveryAID = `did:ara:desiredContent`
+const discoveryAID = 'did:ara:desiredContent'
 const channel = ann.discovery.createChannel()
 channel.join(discoveryAID, 19000)

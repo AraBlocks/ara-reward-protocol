@@ -24,7 +24,7 @@ class Requester {
     })
   }
 
-    /**
+  /**
    * Gets quotes from a single farmer for the defined SOW
    * @param {services.RFPClient} farmer
    */
