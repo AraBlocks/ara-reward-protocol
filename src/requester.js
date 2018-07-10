@@ -21,6 +21,10 @@ class Requester {
    * @param {services.RFPClient} farmers
    */
   processFarmers(farmers) {
+    if (!this.hasJob) {
+      return;
+    }
+
     farmers.forEach(farmer => {
       const responseHandler = function(err, response) {
         this.handleQuoteRequest(err, response, farmer);

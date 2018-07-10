@@ -37,6 +37,17 @@ function deserialize_messages_Quote(buffer_arg) {
   return messages_pb.Quote.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_messages_Reward(arg) {
+  if (!(arg instanceof messages_pb.Reward)) {
+    throw new Error('Expected argument of type messages.Reward');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_messages_Reward(buffer_arg) {
+  return messages_pb.Reward.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_messages_SOW(arg) {
   if (!(arg instanceof messages_pb.SOW)) {
     throw new Error('Expected argument of type messages.SOW');
@@ -76,10 +87,10 @@ var RFPService = exports.RFPService = {
     path: '/routeguide.RFP/DeliverReward',
     requestStream: false,
     responseStream: false,
-    requestType: messages_pb.SOW,
+    requestType: messages_pb.Reward,
     responseType: messages_pb.ARAid,
-    requestSerialize: serialize_messages_SOW,
-    requestDeserialize: deserialize_messages_SOW,
+    requestSerialize: serialize_messages_Reward,
+    requestDeserialize: deserialize_messages_Reward,
     responseSerialize: serialize_messages_ARAid,
     responseDeserialize: deserialize_messages_ARAid,
   },

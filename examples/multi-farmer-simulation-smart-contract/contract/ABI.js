@@ -216,4 +216,4 @@ module.exports = {
     }
   ],
   address: '0x3261bf986440cf315ce466071f783ade11019c38'
-};
+}

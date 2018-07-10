@@ -23,6 +23,12 @@ message Contract {
   Signature farmer_signature = 4;
 }
 
+message Reward {
+	SOW sow = 1;
+	ARAid farmer = 2;
+	int64 reward = 3;
+}
+
 message Signature {
   string ARAid = 1;
   bytes data = 2;

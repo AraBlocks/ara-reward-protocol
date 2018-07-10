@@ -5,9 +5,9 @@ const { Matcher } = require('./matcher')
 const messages = require('./proto/messages_pb')
 
 module.exports = {
-    Farmer,
-    FarmerServer,
-    Requester,
-    Matcher,
-    messages
+  Farmer,
+  FarmerServer,
+  Requester,
+  Matcher,
+  messages
 }
