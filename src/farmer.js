@@ -30,7 +30,7 @@ class Farmer {
       callback('Error: Invalid Contract', null)
     }
   }
-  
+
   /**
    * This should returns whether a user is valid.
    * @param {messages.ARAid} peer

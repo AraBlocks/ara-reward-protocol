@@ -3,19 +3,6 @@
   "version": "0.0.1",
   "description": "ARA Farming Protocol",
   "main": "index.js",
-  "dependencies": {
-    "google-protobuf": "^3.6.0",
-    "grpc": "^1.13.0-pre1",
-    "grpc-tools": "^1.6.6",
-    "web3": "^1.0.0-beta.34"
-  },
-  "devDependencies": {
-    "ava": "^0.25.0",
-    "eslint": "^4.19.1",
-    "eslint-config-ara": "github:arablocks/eslint-config-ara",
-    "eslint-plugin-import": "^2.12.0",
-    "sinon": "^6.0.1"
-  },
   "scripts": {
     "test": "ava test",
     "lint": "eslint .",
@@ -26,6 +13,7 @@
     "url": "git+https://github.com/littlstar/farming-protocol.git"
   },
   "keywords": [
+    "ara",
     "farming"
   ],
   "author": "@bplaster",
@@ -33,5 +21,19 @@
   "bugs": {
     "url": "https://github.com/littlstar/farming-protocol/issues"
   },
-  "homepage": "https://github.com/littlstar/farming-protocol#readme"
+  "homepage": "https://github.com/littlstar/farming-protocol#readme",
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "eslint": "^4.19.1",
+    "eslint-config-ara": "github:arablocks/eslint-config-ara",
+    "eslint-plugin-import": "^2.12.0",
+    "sinon": "^6.0.1",
+    "ara-network": "github:arablocks/ara-network"
+  },
+  "dependencies": {
+    "google-protobuf": "^3.6.0",
+    "grpc": "^1.13.0-pre1",
+    "grpc-tools": "^1.6.6",
+    "web3": "^1.0.0-beta.34"
+  }
 }
