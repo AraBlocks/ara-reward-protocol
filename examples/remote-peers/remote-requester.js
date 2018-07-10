@@ -1,6 +1,6 @@
 const { messages, grpcUtil, MaxCostMatcher } = require('ara-farming-protocol')
 const { ExampleRequester } = require('./requester')
-const ann = require('ara-network')
+const { createChannel } = require('ara-network/discovery')
 
 /**
  * Example: Finds peers on the discovery channel did:ara:desiredContent,
@@ -33,7 +33,7 @@ const farmerConnections = new Map()
 
 // Join the discovery channel for the requested content
 const discoveryAID = 'did:ara:1000'
-const channel = ann.discovery.createChannel()
+const channel = createChannel()
 channel.join(discoveryAID)
 channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
