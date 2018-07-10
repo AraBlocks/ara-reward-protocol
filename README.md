@@ -194,8 +194,9 @@ Different service requesters may have different needs when selecting peers, such
 ```
 
 ## Examples
-Note: as ara-farming-protocol is not yet on npm, you may need to run the following command prior to running an example:
+Note: as ara-farming-protocol is not yet on npm, you may need to run the following commands prior to running an example:
 ```
+$ npm link
 $ npm link ara-farming-protocol
 ```
 
