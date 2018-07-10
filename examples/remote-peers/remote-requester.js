@@ -1,13 +1,13 @@
-const { ExampleRequester } = require('./requester')
 const { messages, grpcUtil, MaxCostMatcher } = require('ara-farming-protocol')
-const ann = require('ara-network')
+const { ExampleRequester } = require('./requester')
+const { createChannel } = require('ara-network/discovery')
 
 /**
  * Example: Finds peers on the discovery channel did:ara:desiredContent,
- * then connects to each peer on example port 50051 to determine costs. 
+ * then connects to each peer on example port 50051 to determine costs.
  * Uses the MaxCostMatcher to determine peers.
  */
-    
+
 // A default matcher which will match for a max cost of 10 to a max of 5 farmers
 const matcher = new MaxCostMatcher(10, 5)
 
@@ -15,7 +15,7 @@ const matcher = new MaxCostMatcher(10, 5)
 const requesterID = new messages.ARAid()
 requesterID.setDid('did:ara:1')
 
-// A signature that a farmer can use to verify that the requester has signed a contract 
+// A signature that a farmer can use to verify that the requester has signed a contract
 const requesterSig = new messages.Signature()
 requesterSig.setId = requesterID
 requesterSig.setData('avalidsignature')
@@ -33,7 +33,7 @@ const farmerConnections = new Map()
 
 // Join the discovery channel for the requested content
 const discoveryAID = 'did:ara:1000'
-const channel = ann.discovery.createChannel()
+const channel = createChannel()
 channel.join(discoveryAID)
 channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
