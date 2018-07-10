@@ -10,7 +10,7 @@ const ip = require('ip')
 
 // The ARAid of the Farmer
 const farmerID = new messages.ARAid()
-farmerID.setDid('did:ara:2')
+farmerID.setDid('did:ara:brandonsPC')
 
 // A signature that a requester can use to verify that the farmer has signed an agreement
 const farmerSig = new messages.Signature()

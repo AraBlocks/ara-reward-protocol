@@ -4,7 +4,7 @@ class ExampleRequester extends Requester {
   constructor(sow, matcher, requesterSig) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'
-    this.contractId = 101
+    this.agreementId = 101
     this.requesterSig = requesterSig
   }
 
@@ -13,7 +13,7 @@ class ExampleRequester extends Requester {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     const farmerId = peer.getDid()
     if (farmerId == this.badFarmerId) {
       console.log(`Requester: Invalid farmer ${farmerId}`)
@@ -23,36 +23,36 @@ class ExampleRequester extends Requester {
   }
 
   /**
-   * Generates a contract for quote
+   * Generates a agreement for quote
    * @param {messages.Quote} quote
-   * @returns {messages.Contract}
+   * @returns {messages.Agreement}
    */
-  generateContract(quote) {
-    const contract = new messages.Contract()
-    contract.setId(this.contractId)
-    contract.setQuote(quote)
-    contract.setRequesterSignature(this.requesterSig)
-    return contract
+  async generateAgreement(quote) {
+    const agreement = new messages.Agreement()
+    agreement.setId(this.agreementId)
+    agreement.setQuote(quote)
+    agreement.setRequesterSignature(this.requesterSig)
+    return agreement
   }
 
   /**
-   * Returns whether a contract is valid.
-   * @param {messages.Contract} contract
+   * Returns whether a agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    if (contract.getId() == this.contractId) return true
+  async validateAgreement(agreement) {
+    if (agreement.getId() == this.agreementId) return true
     return false
   }
 
   /**
-   * This is called when a contract has been marked as valid and a farmer
+   * This is called when a agreement has been marked as valid and a farmer
    * is ready to start work
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    * @param {services.RFPClient} farmer
    */
-  onHireConfirmed(contract, farmer) {
-    console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract.getQuote().getFarmer().getDid()}`)
+  async onHireConfirmed(agreement, farmer) {
+    console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
   }
 }
 

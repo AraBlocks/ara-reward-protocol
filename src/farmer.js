@@ -7,10 +7,11 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.Quote)} callback Response callback
    */
-  handleQuoteRequest(call, callback) {
+  async handleQuoteRequest(call, callback) {
     const sow = call.request
-    if (this.validatePeer(sow.getRequester())) {
-      const quote = this.generateQuote(sow)
+    const valid = await this.validatePeer(sow.getRequester())
+    if (valid) {
+      const quote = await this.generateQuote(sow)
       callback(null, quote)
     } else {
       callback('Error: Invalid Auth', null)
@@ -22,10 +23,12 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.Agreement)} callback Response callback
    */
-  handleAgreementReceipt(call, callback) {
+  async handleAgreementReceipt(call, callback) {
     const agreement = call.request
-    if (this.validateAgreement(agreement)) {
-      callback(null, this.signAgreement(agreement))
+    const valid = await this.validateAgreement(agreement)
+    if (valid) {
+      const contract = await this.signAgreement(agreement)
+      callback(null, contract)
     } else {
       callback('Error: Invalid Agreement', null)
     }
@@ -36,7 +39,7 @@ class Farmer {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
   }
 
@@ -45,7 +48,7 @@ class Farmer {
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     throw new Error('Extended classes must implement generateQuote.')
   }
 
@@ -54,7 +57,7 @@ class Farmer {
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateAgreement(agreement) {
+  async validateAgreement(agreement) {
     throw new Error('Extended classes must implement validateAgreement.')
   }
 
@@ -63,7 +66,7 @@ class Farmer {
    * @param {messages.Agreement} agreement
    * @returns {messages.Agreement}
    */
-  signAgreement(agreement) {
+  async signAgreement(agreement) {
     throw new Error('Extended classes must implement signAgreement.')
   }
 }

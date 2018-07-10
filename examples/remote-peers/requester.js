@@ -13,7 +13,7 @@ class ExampleRequester extends Requester {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     const farmerId = peer.getDid()
     if (farmerId == this.badFarmerId) {
       console.log(`Requester: Invalid farmer ${farmerId}`)
@@ -27,7 +27,7 @@ class ExampleRequester extends Requester {
    * @param {messages.Quote} quote
    * @returns {messages.Agreement}
    */
-  generateAgreement(quote) {
+  async generateAgreement(quote) {
     const agreement = new messages.Agreement()
     agreement.setId(this.agreementId)
     agreement.setQuote(quote)
@@ -40,7 +40,7 @@ class ExampleRequester extends Requester {
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateAgreement(agreement) {
+  async validateAgreement(agreement) {
     if (agreement.getId() == this.agreementId) return true
     return false
   }
@@ -51,7 +51,7 @@ class ExampleRequester extends Requester {
    * @param {messages.Agreement} agreement
    * @param {services.RFPClient} farmer
    */
-  onHireConfirmed(agreement, farmer) {
+  async onHireConfirmed(agreement, farmer) {
     console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
   }
 }

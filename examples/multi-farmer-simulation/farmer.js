@@ -15,7 +15,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     const quote = new messages.Quote()
     quote.setId(this.quoteId)
     quote.setFarmer(this.farmerId)
@@ -29,7 +29,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateAgreement(agreement) {
+  async validateAgreement(agreement) {
     const quote = agreement.getQuote()
     return quote.getPerUnitCost() == this.price
   }
@@ -39,7 +39,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.Agreement} agreement
    * @returns {messages.Agreement}
    */
-  signAgreement(agreement) {
+  async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
     return agreement
   }
@@ -49,7 +49,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     const requesterId = peer.getDid()
     return requesterId != this.badRequesterId
   }
