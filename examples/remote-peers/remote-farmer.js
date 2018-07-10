@@ -1,6 +1,6 @@
-const { ExampleFarmer } = require('./farmer')
 const { messages, grpcUtil } = require('ara-farming-protocol')
-const ann = require('ara-network')
+const { createChannel } = require('ara-network/discovery')
+const { ExampleFarmer } = require('./farmer')
 const ip = require('ip')
 
 /**
@@ -12,7 +12,7 @@ const ip = require('ip')
 const farmerID = new messages.ARAid()
 farmerID.setDid('did:ara:2')
 
-// A signature that a requester can use to verify that the farmer has signed a contract 
+// A signature that a requester can use to verify that the farmer has signed a contract
 const farmerSig = new messages.Signature()
 farmerSig.setId = farmerID
 farmerSig.setData('avalidsignature')
@@ -28,5 +28,5 @@ farmerServer.start()
 
 // Broadcast on the discovery channel for what the farmer can produce
 const discoveryAID = 'did:ara:1000'
-const channel = ann.discovery.createChannel()
+const channel = createChannel()
 channel.join(discoveryAID, 19000)
