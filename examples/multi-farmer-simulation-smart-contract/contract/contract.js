@@ -99,7 +99,11 @@ class FarmingContract {
   }
 
   submitReward(farmerId, jobId, reward) {
-    console.log('Contract: reward submitted: ', reward);
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1000);
+    });
   }
 }
 

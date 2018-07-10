@@ -10,8 +10,7 @@ class ExampleRequester extends Requester {
     this.contractId = 101;
     this.smartContract = new Contract(requesterId, requesterKey);
 
-    this.farmers = [];
-    this.hasJob = false;
+    this.farmerServers = [];
   }
 
   async submitJob(budget) {
@@ -19,11 +18,9 @@ class ExampleRequester extends Requester {
       this.contractId,
       budget
     );
-
     if (response) {
       this.hasJob = true;
     }
-
     return response;
   }
 
@@ -67,8 +64,8 @@ class ExampleRequester extends Requester {
   /**
    * On receipt of a signed (and staked) contract from farmer, begins distribution of work
    */
-  onHireConfirmed(contract, farmer) {
-    this.farmers.push(farmer);
+  onHireConfirmed(contract, server) {
+    this.farmerServers.push(server);
     console.log(
       `Requester: Contract ${contract.getId()} signed by farmer ${contract
         .getQuote()
@@ -78,25 +75,65 @@ class ExampleRequester extends Requester {
   }
 
   /**
-   * Submit reward for each farmer to the contract after a job is done
+   * Handles a job on finished
    */
   onJobFinished(report) {
-    const smartContract = this.smartContract;
-    const sow = this.sow;
-    this.farmers.forEach(farmer => {
-      farmer.getQuote(this.sow, (error, quote) => {
-        const farmerId = quote.getFarmer().getDid();
-        const unitsDone = report.get(farmerId);
-        const reward = quote.getPerUnitCost() * unitsDone;
-        smartContract.submitReward(farmerId, sow.getId(), reward);
-
-        farmer.deliverReward(this.sow, (err, response) => {
-          console.log(
-            `Requester: farmer ${response.getDid()} has been notified about the reward delivery`
-          );
-        });
-      });
+    this.farmerServers.forEach(farmer => {
+      this.awardFarmer(farmer, report);
     });
+  }
+
+  /**
+   * Awards farmer for their work
+   */
+  awardFarmer(farmer, report) {
+    farmer.requestQuote(this.sow, (error, quote) => {
+      if (error) {
+        console.log(
+          `RequesterExample: Fail to get Quote while rewarding farmer`
+        );
+      } else {
+        const farmerId = quote.getFarmer().getDid();
+        const reward = this.calculateReward(farmerId, report, quote);
+        this.sendReward(farmer, farmerId, this.sow, reward);
+      }
+    });
+  }
+
+  /**
+   * Calculates farmer reward
+   */
+  calculateReward(farmerId, report, quote) {
+    const unitsDone = report.get(farmerId);
+    return quote.getPerUnitCost() * unitsDone;
+  }
+
+  /**
+   * Submits a reward to the contract, and notifies the farmer that their reward is available for withdraw
+   */
+  async sendReward(farmer, farmerId, sow, reward) {
+    const response = await this.smartContract.submitReward(
+      farmerId,
+      sow.getId(),
+      reward
+    );
+    if (response) {
+      farmer.deliverReward(sow, (err, response) => {
+        if (err) {
+          console.log(
+            `RequesterExample: fail to notify farmer ${farmerId} about the reward`
+          );
+        } else {
+          console.log(
+            `RequesterExample: farmer ${farmerId} has been notified about the reward delivery`
+          );
+        }
+      });
+    } else {
+      console.log(
+        `RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`
+      );
+    }
   }
 }
 

@@ -50,8 +50,8 @@ function deserialize_messages_SOW(buffer_arg) {
 
 
 var RFPService = exports.RFPService = {
-  getQuote: {
-    path: '/routeguide.RFP/GetQuote',
+  requestQuote: {
+    path: '/routeguide.RFP/RequestQuote',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.SOW,

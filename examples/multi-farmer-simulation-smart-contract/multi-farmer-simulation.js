@@ -74,20 +74,20 @@ const totalCost = matcher.maxCost * 10;
 requester.submitJob(totalCost).then(result => {
   if (result) {
     console.log('Job has been submitted to the contract');
+
+    requester.processFarmers(farmerConnections);
+
+    // simulate a report for when the job is finished
+    const report = new Map();
+    farmerIDs.forEach(farmerId => {
+      report.set(farmerId, Math.floor(Math.random() * 10));
+    });
+
+    // send the job report to the requester
+    setTimeout(() => {
+      requester.onJobFinished(report);
+    }, 1000);
   } else {
     console.log('Job submission failed');
   }
 });
-
-requester.processFarmers(farmerConnections);
-
-// simulate a report for when the job is finished
-const report = new Map();
-farmerIDs.forEach(farmerId => {
-  report.set(farmerId, Math.floor(Math.random() * 10));
-});
-
-// send the job report to the requester
-setTimeout(() => {
-  requester.onJobFinished(report);
-}, 1000);

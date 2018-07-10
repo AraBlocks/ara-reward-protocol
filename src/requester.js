@@ -12,6 +12,7 @@ class Requester {
   constructor(sow, matcher) {
     this.sow = sow;
     this.matcher = matcher;
+    this.hasJob = false;
   }
 
   /**
@@ -22,9 +23,9 @@ class Requester {
   processFarmers(farmers) {
     farmers.forEach(farmer => {
       const responseHandler = function(err, response) {
-        this.handleQuoteResponse(err, response, farmer);
+        this.handleQuoteRequest(err, response, farmer);
       };
-      farmer.getQuote(this.sow, responseHandler.bind(this));
+      farmer.requestQuote(this.sow, responseHandler.bind(this));
     });
   }
 
@@ -33,15 +34,15 @@ class Requester {
    * consider the quote and passes to the Matcher a callback for hiring
    * the farmer.
    * @param {Error} err
-   * @param {messages.Quote} response
+   * @param {messages.Quote} request
    * @param {services.RFPClient} farmer
    */
-  handleQuoteResponse(err, response, farmer) {
+  handleQuoteRequest(err, request, farmer) {
     if (err) {
       console.log(`Quote Response Error: ${err}`);
-    } else if (this.validatePeer(response.getFarmer())) {
-      const callback = () => this.hireFarmer(response, farmer);
-      this.matcher.validateQuote(response, callback.bind(this));
+    } else if (this.validatePeer(request.getFarmer())) {
+      const callback = () => this.hireFarmer(request, farmer);
+      this.matcher.validateQuote(request, callback.bind(this));
     }
   }
 
