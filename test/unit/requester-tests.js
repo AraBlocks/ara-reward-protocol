@@ -29,7 +29,7 @@ test('requester.handleQuoteResponse.InvalidPeer', async (t) => {
   sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
 
   const requester = new Requester(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').returns(false)
+  sinon.stub(requester, 'validatePeer').resolves(false)
 
   await requester.handleQuoteResponse(null, quote, null)
 
@@ -103,5 +103,6 @@ test('requester.processFarmers', async (t) => {
   }
 
   await requester.processFarmers([ stubRFP ])
+
   t.true(getQuoteFake.calledOnce)
 })

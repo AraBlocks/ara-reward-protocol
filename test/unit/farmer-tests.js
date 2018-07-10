@@ -18,7 +18,7 @@ test('farmer.handleQuoteRequest.ValidPeer', async (t) => {
     request: sow
   }
 
-  await farmer.handleQuoteRequest(stubCall, (error, response) => {
+  farmer.handleQuoteRequest(stubCall, (error, response) => {
     t.true(null === error)
     t.true(quote === response)
     t.true(quoteId === response.getId())
@@ -37,7 +37,7 @@ test('farmer.handleQuoteRequest.InvalidPeer', async (t) => {
     request: sow
   }
 
-  await farmer.handleQuoteRequest(stubCall, (error, response) => {
+  farmer.handleQuoteRequest(stubCall, (error, response) => {
     t.true(null != error)
     t.true(null === response)
   })
@@ -57,7 +57,7 @@ test('farmer.handleAgreementReceipt.ValidAgreement', async (t) => {
     request: agreement
   }
 
-  await farmer.handleAgreementReceipt(stubCall, (error, response) => {
+  farmer.handleAgreementReceipt(stubCall, (error, response) => {
     t.true(null === error)
     t.true(agreement === response)
     t.true(agreementId === response.getId())
@@ -76,7 +76,7 @@ test('farmer.handleAgreementReceipt.InvalidAgreement', async (t) => {
     request: agreement
   }
 
-  await farmer.handleAgreementReceipt(stubCall, (error, response) => {
+  farmer.handleAgreementReceipt(stubCall, (error, response) => {
     t.true(null != error)
     t.true(null === response)
     t.true(signAgreementFake.notCalled)
