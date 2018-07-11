@@ -20,7 +20,7 @@ test('requester.submitJob.succeed', async (t) => {
 
   requester.smartContract = stubContract
   await requester.submitJob(100).then((result) => {
-    t.true(requester.hasJob)
+    t.true(result)
   })
 })
 
@@ -37,7 +37,7 @@ test('requester.submitJob.fail', async (t) => {
 
   requester.smartContract = stubContract
   await requester.submitJob(100).then((result) => {
-    t.true(!requester.hasJob)
+    t.true(!result)
   })
 })
 

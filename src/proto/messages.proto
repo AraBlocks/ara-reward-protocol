@@ -26,7 +26,7 @@ message Contract {
 message Reward {
 	SOW sow = 1;
 	ARAid farmer = 2;
-	int64 reward = 3;
+	int64 reward = 3
 }
 
 message Signature {

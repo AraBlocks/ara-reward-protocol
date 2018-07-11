@@ -1,15 +1,9 @@
-const { Farmer, broadcastFarmer, connectToFarmer } = require('../../lib/farmer')
-const { Requester } = require('../../lib/requester')
-const { ExampleMatcher } = require('./matcher')
-const { ExampleFarmerAuth, ExampleRequesterAuth } = require('./peer-authenticators')
-const { ExampleQuoteGenerator } = require('./quote-generator')
-const { ExampleContractGenerator } = require('./contract-generator')
-const messages = require('../../lib/proto/messages_pb')
+const { ExampleFarmer } = require('./farmer')
+const { ExampleRequester } = require('./requester')
+const { messages, MaxCostMatcher, grpcUtil } = require('ara-farming-protocol')
 
-/*
-    Simulates and connects to a number of Farmer Servers
-*/
-function simulateFarmerConnections(count, authenticator) {
+// Simulates and connects to a number of Farmer Servers
+function simulateFarmerConnections(count) {
   const sPort = 50051
 
   const farmerConnections = []
@@ -17,18 +11,19 @@ function simulateFarmerConnections(count, authenticator) {
     const port = `localhost:${(sPort + i).toString()}`
     const price = 5 + Math.floor(Math.random() * 10)
 
-    const farmerSig = new messages.ARAid()
-    farmerSig.setId(i)
-    farmerSig.setSignature(Math.floor(1000 * Math.random()))
+    const farmerID = new messages.ARAid()
+    farmerID.setDid(`ara:did:${i}`)
 
-    const quoteGenerator = new ExampleQuoteGenerator(price, farmerSig)
+    const farmerSig = new messages.Signature()
+    farmerSig.setId = farmerID
+    farmerSig.setData('avalidsignature')
 
     // Generate Server
-    const farmer = new Farmer(i, quoteGenerator, authenticator)
-    broadcastFarmer(farmer, port)
+    const farmer = new ExampleFarmer(farmerID, farmerSig, price)
+    grpcUtil.broadcastFarmer(farmer, port)
 
     // Generate Client Connection
-    const connection = connectToFarmer(port)
+    const connection = grpcUtil.connectToFarmer(port)
     farmerConnections.push(connection)
   }
   return farmerConnections
@@ -42,22 +37,22 @@ function simulateFarmerConnections(count, authenticator) {
 */
 
 // Farmers
-const requestAuth = new ExampleRequesterAuth(10057)
-const farmerConnections = simulateFarmerConnections(10, requestAuth)
+const farmerConnections = simulateFarmerConnections(10)
 
 // Requester
-const contractGen = new ExampleContractGenerator(104)
-const matcher = new ExampleMatcher(10, 5)
-const farmAuth = new ExampleFarmerAuth(2)
+const matcher = new MaxCostMatcher(10, 5)
 
-const requesterSig = new messages.ARAid()
-requesterSig.setId(10056)
-requesterSig.setSignature(11111)
+const requesterID = new messages.ARAid()
+requesterID.setDid('ara:did:10056')
 
 const sow = new messages.SOW()
 sow.setId(2)
 sow.setWorkUnit('MB')
-sow.setRequester(requesterSig)
+sow.setRequester(requesterID)
 
-const requester = new Requester(sow, matcher, farmAuth, contractGen)
+const requesterSig = new messages.Signature()
+requesterSig.setId = requesterID
+requesterSig.setData('avalidsignature')
+
+const requester = new ExampleRequester(sow, matcher, requesterSig)
 requester.processFarmers(farmerConnections)

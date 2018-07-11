@@ -227,7 +227,7 @@ $ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 
 ### Multifarmer with Smart Contract Simulation
 
-This example extends Multifarmer Simulation to work with smart contract. Upon the start of a job, the requester submits to a simulated contract a budget. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
+This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
 
 ```
 $ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js

@@ -1,26 +1,21 @@
 const { Requester } = require('../../src/requester')
 const messages = require('../../src/proto/messages_pb')
-const Contract = require('./contract/contract.js')
+const ContractABI = require('./contract/contract.js')
 
 class ExampleRequester extends Requester {
   constructor(sow, matcher, requesterSig, requesterId, requesterKey) {
     super(sow, matcher)
-    this.badFarmerId = 'ara:did:2'
     this.requesterSig = requesterSig
     this.contractId = 101
-    this.smartContract = new Contract(requesterId, requesterKey)
-
-    this.farmerServers = []
+    this.smartContract = new ContractABI(requesterId, requesterKey)
+    this.hiredFarmers = new Map()
   }
 
   async submitJob(budget) {
     const response = await this.smartContract.createJob(
-      this.contractId,
+      this.sow.getId(),
       budget
     )
-    if (response) {
-      this.hasJob = true
-    }
     return response
   }
 
@@ -30,11 +25,6 @@ class ExampleRequester extends Requester {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    const farmerId = peer.getDid()
-    if (farmerId == this.badFarmerId) {
-      console.log(`Requester: Invalid farmer ${farmerId}`)
-      return false
-    }
     return true
   }
 
@@ -57,8 +47,7 @@ class ExampleRequester extends Requester {
    * @returns {boolean}
    */
   validateContract(contract) {
-    if (contract.getId() == this.contractId) return true
-    return false
+    return true
   }
 
   /**
@@ -67,7 +56,9 @@ class ExampleRequester extends Requester {
    * @param {grpc.Server} server
    */
   onHireConfirmed(contract, server) {
-    this.farmerServers.push(server)
+    const quote = contract.getQuote()
+    const farmerId = quote.getFarmer().getDid()
+    this.hiredFarmers.set(farmerId, [ server, quote ])
     console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract
       .getQuote()
       .getFarmer()
@@ -79,42 +70,36 @@ class ExampleRequester extends Requester {
    * @param {Map} report
    */
   onJobFinished(report) {
-    this.farmerServers.forEach((server) => {
-      this.awardFarmer(server, report)
+    this.hiredFarmers.forEach((value, key) => {
+      this.awardFarmer(value[0], value[1], report)
     })
   }
 
   /**
    * Awards farmer for their work
    * @param {grpc.Server} server
+   * @param {grpc.Quote} quote
    * @param {Map} report
    */
-  awardFarmer(server, report) {
-    server.requestQuote(this.sow, (error, quote) => {
-      if (error) {
-        console.log('RequesterExample: Fail to get Quote while rewarding farmer')
-      } else {
-        const farmer = quote.getFarmer()
-        const reward = this.generateReward(this.sow, farmer, report, quote)
-        this.sendReward(server, reward)
-      }
-    })
+  awardFarmer(server, quote, report) {
+    const reward = this.generateReward(quote, report)
+    this.sendReward(server, reward)
   }
 
   /**
    * Calculates farmer reward
-   * @param {messages.SOW} sow
    * @param {messages.ARAid} farmer
    * @param {Map} report
    * @param {messages.Quote} quote
    * @returns {messages.Reward}
    */
-  generateReward(sow, farmer, report, quote) {
+  generateReward(quote, report) {
+    const farmer = quote.getFarmer()
     const unitsDone = report.get(farmer.getDid())
     const cost = quote.getPerUnitCost() * unitsDone
 
     const reward = new messages.Reward()
-    reward.setSow(sow)
+    reward.setSow(this.sow)
     reward.setFarmer(farmer)
     reward.setReward(cost)
     return reward
@@ -127,7 +112,7 @@ class ExampleRequester extends Requester {
    */
   async sendReward(server, reward) {
     const farmerId = reward.getFarmer().getDid()
-    const sowId = reward.getSow().getId()
+    const sowId = this.sow.getId()
     const response = await this.smartContract.submitReward(
       farmerId,
       sowId,

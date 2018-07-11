@@ -1,9 +1,9 @@
-const { Farmer } = require('../../src/farmer')
-const messages = require('../../src/proto/messages_pb')
+const { messages, Farmer } = require('ara-farming-protocol')
 
 class ExampleFarmer extends Farmer {
   constructor(farmerId, farmerSig, price) {
     super()
+    this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
@@ -30,7 +30,8 @@ class ExampleFarmer extends Farmer {
    * @returns {boolean}
    */
   validateContract(contract) {
-    return true
+    const quote = contract.getQuote()
+    return quote.getPerUnitCost() == this.price
   }
 
   /**
@@ -49,16 +50,8 @@ class ExampleFarmer extends Farmer {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    return true
-  }
-
-  /**
-   * Handles a reward on noticed of delivery
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.ARAid)} callback Response callback
-   */
-  handleRewardDelivery(call, callback) {
-    callback(null, this.farmerId)
+    const requesterId = peer.getDid()
+    return requesterId != this.badRequesterId
   }
 }
 

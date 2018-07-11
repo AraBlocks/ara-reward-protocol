@@ -34,10 +34,11 @@ function simulateFarmerConnections(count) {
 }
 
 /*
-    Example: generate and connect to 10 farmers, then hire up to
-    5 farmers who charge <= 10 Ara per MB. Requester Authenticator
-    considers user 10057 as invalid requester. Farmer Authenticator
-    considers user 2 as an invalid farmer.
+    Example: The requester submits a budget to a simulated Ethereum contract to
+    start processing a job. 10 famers are generated, out of which 5 farmers who
+    charge <= 10 Ara per MB are hired. Rewards are calculated based on a report
+    that mapped random amount of contribution to each farmer. The requester distribute
+    these rewards through the contract, and on successful delivery, notify the famers
 */
 
 // Farmers
@@ -69,12 +70,10 @@ const requester = new ExampleRequester(
   requesterKey
 )
 
-// totalCost = Unit_Cost * Unit
-const totalCost = matcher.maxCost * 10
-requester.submitJob(totalCost).then((result) => {
+const budget = 100
+requester.submitJob(budget).then((result) => {
   if (result) {
     console.log('Job has been submitted to the contract')
-
     requester.processFarmers(farmerConnections)
 
     // generates a report when the job is finished

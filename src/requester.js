@@ -1,5 +1,5 @@
-const messages = require('./proto/messages_pb');
-const services = require('./proto/route-guide_grpc_pb');
+const messages = require('./proto/messages_pb')
+const services = require('./proto/route-guide_grpc_pb')
 
 class Requester {
   /**
@@ -10,9 +10,8 @@ class Requester {
    * @param {services.RFPClient} farmers
    */
   constructor(sow, matcher) {
-    this.sow = sow;
-    this.matcher = matcher;
-    this.hasJob = false;
+    this.sow = sow
+    this.matcher = matcher
   }
 
   /**
@@ -21,16 +20,12 @@ class Requester {
    * @param {services.RFPClient} farmers
    */
   processFarmers(farmers) {
-    if (!this.hasJob) {
-      return;
-    }
-
-    farmers.forEach(farmer => {
-      const responseHandler = function(err, response) {
-        this.handleQuoteRequest(err, response, farmer);
-      };
-      farmer.requestQuote(this.sow, responseHandler.bind(this));
-    });
+    farmers.forEach((farmer) => {
+      const responseHandler = function (err, response) {
+        this.handleQuoteResponse(err, response, farmer)
+      }
+      farmer.requestQuote(this.sow, responseHandler.bind(this))
+    })
   }
 
   /**
@@ -38,15 +33,15 @@ class Requester {
    * consider the quote and passes to the Matcher a callback for hiring
    * the farmer.
    * @param {Error} err
-   * @param {messages.Quote} request
+   * @param {messages.Quote} response
    * @param {services.RFPClient} farmer
    */
-  handleQuoteRequest(err, request, farmer) {
+  handleQuoteResponse(err, response, farmer) {
     if (err) {
-      console.log(`Quote Response Error: ${err}`);
-    } else if (this.validatePeer(request.getFarmer())) {
-      const callback = () => this.hireFarmer(request, farmer);
-      this.matcher.validateQuote(request, callback.bind(this));
+      console.log(`Quote Response Error: ${err}`)
+    } else if (this.validatePeer(response.getFarmer())) {
+      const callback = () => this.hireFarmer(response, farmer)
+      this.matcher.validateQuote(response, callback.bind(this))
     }
   }
 
@@ -56,11 +51,11 @@ class Requester {
    * @param {services.RFPClient} farmer
    */
   hireFarmer(quote, farmer) {
-    const contract = this.generateContract(quote);
-    const responseHandler = function(err, response) {
-      this.handleSignedContract(err, response, farmer);
-    };
-    farmer.awardContract(contract, responseHandler.bind(this));
+    const contract = this.generateContract(quote)
+    const responseHandler = function (err, response) {
+      this.handleSignedContract(err, response, farmer)
+    }
+    farmer.awardContract(contract, responseHandler.bind(this))
   }
 
   /**
@@ -72,11 +67,11 @@ class Requester {
    */
   handleSignedContract(err, response, farmer) {
     if (err) {
-      console.log(`Award Response Error: ${err}`);
+      console.log(`Award Response Error: ${err}`)
     } else if (this.validateContract(response)) {
-      this.onHireConfirmed(response, farmer);
+      this.onHireConfirmed(response, farmer)
     } else {
-      this.matcher.invalidateQuote(response.getQuote());
+      this.matcher.invalidateQuote(response.getQuote())
     }
   }
 
@@ -86,7 +81,7 @@ class Requester {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.');
+    throw new Error('Extended classes must implement validatePeer.')
   }
 
   /**
@@ -95,7 +90,7 @@ class Requester {
    * @returns {messages.Contract}
    */
   generateContract(quote) {
-    throw new Error('Extended classes must implement generateContract.');
+    throw new Error('Extended classes must implement generateContract.')
   }
 
   /**
@@ -104,7 +99,7 @@ class Requester {
    * @returns {boolean}
    */
   validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.');
+    throw new Error('Extended classes must implement validateContract.')
   }
 
   /**
@@ -114,8 +109,8 @@ class Requester {
    * @param {services.RFPClient} farmer
    */
   onHireConfirmed(contract, farmer) {
-    throw new Error('Extended classes must implement onHireConfirmed');
+    throw new Error('Extended classes must implement onHireConfirmed')
   }
 }
 
-module.exports = { Requester };
+module.exports = { Requester }
