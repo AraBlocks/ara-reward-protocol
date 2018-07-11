@@ -8,9 +8,13 @@ const ip = require('ip')
  * and runs farmer server on example port 50051.
  */
 
+const farmPort = `50051`
+const jobPort = `50052`
+
+
 // The ARAid of the Farmer
 const farmerID = new messages.ARAid()
-const farmerDID = 'did:ara:1'
+const farmerDID = ip.address() // HACK
 farmerID.setDid(farmerDID)
 
 // A signature that a requester can use to verify that the farmer has signed an agreement
@@ -23,7 +27,7 @@ const price = 6
 const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
 
 // Start broadcasting the willingness to farm
-const port = `${ip.address()}:50051`
+const port = `${ip.address()}:${farmPort}`
 const farmerServer = new grpcUtil.FarmerServer(farmer, port)
 farmerServer.start()
 
@@ -31,6 +35,7 @@ farmerServer.start()
 const discoveryAID = 'did:ara:1000'
 const channel = createChannel()
 channel.join(discoveryAID, 19000)
+
 
 
 function startWork(agreement){
@@ -44,11 +49,11 @@ function startWork(agreement){
     // Create a swarm for uploading the content
     const opts = {
         id: farmerDID,
-        stream: stream,
         whitelist: [requester]
     }
     const swarm = createSwarm(opts)
-    swarm.join(discoveryAID)
+    swarm.listen(jobPort)
+    //swarm.join(discoveryAID + ':private')
     swarm.on('connection', handleConnection)
 }
 

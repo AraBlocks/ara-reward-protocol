@@ -25,7 +25,7 @@ A task whose scope is defined by a statement of work.
 An agreed upon statement of work for a specific job between a farmer and a requester. This may reference a specific smart contract, or some other verifiable source, which can verify the details of an agreement.
 
 ### Introduction
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript. 
+AFP defines a set of services and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in node.
 
 A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 

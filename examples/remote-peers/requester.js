@@ -1,11 +1,13 @@
 const { messages, Requester } = require('ara-farming-protocol')
 
 class ExampleRequester extends Requester {
-  constructor(sow, matcher, requesterSig) {
+  constructor(sow, matcher, requesterSig, swarm) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'
     this.agreementId = 101
     this.requesterSig = requesterSig
+    this.swarm = swarm
+    this.jobPort = `50052`
   }
 
   /**
@@ -53,6 +55,8 @@ class ExampleRequester extends Requester {
    */
   async onHireConfirmed(agreement, farmer) {
     console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    const host = agreement.getQuote().getFarmer().getDid() // HACK
+    this.swarm.addPeer(host, {host: host, port: this.jobPort})
   }
 }
 

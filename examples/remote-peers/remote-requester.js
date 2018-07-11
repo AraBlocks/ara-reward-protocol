@@ -28,19 +28,6 @@ sow.setId(2)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 
-const requester = new ExampleRequester(sow, matcher, requesterSig)
-
-// The RPC Connections to the farmers
-const farmerConnections = new Map()
-
-// Join the discovery channel for the requested content
-const discoveryAID = 'did:ara:1000'
-const channel = createChannel()
-channel.join(discoveryAID)
-channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
-
-
-
 // TODO: Create cfs
 const stream = (peer) => {
     //return cfs.replicate()
@@ -49,11 +36,24 @@ const stream = (peer) => {
 // Create a swarm for downloading the content
 const opts = {
     id: requesterDID,
-    stream: stream
 }
 const swarm = createSwarm(opts)
-swarm.join(discoveryAID)
+//swarm.join(discoveryAID + ':private')
 swarm.on('connection', handleConnection)
+
+
+const requester = new ExampleRequester(sow, matcher, requesterSig, swarm)
+
+// The RPC Connections to the farmers
+const farmerConnections = new Map()
+
+
+// Join the discovery channel for the requested content
+const discoveryAID = 'did:ara:1000'
+const channel = createChannel()
+channel.join(discoveryAID)
+channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
+
 
 // Handle when a peer connects to the swarm
 function handleConnection(connection, info){
