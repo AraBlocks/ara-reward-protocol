@@ -909,7 +909,7 @@ proto.messages.Signature.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.Signature.toObject = function(includeInstance, msg) {
   var f, obj = {
-    araid: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    araId: (f = msg.getAraId()) && proto.messages.ARAid.toObject(includeInstance, f),
     data: msg.getData_asB64()
   };
 
@@ -948,8 +948,9 @@ proto.messages.Signature.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setAraid(value);
+      var value = new proto.messages.ARAid;
+      reader.readMessage(value,proto.messages.ARAid.deserializeBinaryFromReader);
+      msg.setAraId(value);
       break;
     case 2:
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
@@ -984,11 +985,12 @@ proto.messages.Signature.prototype.serializeBinary = function() {
  */
 proto.messages.Signature.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getAraid();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getAraId();
+  if (f != null) {
+    writer.writeMessage(
       1,
-      f
+      f,
+      proto.messages.ARAid.serializeBinaryToWriter
     );
   }
   f = message.getData_asU8();
@@ -1002,17 +1004,32 @@ proto.messages.Signature.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional string ARAid = 1;
- * @return {string}
+ * optional ARAid ara_id = 1;
+ * @return {?proto.messages.ARAid}
  */
-proto.messages.Signature.prototype.getAraid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.messages.Signature.prototype.getAraId = function() {
+  return /** @type{?proto.messages.ARAid} */ (
+    jspb.Message.getWrapperField(this, proto.messages.ARAid, 1));
 };
 
 
-/** @param {string} value */
-proto.messages.Signature.prototype.setAraid = function(value) {
-  jspb.Message.setField(this, 1, value);
+/** @param {?proto.messages.ARAid|undefined} value */
+proto.messages.Signature.prototype.setAraId = function(value) {
+  jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+proto.messages.Signature.prototype.clearAraId = function() {
+  this.setAraId(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.messages.Signature.prototype.hasAraId = function() {
+  return jspb.Message.getField(this, 1) != null;
 };
 
 

@@ -8,7 +8,7 @@ class Matcher {
    * @param {messages.Quote} quote
    * @param {function(messages.Agreement)} hireFarmerCallback
    */
-  validateQuote(quote, hireFarmerCallback) {
+  async validateQuote(quote, hireFarmerCallback) {
     throw new Error('Extended classes must implement validateQuote')
   }
 
@@ -16,7 +16,7 @@ class Matcher {
    * This is called when a quote is no longer valid.
    * @param {messages.Quote} quote
    */
-  invalidateQuote(quote) {
+  async invalidateQuote(quote) {
     throw new Error('Extended classes must implement invalidateQuote')
   }
 }

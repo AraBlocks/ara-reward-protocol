@@ -1,5 +1,4 @@
 const { Matcher } = require('../matcher')
-const messages = require('../../src/proto/messages_pb')
 
 // Matcher which hires a maximum number of workers for a maximum cost
 class MaxCostMatcher extends Matcher {
@@ -12,7 +11,7 @@ class MaxCostMatcher extends Matcher {
     this.reserveWorkers = []
   }
 
-  validateQuote(quote, hireFarmerCallback) {
+  async validateQuote(quote, hireFarmerCallback) {
     const farmerId = quote.getFarmer().getDid()
     this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, hireFarmerCallback))
 
@@ -25,7 +24,7 @@ class MaxCostMatcher extends Matcher {
     }
   }
 
-  invalidateQuote(quote) {
+  async invalidateQuote(quote) {
     const farmerId = quote.getFarmer().getDid()
     this.hiredQuoteCallbacks.delete(farmerId)
 

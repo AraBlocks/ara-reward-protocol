@@ -31,7 +31,7 @@ message Agreement {
 
 // A signature of a peer associated with an ARAid
 message Signature {
-  string ARAid = 1;
+  ARAid ara_id = 1;
   bytes data = 2;
 }
 

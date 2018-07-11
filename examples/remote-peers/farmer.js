@@ -1,13 +1,14 @@
 const { messages, Farmer } = require('ara-farming-protocol')
 
 class ExampleFarmer extends Farmer {
-  constructor(farmerId, farmerSig, price) {
+  constructor(farmerId, farmerSig, price, onStartWork) {
     super()
     this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
+    this.onStartWork = onStartWork
   }
 
   /**
@@ -42,6 +43,10 @@ class ExampleFarmer extends Farmer {
    */
   async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
+
+    // TEMP:
+    this.onStartWork(agreement)
+
     return agreement
   }
 
