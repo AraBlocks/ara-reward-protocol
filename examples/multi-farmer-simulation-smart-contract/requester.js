@@ -3,19 +3,16 @@ const messages = require('../../src/proto/messages_pb')
 const ContractABI = require('./contract/contract.js')
 
 class ExampleRequester extends Requester {
-  constructor(sow, matcher, requesterSig, requesterId, requesterKey) {
+  constructor(sow, matcher, requesterSig, contractABI) {
     super(sow, matcher)
     this.requesterSig = requesterSig
     this.contractId = 101
-    this.smartContract = new ContractABI(requesterId, requesterKey)
+    this.contractABI = contractABI
     this.hiredFarmers = new Map()
   }
 
   async submitJob(budget) {
-    const response = await this.smartContract.createJob(
-      this.sow.getId(),
-      budget
-    )
+    const response = await this.contractABI.createJob(this.sow.getId(), budget)
     return response
   }
 
@@ -113,7 +110,7 @@ class ExampleRequester extends Requester {
   async sendReward(server, reward) {
     const farmerId = reward.getFarmer().getDid()
     const sowId = this.sow.getId()
-    const response = await this.smartContract.submitReward(
+    const response = await this.contractABI.submitReward(
       farmerId,
       sowId,
       reward.getReward()

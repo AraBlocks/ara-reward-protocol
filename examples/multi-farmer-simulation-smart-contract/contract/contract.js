@@ -1,9 +1,8 @@
 const Web3 = require('web3')
 const { abi, address } = require('./ABI')
-const EthereumTx = require('ethereumjs-tx')
 
 class FarmingContract {
-  constructor(personalAddress, personalKey) {
+  constructor(personalAddress) {
     if (typeof this.web3 !== 'undefined') {
       this.web3 = new Web3(this.web3.currentProvider)
     } else {
@@ -12,7 +11,6 @@ class FarmingContract {
     this.contract = new this.web3.eth.Contract(abi, address)
     this.web3.eth.defaultAccount = personalAddress
     this.personalAddress = personalAddress
-    this.personalKey = personalKey
   }
 
   getBalance() {
@@ -72,6 +70,14 @@ class FarmingContract {
   }
 
   submitReward(farmerId, jobId, reward) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true)
+      }, 1000)
+    })
+  }
+
+  withdrawReward(farmerId, jobId, reward) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)

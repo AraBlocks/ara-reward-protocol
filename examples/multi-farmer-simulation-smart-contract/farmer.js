@@ -2,12 +2,14 @@ const { Farmer } = require('../../src/farmer')
 const messages = require('../../src/proto/messages_pb')
 
 class ExampleFarmer extends Farmer {
-  constructor(farmerId, farmerSig, price) {
+  constructor(farmerId, farmerSig, price, contractABI) {
     super()
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
+    this.contractABI = contractABI
+    this.reward = null
   }
 
   /**
@@ -52,12 +54,33 @@ class ExampleFarmer extends Farmer {
     return true
   }
 
+  async withdrawReward() {
+    const sowId = this.reward.getSow().getId()
+    const farmerId = this.reward.getFarmer().getDid()
+    const reward = this.reward.getReward()
+    const response = await this.contractABI.withdrawReward(
+      sowId,
+      farmerId,
+      reward
+    )
+
+    if (response) {
+      console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+    } else {
+      console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+    }
+  }
+
   /**
    * Handles a reward on noticed of delivery
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
   handleRewardDelivery(call, callback) {
+    this.reward = call.request
+    setTimeout(() => {
+      this.withdrawReward()
+    }, 1000)
     callback(null, this.farmerId)
   }
 }
