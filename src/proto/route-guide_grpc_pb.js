@@ -4,6 +4,17 @@
 var grpc = require('grpc');
 var messages_pb = require('./messages_pb.js');
 
+function serialize_messages_ARAid(arg) {
+  if (!(arg instanceof messages_pb.ARAid)) {
+    throw new Error('Expected argument of type messages.ARAid');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_messages_ARAid(buffer_arg) {
+  return messages_pb.ARAid.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_messages_Contract(arg) {
   if (!(arg instanceof messages_pb.Contract)) {
     throw new Error('Expected argument of type messages.Contract');
@@ -26,6 +37,17 @@ function deserialize_messages_Quote(buffer_arg) {
   return messages_pb.Quote.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_messages_Reward(arg) {
+  if (!(arg instanceof messages_pb.Reward)) {
+    throw new Error('Expected argument of type messages.Reward');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_messages_Reward(buffer_arg) {
+  return messages_pb.Reward.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_messages_SOW(arg) {
   if (!(arg instanceof messages_pb.SOW)) {
     throw new Error('Expected argument of type messages.SOW');
@@ -39,8 +61,8 @@ function deserialize_messages_SOW(buffer_arg) {
 
 
 var RFPService = exports.RFPService = {
-  getQuote: {
-    path: '/routeguide.RFP/GetQuote',
+  requestQuote: {
+    path: '/routeguide.RFP/RequestQuote',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.SOW,
@@ -60,6 +82,17 @@ var RFPService = exports.RFPService = {
     requestDeserialize: deserialize_messages_Contract,
     responseSerialize: serialize_messages_Contract,
     responseDeserialize: deserialize_messages_Contract,
+  },
+  deliverReward: {
+    path: '/routeguide.RFP/DeliverReward',
+    requestStream: false,
+    responseStream: false,
+    requestType: messages_pb.Reward,
+    responseType: messages_pb.ARAid,
+    requestSerialize: serialize_messages_Reward,
+    requestDeserialize: deserialize_messages_Reward,
+    responseSerialize: serialize_messages_ARAid,
+    responseDeserialize: deserialize_messages_ARAid,
   },
 };
 
