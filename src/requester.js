@@ -7,7 +7,6 @@ class Requester {
    * for a single task.
    * @param {messages.SOW} sow
    * @param {Matcher} matcher
-   * @param {services.RFPClient} farmers
    */
   constructor(sow, matcher) {
     this.sow = sow
@@ -21,11 +20,9 @@ class Requester {
    */
   processFarmers(farmers) {
     farmers.forEach((farmer) => {
-      const responseHandler = function (err, response) {
-        this.handleQuoteResponse(err, response, farmer)
-      }
-      farmer.requestQuote(this.sow, responseHandler.bind(this))
-}
+      this.processFarmer(farmer)
+    })
+  }
 
   /**
    * Gets quotes from a single farmer for the defined SOW
@@ -35,7 +32,7 @@ class Requester {
     const responseHandler = function (err, response) {
       this.handleQuoteResponse(err, response, farmer)
     }
-    farmer.getQuote(this.sow, responseHandler.bind(this))
+    farmer.requestQuote(this.sow, responseHandler.bind(this))
   }
 
   /**

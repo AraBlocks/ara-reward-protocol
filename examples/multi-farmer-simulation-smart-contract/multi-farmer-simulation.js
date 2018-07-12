@@ -1,8 +1,6 @@
 const { ExampleFarmer } = require('./farmer')
-const { broadcastFarmer, connectToFarmer } = require('../../src/farmer-server')
 const { ExampleRequester } = require('./requester')
-const { MaxCostMatcher } = require('../../src/matchers/max-cost-matcher')
-const messages = require('../../src/proto/messages_pb')
+const { messages, MaxCostMatcher, grpcUtil } = require('ara-farming-protocol')
 const wallets = require('./contract/contract_factory.js')
 
 // Simulates and connects to a number of Farmer Servers
@@ -24,10 +22,10 @@ function simulateFarmerConnections(count) {
 
     // Generate Server
     const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallets[i])
-    broadcastFarmer(farmer, port)
+    grpcUtil.broadcastFarmer(farmer, port)
 
     // Generate Client Connection
-    const connection = connectToFarmer(port)
+    const connection = grpcUtil.connectToFarmer(port)
     farmerConnections.push(connection)
     farmerIDs.push(id)
   }

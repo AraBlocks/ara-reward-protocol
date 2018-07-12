@@ -12,7 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/littlstar/farming-protocol.git"
   },
-  "keywords": ["ara", "farming"],
+  "keywords": [
+    "ara",
+    "farming"
+  ],
   "author": "@bplaster",
   "license": "LGPL-3.0",
   "bugs": {
