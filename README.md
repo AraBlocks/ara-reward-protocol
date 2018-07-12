@@ -216,6 +216,11 @@ Different service requesters may have different needs when selecting peers, such
 ```
 
 ## Examples
+Note: as ara-farming-protocol is not yet on npm, you may need to run the following commands prior to running an example:
+```
+$ npm link
+$ npm link ara-farming-protocol
+```
 
 ### Multifarmer Simulation
 
@@ -225,20 +230,37 @@ This example generates and connects to 10 local farmers, then hires up to 5 farm
 $ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 ```
 
+<<<<<<< HEAD
 ### Multifarmer with Smart Contract Simulation
 
 This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
 
 ```
 $ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js
+=======
+### Remote Peers
+The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
+
+On the farmer's computer/terminal:
+```
+$ node examples/remote-peers/remote-farmer.js
+```
+
+On the requester's computer/terminal:
+```
+$ node examples/remote-peers/remote-requester.js
+>>>>>>> master
 ```
 
 ## Local Development Setup
 
+<<<<<<< HEAD
 ### Generating gRPC and Protobuf files
 
 This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found [here](https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen)
 
+=======
+>>>>>>> master
 ```bash
 $ cd src/proto
 $ npm install -g grpc-tools

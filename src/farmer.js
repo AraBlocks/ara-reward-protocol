@@ -31,6 +31,7 @@ class Farmer {
     }
   }
 
+<<<<<<< HEAD
   /**
    * Proto RPC method for being awarded a contract
    * @param {EventEmitter} call Call object for the handler to process
@@ -40,6 +41,8 @@ class Farmer {
     throw new Error('Extended classes must implement handleRewardDelivery.')
   }
 
+=======
+>>>>>>> master
   /**
    * This should returns whether a user is valid.
    * @param {messages.ARAid} peer
