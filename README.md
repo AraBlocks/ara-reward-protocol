@@ -232,9 +232,19 @@ This example generates and connects to 10 local farmers, then hires up to 5 farm
 $ node examples/multi-farmer-simulation/multi-farmer-simulation.js
 ```
 
-### Multifarmer with Smart Contract Simulation
+### Multifarmer with Ethereum Smart Contract Simulation
 
 This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
+
+For this example, first install Ganache and Truffle through https://truffleframework.com/. Launch Ganache and run the codes below in Terminal:
+
+```
+$ cd examples/multi-farmer-simulation-smart-contract/farming_contract
+$ truffle compile
+$ truffle migrate
+```
+
+Replace wallet addresses in multi-farmer-simulation-smart-contract/constant.js with those from Ganache, and the contract address from the output.
 
 ```
 $ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js

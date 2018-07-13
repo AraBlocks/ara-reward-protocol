@@ -1,7 +1,7 @@
 const { ExampleFarmer } = require('./farmer')
 const { ExampleRequester } = require('./requester')
 const { messages, MaxCostMatcher, grpcUtil } = require('ara-farming-protocol')
-const wallets = require('./contract/contract_factory.js')
+const wallets = require('./constant.js')
 
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(count) {
@@ -65,23 +65,25 @@ const requester = new ExampleRequester(
   requesterWallet
 )
 
-const budget = 100
-const response = requesterWallet.createJob(sow.getId(), budget)
+const budget = 30
+requesterWallet
+  .submitJob(sow.getId(), budget)
+  .then((result) => {
+    console.log('Job has been submitted to the contract')
+    requester.processFarmers(farmerConnections)
 
-if (response) {
-  console.log('Job has been submitted to the contract')
-  requester.processFarmers(farmerConnections)
+    // generates a report when the job is finished
+    const report = new Map()
+    farmerIDs.forEach((farmerId) => {
+      report.set(farmerId, Math.floor(Math.random() * 10))
+    })
 
-  // generates a report when the job is finished
-  const report = new Map()
-  farmerIDs.forEach((farmerId) => {
-    report.set(farmerId, Math.floor(Math.random() * 10))
+    // sends the report to the requester
+    setTimeout(() => {
+      requester.onJobFinished(report)
+    }, 1000)
   })
-
-  // sends the report to the requester
-  setTimeout(() => {
-    requester.onJobFinished(report)
-  }, 1000)
-} else {
-  console.log('Job submission failed')
-}
+  .catch((err) => {
+    console.log(err)
+    console.log('Job submission failed')
+  })
