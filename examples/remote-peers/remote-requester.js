@@ -1,6 +1,7 @@
 const { messages, grpcUtil, MaxCostMatcher } = require('ara-farming-protocol')
 const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleRequester } = require('./requester')
+const afs = require('ara-filesystem')
 const ip = require('ip')
 
 /**
@@ -28,30 +29,31 @@ sow.setId(2)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 
-// TODO: Create cfs
-const stream = (peer) => {
-    //return cfs.replicate()
-}
-
 // Create a swarm for downloading the content
+const discoveryAID = 'did:ara:37f2a1642282b662fc2576951a27a5b7087e1978970251c924efcb5e8a91211d'
+const desiredAFS = afs.create({
+    did: discoveryAID,
+})
+const stream = (peer) => {
+    return desiredAFS.replicate({
+        download:true,
+        upload:false
+    })
+}
 const opts = {
     id: requesterDID,
+    stream: stream
 }
 const swarm = createSwarm(opts)
-//swarm.join(discoveryAID + ':private')
 swarm.on('connection', handleConnection)
-
-
-const requester = new ExampleRequester(sow, matcher, requesterSig, swarm)
 
 // The RPC Connections to the farmers
 const farmerConnections = new Map()
 
-
 // Join the discovery channel for the requested content
-const discoveryAID = 'did:ara:1000'
 const channel = createChannel()
 channel.join(discoveryAID)
+const requester = new ExampleRequester(sow, matcher, requesterSig, swarm)
 channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
 

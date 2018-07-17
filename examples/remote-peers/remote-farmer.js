@@ -1,6 +1,7 @@
 const { messages, grpcUtil } = require('ara-farming-protocol')
 const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleFarmer } = require('./farmer')
+const afs = require('ara-filesystem')
 const ip = require('ip')
 
 /**
@@ -23,6 +24,7 @@ farmerSig.setAraId(farmerID)
 farmerSig.setData('avalidsignature')
 
 // The Farmer instance which sets a specific price, an ID, and a signature
+const discoveryAID = 'did:ara:37f2a1642282b662fc2576951a27a5b7087e1978970251c924efcb5e8a91211d'
 const price = 6
 const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
 
@@ -31,29 +33,34 @@ const port = `${ip.address()}:${farmPort}`
 const farmerServer = new grpcUtil.FarmerServer(farmer, port)
 farmerServer.start()
 
+// Create AFS for upload
+const availableAFS = afs.create({
+    did: discoveryAID,
+})
+const stream = (peer) => {
+    return availableAFS.replicate({
+        download:false,
+        upload:true
+    })
+}
+
 // Broadcast on the discovery channel for what the farmer can produce
-const discoveryAID = 'did:ara:1000'
 const channel = createChannel()
 channel.join(discoveryAID, 19000)
-
 
 
 function startWork(agreement){
     const requester = agreement.getRequesterSignature().getAraId()
     console.log(`Agreement Data: ${requester}`)
-    // TODO: Create cfs
-    const stream = (peer) => {
-        //return cfs.replicate()
-    }
 
     // Create a swarm for uploading the content
     const opts = {
         id: farmerDID,
-        whitelist: [requester]
+        whitelist: [requester],
+        stream: stream
     }
     const swarm = createSwarm(opts)
     swarm.listen(jobPort)
-    //swarm.join(discoveryAID + ':private')
     swarm.on('connection', handleConnection)
 }
 

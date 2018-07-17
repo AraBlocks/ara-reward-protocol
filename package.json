@@ -28,7 +28,9 @@
     "eslint-config-ara": "github:arablocks/eslint-config-ara",
     "eslint-plugin-import": "^2.12.0",
     "sinon": "^6.0.1",
-    "ara-network": "github:arablocks/ara-network"
+    "ara-network": "github:arablocks/ara-network",
+    "ara-filesystem": "github:arablocks/ara-filesystem",
+    "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration"
   },
   "dependencies": {
     "google-protobuf": "^3.6.0",
