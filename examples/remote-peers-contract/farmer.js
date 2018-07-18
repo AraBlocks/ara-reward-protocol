@@ -1,13 +1,14 @@
 const { messages, Farmer } = require('ara-farming-protocol')
 
 class ExampleFarmer extends Farmer {
-  constructor(farmerId, farmerSig, price) {
+  constructor(farmerId, farmerSig, price, onStartWork) {
     super()
     this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
+    this.onStartWork = onStartWork
   }
 
   /**
@@ -15,7 +16,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
     quote.setId(this.quoteId)
@@ -26,23 +27,27 @@ class ExampleFarmer extends Farmer {
   }
 
   /**
-   * Returns whether a contract is valid
-   * @param {messages.Contract} contract
+   * Returns whether a agreement is valid
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    const quote = contract.getQuote()
+  async validateAgreement(agreement) {
+    const quote = agreement.getQuote()
     return quote.getPerUnitCost() == this.price
   }
 
   /**
-   * Sign and return a contract
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * Sign and return a agreement
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    contract.setFarmerSignature(this.farmerSig)
-    return contract
+  async signAgreement(agreement) {
+    agreement.setFarmerSignature(this.farmerSig)
+
+    // TEMP:
+    this.onStartWork(agreement)
+
+    return agreement
   }
 
   /**
@@ -50,7 +55,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     const requesterId = peer.getDid()
     return requesterId != this.badRequesterId
   }
