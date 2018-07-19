@@ -11,7 +11,6 @@ const ip = require('ip')
 const farmPort = `50051`
 const jobPort = `50052`
 
-
 // The ARAid of the Farmer
 const farmerID = new messages.ARAid()
 const farmerDID = ip.address() // HACK
@@ -36,29 +35,26 @@ const discoveryAID = 'did:ara:1000'
 const channel = createChannel()
 channel.join(discoveryAID, 19000)
 
+function startWork(agreement) {
+  const requester = agreement.getRequesterSignature().getAraId()
+  console.log(`Agreement Data: ${requester}`)
+  // TODO: Create cfs
+  const stream = peer => {
+    //return cfs.replicate()
+  }
 
-
-function startWork(agreement){
-    const requester = agreement.getRequesterSignature().getAraId()
-    console.log(`Agreement Data: ${requester}`)
-    // TODO: Create cfs
-    const stream = (peer) => {
-        //return cfs.replicate()
-    }
-
-    // Create a swarm for uploading the content
-    const opts = {
-        id: farmerDID,
-        whitelist: [requester]
-    }
-    const swarm = createSwarm(opts)
-    swarm.listen(jobPort)
-    //swarm.join(discoveryAID + ':private')
-    swarm.on('connection', handleConnection)
+  // Create a swarm for uploading the content
+  const opts = {
+    id: farmerDID,
+    whitelist: [requester]
+  }
+  const swarm = createSwarm(opts)
+  swarm.listen(jobPort)
+  //swarm.join(discoveryAID + ':private')
+  swarm.on('connection', handleConnection)
 }
 
-
 // Handle when a peer connects to the swarm
-function handleConnection(connection, info){
-    console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
+function handleConnection(connection, info) {
+  console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
 }

@@ -3,7 +3,9 @@ const { abi } = require('./build/contracts/Farming.json')
 
 class ContractABI {
   constructor(contractAdd, walletAdd) {
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'))
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider('http://192.168.128.232:7545')
+    )
     this.wallet = walletAdd
     this.contract = new web3.eth.Contract(abi, contractAdd)
   }

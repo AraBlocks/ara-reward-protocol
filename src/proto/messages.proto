@@ -19,7 +19,7 @@ message Quote {
 
 /**
  * An abstract agreement between two parties (a requester and a farmer)
- * spelling out the terms of a specific job 
+ * spelling out the terms of a specific job
  **/
 message Agreement {
   int64 id = 1;
@@ -33,6 +33,12 @@ message Agreement {
 message Signature {
   ARAid ara_id = 1;
   bytes data = 2;
+}
+
+message Reward {
+	SOW sow = 1;
+	ARAid farmer = 2;
+	int64 reward = 3;
 }
 
 // An ARAid
