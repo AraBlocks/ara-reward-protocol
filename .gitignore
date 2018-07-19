@@ -64,6 +64,10 @@ typings/
 # npm
 package-lock.json
 
+# truffle
+build/contracts/
+
+
 # IDE dependencies
 .vscode/
 
