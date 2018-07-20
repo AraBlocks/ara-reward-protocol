@@ -1,19 +1,13 @@
 const { Requester } = require('../../src/requester')
 const messages = require('../../src/proto/messages_pb')
-const ContractABI = require('./contract/contract.js')
 
 class ExampleRequester extends Requester {
-  constructor(sow, matcher, requesterSig, contractABI) {
+  constructor(sow, matcher, requesterSig, wallet) {
     super(sow, matcher)
     this.requesterSig = requesterSig
     this.contractId = 101
-    this.contractABI = contractABI
+    this.wallet = wallet
     this.hiredFarmers = new Map()
-  }
-
-  async submitJob(budget) {
-    const response = await this.contractABI.createJob(this.sow.getId(), budget)
-    return response
   }
 
   /**
@@ -107,25 +101,24 @@ class ExampleRequester extends Requester {
    * @param {grpc.Server} server
    * @param {messages.Reward} reward
    */
-  async sendReward(server, reward) {
+  sendReward(server, reward) {
     const farmerId = reward.getFarmer().getDid()
     const sowId = this.sow.getId()
-    const response = await this.contractABI.submitReward(
-      farmerId,
-      sowId,
-      reward.getReward()
-    )
-    if (response) {
-      server.deliverReward(reward, (err, response) => {
-        if (err) {
-          console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
-        } else {
-          console.log(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
-        }
+    const rewardValue = reward.getReward()
+    this.wallet
+      .submitReward(sowId, farmerId, rewardValue)
+      .then((result) => {
+        server.deliverReward(reward, (err, response) => {
+          if (err) {
+            console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
+          } else {
+            console.log(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
+          }
+        })
       })
-    } else {
-      console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
-    }
+      .catch((err) => {
+        console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
+      })
   }
 }
 
