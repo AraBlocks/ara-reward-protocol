@@ -30,7 +30,8 @@
     "sinon": "^6.0.1",
     "ara-network": "github:arablocks/ara-network",
     "ara-filesystem": "github:arablocks/ara-filesystem",
-    "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration"
+    "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
+    "pump": "^3.0.0"
   },
   "dependencies": {
     "google-protobuf": "^3.6.0",
