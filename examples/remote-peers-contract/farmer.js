@@ -3,7 +3,6 @@ const { messages, Farmer } = require('ara-farming-protocol')
 class ExampleFarmer extends Farmer {
   constructor(farmerId, farmerSig, price, onStartWork) {
     super()
-    this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
@@ -56,8 +55,33 @@ class ExampleFarmer extends Farmer {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    const requesterId = peer.getDid()
-    return requesterId != this.badRequesterId
+    return true
+  }
+
+  async withdrawReward() {
+    const sowId = this.reward.getSow().getId()
+    const farmerId = this.reward.getFarmer().getDid()
+    this.wallet
+      .claimReward(sowId, farmerId)
+      .then(result => {
+        console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+      })
+      .catch(err => {
+        console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+      })
+  }
+
+  /**
+   * Handles a reward on noticed of delivery
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.ARAid)} callback Response callback
+   */
+  handleRewardDelivery(call, callback) {
+    this.reward = call.request
+    setTimeout(() => {
+      this.withdrawReward()
+    }, 1000)
+    callback(null, this.farmerId)
   }
 }
 
