@@ -31,7 +31,7 @@ const farmerServer = new grpcUtil.FarmerServer(farmer, port)
 farmerServer.start()
 
 // Broadcast on the discovery channel for what the farmer can produce
-const discoveryAID = 'did:ara:1000'
+const discoveryAID = 'did:ara:1001'
 const channel = createChannel()
 channel.join(discoveryAID, 19000)
 

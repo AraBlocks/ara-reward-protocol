@@ -116,6 +116,7 @@ class ExampleRequester extends Requester {
     const farmerId = reward.getFarmer().getDid()
     const sowId = this.sow.getId()
     const rewardValue = reward.getReward()
+
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
       .then(result => {

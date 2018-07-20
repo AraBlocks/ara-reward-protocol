@@ -52,15 +52,22 @@ const budget = 1
 requesterWallet
   .submitJob(sow.getId(), budget)
   .then(result => {
-    console.log('get to here')
-
     // Join the discovery channel for the requested content
-    const discoveryAID = 'did:ara:1000'
+    const discoveryAID = 'did:ara:1001'
     const channel = createChannel()
     channel.join(discoveryAID)
     channel.on('peer', (id, peer, type) =>
       handlePeer(id, peer, type, requester)
     )
+
+    // Simulate ending of the job after 2 seconds
+    setTimeout(() => {
+      const report = new Map()
+      farmerConnections.forEach((value, key) => {
+        report.set(key, Math.floor(Math.random() * 10))
+      })
+      requester.onJobFinished(report)
+    }, 5000)
   })
   .catch(err => {
     console.log(err)
@@ -73,7 +80,6 @@ function handleConnection(connection, info) {
 
 // Process each peer when a new peer is discovered
 function handlePeer(id, peer, type, requester) {
-  console.log('handle peer')
   const key = peer.host
   if (!farmerConnections.has(key)) {
     console.log(`CHANNEL: New peer: ${peer.host} on port: ${peer.port}`)
