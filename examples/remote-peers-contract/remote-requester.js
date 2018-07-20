@@ -42,8 +42,14 @@ const swarm = createSwarm(opts)
 //swarm.join(discoveryAID + ':private')
 swarm.on('connection', handleConnection)
 
-const requesterWallet = wallets[4]
-const requester = new ExampleRequester(sow, matcher, requesterSig, swarm)
+const requesterWallet = wallets[0]
+const requester = new ExampleRequester(
+  sow,
+  matcher,
+  requesterSig,
+  swarm,
+  requesterWallet
+)
 
 // The RPC Connections to the farmers
 const farmerConnections = new Map()

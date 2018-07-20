@@ -2,6 +2,7 @@ const { messages, grpcUtil } = require('ara-farming-protocol')
 const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleFarmer } = require('./farmer')
 const ip = require('ip')
+const wallets = require('./constant.js')
 
 /**
  * Example: Broadcasts availability on discovery channel did:ara:desiredChannel,
@@ -23,7 +24,13 @@ farmerSig.setData('avalidsignature')
 
 // The Farmer instance which sets a specific price, an ID, and a signature
 const price = 6
-const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
+const farmer = new ExampleFarmer(
+  farmerID,
+  farmerSig,
+  price,
+  startWork,
+  wallets[1]
+)
 
 // Start broadcasting the willingness to farm
 const port = `${ip.address()}:${farmPort}`
