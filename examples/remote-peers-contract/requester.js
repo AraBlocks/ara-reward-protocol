@@ -1,14 +1,13 @@
 const { messages, Requester } = require('ara-farming-protocol')
 
 class ExampleRequester extends Requester {
-  constructor(sow, matcher, requesterSig, swarm, wallet) {
+  constructor(sow, matcher, requesterSig, onStartWork, wallet) {
     super(sow, matcher)
     this.agreementId = 101
     this.wallet = wallet
     this.requesterSig = requesterSig
-    this.swarm = swarm
-    this.jobPort = `50052`
     this.hiredFarmers = new Map()
+    this.onStartWork = onStartWork
   }
 
   /**
@@ -59,11 +58,12 @@ class ExampleRequester extends Requester {
         .getFarmer()
         .getDid()}`
     )
+
     const host = agreement
       .getQuote()
       .getFarmer()
       .getDid() // HACK
-    this.swarm.addPeer(host, { host: host, port: this.jobPort })
+    this.onStartWork(host)
   }
 
   /**
