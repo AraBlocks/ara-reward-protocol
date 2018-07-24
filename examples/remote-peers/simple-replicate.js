@@ -85,4 +85,7 @@ async function download (did) {
     }
 }
 
-
+module.exports = { 
+    broadcast,
+    download
+ }
