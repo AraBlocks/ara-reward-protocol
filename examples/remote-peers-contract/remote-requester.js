@@ -3,6 +3,7 @@ const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleRequester } = require('./requester')
 const ip = require('ip')
 const wallets = require('./constant.js')
+const afs = require('ara-filesystem')
 
 /**
  * Example: Finds peers on the discovery channel did:ara:desiredContent,
@@ -35,6 +36,10 @@ async function main() {
   // The RPC Connections to the farmers
   const farmerConnections = new Map()
 
+  // Create a swarm for downloading the content
+  const discoveryAID =
+    'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
+  const requesterWallet = wallets[0]
   const budget = 1
   requesterWallet
     .submitJob(sow.getId(), budget)
@@ -46,8 +51,12 @@ async function main() {
         sow,
         matcher,
         requesterSig,
-        startWork
+        startWork,
+        requesterWallet
       )
+
+      console.log('looking for peer')
+
       channel.on('peer', (id, peer, type) =>
         handlePeer(id, peer, type, requester)
       )
@@ -56,13 +65,11 @@ async function main() {
       console.log(err)
     })
 
-  // Create a swarm for downloading the content
-  const discoveryAID =
-    'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
-
   async function loadAFS(aid) {
+    console.log(aid)
     const createResp = await afs.create({
-      did: aid
+      did: aid,
+      password: 'test'
     })
     return createResp.afs
   }
