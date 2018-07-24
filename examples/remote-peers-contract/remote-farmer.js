@@ -3,6 +3,7 @@ const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleFarmer } = require('./farmer')
 const ip = require('ip')
 const wallets = require('./constant.js')
+const afs = require('ara-filesystem')
 
 /**
  * Example: Broadcasts availability on discovery channel did:ara:desiredChannel,
@@ -27,7 +28,7 @@ async function main() {
 
   // The Farmer instance which sets a specific price, an ID, and a signature
   const discoveryAID =
-    'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
+    'did:ara:3abc0eedd6f9b7f44c06a182b70c2c65b9faf89ddfdbbe1221b2395d0a7c4a08'
   const price = 6
   const farmer = new ExampleFarmer(
     farmerID,
@@ -57,26 +58,16 @@ async function main() {
     // Create a swarm for uploading the content
     const opts = {
       id: farmerDID,
-      whitelist: [requester],
       stream: stream
-      //connect: connect
     }
 
     const swarm = createSwarm(opts)
     swarm.listen(jobPort)
-    //swarm.join(`privateDiscTest`)
-    swarm.setMaxListeners(Infinity)
 
     swarm.on('connection', handleConnection)
 
     swarm.on('error', err => {
       console.log('SWARM: error:', err.message)
-    })
-    swarm.on('peer', () => {
-      console.log(`SWARM: OnPeer!`)
-    })
-    swarm.on('authorize', (id, done) => {
-      console.log(`authorize peer: ${id}`)
     })
 
     function stream(peer) {
@@ -87,16 +78,6 @@ async function main() {
       stream.once('end', onend)
       return stream
     }
-
-    // function connect(connection, wire){
-    //     const host = `${wire.remoteAddress}`.replace('::ffff:', '')
-    //     if(!reqMap.has(host)){
-    //         console.log(`Connect called ${host}`)
-    //         reqMap.set(host, wire)
-    //         pump(wire, connection, wire)
-    //         //connection.emit('handshake', host)
-    //     }
-    // }
 
     function onend() {
       uploadAFS.close()
