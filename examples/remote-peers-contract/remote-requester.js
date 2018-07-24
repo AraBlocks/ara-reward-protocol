@@ -38,24 +38,25 @@ async function main() {
 
   // Create a swarm for downloading the content
   const discoveryAID =
-    'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
+    'did:ara:3abc0eedd6f9b7f44c06a182b70c2c65b9faf89ddfdbbe1221b2395d0a7c4a08'
+  const channel = createChannel()
+  channel.join(discoveryAID)
+  let requester
+
   const requesterWallet = wallets[0]
   const budget = 1
   requesterWallet
     .submitJob(sow.getId(), budget)
     .then(result => {
       // Join the discovery channel for the requested content
-      const channel = createChannel()
-      channel.join(discoveryAID)
-      const requester = new ExampleRequester(
+
+      requester = new ExampleRequester(
         sow,
         matcher,
         requesterSig,
         startWork,
         requesterWallet
       )
-
-      console.log('looking for peer')
 
       channel.on('peer', (id, peer, type) =>
         handlePeer(id, peer, type, requester)
@@ -68,57 +69,45 @@ async function main() {
   async function loadAFS(aid) {
     console.log(aid)
     const createResp = await afs.create({
-      did: aid,
-      password: 'test'
+      did: aid
     })
     return createResp.afs
   }
 
   async function startWork(ip) {
+    console.log('start work', ip)
     const jobPort = `50052`
     const downloadAFS = await loadAFS(discoveryAID)
 
+    console.log('start work here')
+    console.log(downloadAFS.identifier)
+    console.log(downloadAFS.key)
+
     const opts = {
       id: requesterDID,
-      stream: stream,
-      whitelist: [ip]
-      //connect: connect
+      stream: stream
     }
 
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
+    // swarm.join('privateDiscTest')
     swarm.addPeer(ip, { host: ip, port: jobPort })
 
-    // function connect(connection, wire){
-    //     console.log("Connect called")
-    //     pump(wire, connection, wire)
-    //     swarm.emit('connection', connection, connection.peer)
-    //     //connection.emit('handshake', requesterDID)
-    // }
-
     function stream(peer) {
-      const partition = downloadAFS.partitions.resolve(downloadAFS.HOME)
-      if (partition.content) {
-        const { content } = partition
-        content.once('sync', () => {
-          console.log('Did sync %s', toLower(bytes(content.byteLength)))
-        })
-      }
-
+      console.log('stream', peer)
       const stream = downloadAFS.replicate({
         upload: false,
         download: true
       })
       stream.once('end', onend)
-      stream.peer = peer
       return stream
     }
 
     async function onend() {
+      console.log('onend')
       downloadAFS.close()
       swarm.destroy()
       channel.destroy()
-      console.log(await downloadAFS.readdir('.'))
       console.log(`Downloaded!`)
       console.log('Swarm destroyed')
 
@@ -134,12 +123,6 @@ async function main() {
       console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
 
       try {
-        downloadAFS.on('sync', () => {
-          console.log('SYNC!')
-        })
-        downloadAFS.on('syncing', () => {
-          console.log('SYNCING!')
-        })
         await downloadAFS.download('.')
       } catch (err) {
         console.log(`Error: ${err}`)

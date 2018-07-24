@@ -63,6 +63,7 @@ class ExampleRequester extends Requester {
       .getQuote()
       .getFarmer()
       .getDid() // HACK
+
     this.onStartWork(host)
   }
 
