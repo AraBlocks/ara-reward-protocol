@@ -31,6 +31,6 @@ Similarly, on the farmer machine, run:
 
 * `$ node remote-farmer.js`
 
-The logs will indicate when the syncing is done. The downloaded content is replicated and placed in
+The logs will indicate when the syncing is done. The content is replicated and placed in
 
 * `~/.ara/afs/<did>/home/content/data`
