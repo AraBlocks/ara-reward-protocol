@@ -5,12 +5,6 @@ const ip = require('ip')
 const wallets = require('./constant.js')
 const afs = require('ara-filesystem')
 
-/**
- * Example: Finds peers on the discovery channel did:ara:desiredContent,
- * then connects to each peer on example port 50051 to determine costs.
- * Uses the MaxCostMatcher to determine peers.
- */
-
 // A default matcher which will match for a max cost of 10 to a max of 5 farmers
 const matcher = new MaxCostMatcher(10, 5)
 
@@ -126,6 +120,3 @@ async function startWork(ip) {
     requester.onJobFinished(report)
   }
 }
-
-// Create channel to discover each other => process each farmer using grpc =>
-// When the farmer gets hired, spin up swarm to do the streaming work
