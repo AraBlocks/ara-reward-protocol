@@ -50,14 +50,12 @@ class ExampleRequester extends Requester {
   async onHireConfirmed(agreement, server) {
     const quote = agreement.getQuote()
     const farmerId = quote.getFarmer().getDid()
-    this.hiredFarmers.set(farmerId, [server, quote])
+    this.hiredFarmers.set(farmerId, [ server, quote ])
 
-    console.log(
-      `Requester: Agreement ${agreement.getId()} signed by farmer ${agreement
-        .getQuote()
-        .getFarmer()
-        .getDid()}`
-    )
+    console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement
+      .getQuote()
+      .getFarmer()
+      .getDid()}`)
 
     const host = agreement
       .getQuote()
@@ -114,31 +112,23 @@ class ExampleRequester extends Requester {
    */
 
   sendReward(server, reward) {
-    console.log(
-      'Requester: submits reward to the contract and notifies the farmer'
-    )
+    console.log('Requester: submits reward to the contract and notifies the farmer')
     const farmerId = reward.getFarmer().getDid()
     const sowId = this.sow.getId()
     const rewardValue = reward.getReward()
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
-      .then(result => {
+      .then((result) => {
         server.deliverReward(reward, (err, response) => {
           if (err) {
-            console.log(
-              `Requester: fail to notify farmer ${farmerId} about the reward`
-            )
+            console.log(`Requester: fail to notify farmer ${farmerId} about the reward`)
           } else {
-            console.log(
-              `Requester: farmer ${farmerId} has been notified about the reward distribution`
-            )
+            console.log(`Requester: farmer ${farmerId} has been notified about the reward distribution`)
           }
         })
       })
-      .catch(err => {
-        console.log(
-          `RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`
-        )
+      .catch((err) => {
+        console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
       })
   }
 }

@@ -1,4 +1,5 @@
 const ContractABI = require('./farming_contract/contract-abi.js')
+
 const contractAddress = '0x868dbf21375ff855bb1122877a1f7f7442516f25'
 const walletAddresses = [
   '0xa151a089FC8f9F04cC5cea3062C7F0BD10E9e703',

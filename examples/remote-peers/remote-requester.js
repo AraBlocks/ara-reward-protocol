@@ -34,7 +34,7 @@ const channel = createChannel()
 channel.join(discoveryAID)
 
 const requesterWallet = wallets[0]
-let requester = new ExampleRequester(
+const requester = new ExampleRequester(
   sow,
   matcher,
   requesterSig,
@@ -46,13 +46,12 @@ let requester = new ExampleRequester(
 const budget = 1
 requesterWallet
   .submitJob(sow.getId(), budget)
-  .then(result => {
+  .then((result) => {
     // Join the discovery channel for the requested content and process available farmers
     channel.on('peer', (id, peer, type) =>
-      handlePeer(id, peer, type, requester)
-    )
+      handlePeer(id, peer, type, requester))
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err)
   })
 
@@ -70,7 +69,7 @@ function handlePeer(id, peer, type, requester) {
 
 // Called after the requester has verified a farmer to start work
 async function startWork(ip) {
-  const jobPort = `50052`
+  const jobPort = '50052'
   const createResp = await afs.create({
     did: discoveryAID
   })
@@ -78,7 +77,7 @@ async function startWork(ip) {
 
   const opts = {
     id: requesterDID,
-    stream: stream
+    stream
   }
 
   function stream(peer) {
@@ -111,7 +110,7 @@ async function startWork(ip) {
     downloadAFS.close()
     swarm.destroy()
     channel.destroy()
-    console.log(`Swarm: Content is synced`)
+    console.log('Swarm: Content is synced')
 
     const report = new Map()
     farmerConnections.forEach((value, key) => {

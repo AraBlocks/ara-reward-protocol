@@ -64,10 +64,10 @@ class ExampleFarmer extends Farmer {
     const farmerId = this.reward.getFarmer().getDid()
     this.wallet
       .claimReward(sowId, farmerId)
-      .then(result => {
+      .then((result) => {
         console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
       })
   }

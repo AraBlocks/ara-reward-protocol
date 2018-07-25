@@ -10,8 +10,8 @@ const afs = require('ara-filesystem')
  * and runs farmer server on example port 50051.
  */
 
-const farmPort = `50051`
-const jobPort = `50052`
+const farmPort = '50051'
+const jobPort = '50052'
 
 // The ARAid of the Farmer
 const farmerID = new messages.ARAid()
@@ -55,7 +55,7 @@ async function startWork(agreement) {
   // Create a swarm for uploading the content
   const opts = {
     id: farmerDID,
-    stream: stream
+    stream
   }
 
   const swarm = createSwarm(opts)
@@ -63,7 +63,7 @@ async function startWork(agreement) {
 
   swarm.on('connection', handleConnection)
 
-  swarm.on('error', err => {
+  swarm.on('error', (err) => {
     console.log('SWARM: error:', err.message)
   })
 

@@ -82,8 +82,7 @@ class Requester {
       const valid = await this.validateAgreement(response)
       if (valid) {
         this.onHireConfirmed(response, farmer)
-      }
-      else {
+      } else {
         this.matcher.invalidateQuote(response.getQuote())
       }
     }
