@@ -73,7 +73,6 @@ class ExampleRequester extends Requester {
    */
   onJobFinished(report) {
     this.hiredFarmers.forEach((value, key) => {
-      console.log('on job finished')
       this.awardFarmer(value[0], value[1], report)
     })
   }
@@ -86,7 +85,6 @@ class ExampleRequester extends Requester {
    */
   awardFarmer(server, quote, report) {
     const reward = this.generateReward(quote, report)
-    console.log('award farmer')
     this.sendReward(server, reward)
   }
 
@@ -116,21 +114,23 @@ class ExampleRequester extends Requester {
    */
 
   sendReward(server, reward) {
+    console.log(
+      'Requester: submits reward to the contract and notifies the farmer'
+    )
     const farmerId = reward.getFarmer().getDid()
     const sowId = this.sow.getId()
     const rewardValue = reward.getReward()
-    console.log('send reward')
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
       .then(result => {
         server.deliverReward(reward, (err, response) => {
           if (err) {
             console.log(
-              `RequesterExample: fail to notify farmer ${farmerId} about the reward`
+              `Requester: fail to notify farmer ${farmerId} about the reward`
             )
           } else {
             console.log(
-              `RequesterExample: farmer ${farmerId} has been notified about the reward delivery`
+              `Requester: farmer ${farmerId} has been notified about the reward distribution`
             )
           }
         })
