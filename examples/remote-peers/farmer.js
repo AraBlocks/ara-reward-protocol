@@ -1,13 +1,14 @@
 const { messages, Farmer } = require('ara-farming-protocol')
 
 class ExampleFarmer extends Farmer {
-  constructor(farmerId, farmerSig, price) {
+  constructor(farmerId, farmerSig, price, onStartWork, wallet) {
     super()
-    this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
+    this.onStartWork = onStartWork
+    this.wallet = wallet
   }
 
   /**
@@ -15,7 +16,7 @@ class ExampleFarmer extends Farmer {
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
     quote.setId(this.quoteId)
@@ -26,23 +27,27 @@ class ExampleFarmer extends Farmer {
   }
 
   /**
-   * Returns whether a contract is valid
-   * @param {messages.Contract} contract
+   * Returns whether a agreement is valid
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    const quote = contract.getQuote()
+  async validateAgreement(agreement) {
+    const quote = agreement.getQuote()
     return quote.getPerUnitCost() == this.price
   }
 
   /**
-   * Sign and return a contract
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * Sign and return a agreement
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    contract.setFarmerSignature(this.farmerSig)
-    return contract
+  async signAgreement(agreement) {
+    agreement.setFarmerSignature(this.farmerSig)
+
+    // TEMP:
+    this.onStartWork(agreement)
+
+    return agreement
   }
 
   /**
@@ -50,9 +55,34 @@ class ExampleFarmer extends Farmer {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
-    const requesterId = peer.getDid()
-    return requesterId != this.badRequesterId
+  async validatePeer(peer) {
+    return true
+  }
+
+  async withdrawReward() {
+    const sowId = this.reward.getSow().getId()
+    const farmerId = this.reward.getFarmer().getDid()
+    this.wallet
+      .claimReward(sowId, farmerId)
+      .then(result => {
+        console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+      })
+      .catch(err => {
+        console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+      })
+  }
+
+  /**
+   * Handles a reward on noticed of delivery
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.ARAid)} callback Response callback
+   */
+  handleRewardDelivery(call, callback) {
+    this.reward = call.request
+    setTimeout(() => {
+      this.withdrawReward()
+    }, 1000)
+    callback(null, this.farmerId)
   }
 }
 
