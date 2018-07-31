@@ -5,6 +5,7 @@ const through = require('through')
 const varint = require('varint')
 const pump = require('pump')
 const messages = require('./proto/messages_pb')
+require('events').EventEmitter.defaultMaxListeners = 15
 
 const MSG = {
   SOW       : { head: 1 << 1, str: 'sow' },
@@ -29,18 +30,18 @@ class StreamProtocol {
     this.peer = peer
     this.opts = opts
 
-    const receiver = through2(this.onreceive.bind(this))
-    const sender = through2()
-    this.stream = duplexify(receiver, sender)
+    this.receiver = through2(this.onreceive.bind(this))
+    this.sender = through2()
+    this.stream = duplexify(this.receiver, this.sender)
     this.stream.once('end', this.onend)
     this.stream.once('close', this.onclose)
 
     this.timeout = null
     this.ended = false
+    this.streamlock = false
   }
 
   sendsow(sow) {
-    console.log(`Sending to ${this.peer.host}`)
     this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
   }
@@ -50,8 +51,8 @@ class StreamProtocol {
     this.stream.push(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
   }
 
-  sendagreement(agreement) {
-    this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
+  sendagreement(agreement, timer) {
+    if (timer) this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
   }
 
@@ -62,10 +63,12 @@ class StreamProtocol {
 
   onclose() {
     clearTimeout(this.timeout)
+    if (this.stream) this.stream.destroy()
   }
 
   onend() {
     clearTimeout(this.timeout)
+    if (this.stream) this.stream.destroy()
   }
 
   onsow(sow, done) {
@@ -84,14 +87,18 @@ class StreamProtocol {
   }
 
   onreceive(chunk, enc, done) {
-    console.log("On receive")
-    const { head, data } = MSG.decode(chunk)
-    clearTimeout(this.timeout)
-    switch (head) {
-      case MSG.SOW.head: this.onsow(messages.SOW.deserializeBinary(data), done); break
-      case MSG.QUOTE.head: this.onquote(messages.Quote.deserializeBinary(data), done); break
-      case MSG.AGREEMENT.head: this.onagreement(messages.Agreement.deserializeBinary(data), done); break
-      default: throw new TypeError('Unknown message type: '+ head)
+    try {
+      const { head, data } = MSG.decode(chunk)
+      clearTimeout(this.timeout)
+      switch (head) {
+        case MSG.SOW.head: this.onsow(messages.SOW.deserializeBinary(data), done); break
+        case MSG.QUOTE.head: this.onquote(messages.Quote.deserializeBinary(data), done); break
+        case MSG.AGREEMENT.head: this.onagreement(messages.Agreement.deserializeBinary(data), done); break
+        default: throw new TypeError('Unknown message type: '+ head)
+      }
+    }
+    catch (e) {
+      console.log("Error: chunk not decodable")
     }
   }
 }

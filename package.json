@@ -34,9 +34,12 @@
     "pump": "^3.0.0"
   },
   "dependencies": {
+    "duplexify": "^3.6.0",
+    "find-free-port": "^2.0.0",
     "google-protobuf": "^3.6.0",
     "grpc": "^1.13.0-pre1",
     "grpc-tools": "^1.6.6",
+    "varint": "^5.0.0",
     "web3": "^1.0.0-beta.34"
   }
 }

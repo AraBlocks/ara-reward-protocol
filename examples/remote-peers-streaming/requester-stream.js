@@ -7,7 +7,7 @@ const through = require('through')
 const { create } = require('ara-filesystem')
 
 
-const did = 'did:ara:3abc0eedd6f9b7f44c06a182b70c2c65b9faf89ddfdbbe1221b2395d0a7c4a08' 
+const did = 'did:ara:1debc451b5bfba29f46bcbbeb9d4957bed0140b6ba56f8d3826b656992f4cb2a' 
 download(did)
 
 async function download (did) {
@@ -36,7 +36,7 @@ async function download (did) {
         const us = idify(ip.address(), this.address().port)
         const them = idify(peer.host, peer.port)
       
-        if (us === them || peerMap.has(them)) {
+        if (us === them || (peerMap.has(them) && peerMap.get(them))) {
           return through()
         }
       
@@ -93,12 +93,12 @@ async function download (did) {
 
     async function handleConnection(connection, info){
         console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
-        try {
-            await afs.download('.')
-        }
-        catch (err) {
-            console.log(`Error: ${err}`)
-        }
+        // try {
+        //     await afs.download('.')
+        // }
+        // catch (err) {
+        //     console.log(`Error: ${err}`)
+        // }
     }
 }
 

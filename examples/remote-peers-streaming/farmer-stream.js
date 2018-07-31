@@ -5,10 +5,10 @@ const { messages } = require('ara-farming-protocol')
 const ip = require('ip')
 const through = require('through')
 const { create } = require('ara-filesystem')
+const fp = require("find-free-port")
 
 
-
-const did = 'did:ara:3abc0eedd6f9b7f44c06a182b70c2c65b9faf89ddfdbbe1221b2395d0a7c4a08' 
+const did = 'did:ara:1debc451b5bfba29f46bcbbeb9d4957bed0140b6ba56f8d3826b656992f4cb2a' 
 broadcast(did)
 
 
@@ -18,30 +18,21 @@ async function broadcast (did) {
 
   // Join the discovery swarm for the requested content
   const opts = {
-      stream: farmstream,
-      connect: connect
+      stream,
   }
   const swarm = createSwarm(opts)
   swarm.on('connection', handleConnection)
   swarm.join(did)
 
-  function connect(connection, wire){
-    connection.on(MSG.AGREEMENT.str, () => {
-      console.log("Agreement reached. Starting AFS pipe.")
-      pump(wire, afsstream(), wire)
-    })
-    pump(wire, connection, wire)
-  }
-
-  function farmstream(peer) {
+  function stream(peer) {
     const us = idify(ip.address(), this.address().port)
     const them = idify(peer.host, peer.port)
   
     if (us === them) {
       return through()
     }
-  
-    const { stream } = new FarmerStream(peer, { wait: 100, timeout: 10000 })
+    
+    const { stream } = new FarmerStream(afs, peer, { wait: 100, timeout: 10000 })
     stream.on('error', onerror)
     stream.on(MSG.SOW.str, onsow)
     stream.on(MSG.QUOTE.str, onquote)
@@ -72,34 +63,21 @@ async function broadcast (did) {
     return stream
   }
 
-  function afsstream() {
-     const stream = afs.replicate({
-          upload: true,
-          download: false
-     })
-     stream.once('end', onend)
-
-    function onend(){
-      console.log(`Uploaded!`)
-    }
-
-     return stream
- }
- 
-
-  async function handleConnection(connection, info){
+  function handleConnection(connection, info){
       console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
   }
 }
 
 function idify(host, port){
-  return `${host}`.replace('::ffff:', '')
+  return `${host}:${port}`.replace('::ffff:', '')
 }
 
 
 class FarmerStream extends StreamProtocol {
-  constructor(peer, opts){
+  constructor(afs, peer, opts){
     super(peer, opts)
+    this.afs = afs
+    this.swarm = null
   }
 
   onsow(sow, done){
@@ -109,5 +87,42 @@ class FarmerStream extends StreamProtocol {
     quote.setPerUnitCost(10)
     quote.setSow(sow)
     this.sendquote(quote)
+  }
+
+  async onagreement(agreement, done){
+    super.onagreement(agreement, done)
+    fp(Math.floor(30000 * Math.random()), ip.address()).then(([port]) => {
+      console.log("Listening on port ", port)
+      agreement.setId(port) // HACK
+      this.sendagreement(agreement, false)
+      this.startwork(port)
+    })
+  }
+
+  async startwork(port){
+    const opts = {
+        stream: stream.bind(this)
+    }
+    this.swarm = createSwarm(opts)
+    this.swarm.on('connection', handleConnection)
+    this.swarm.listen(port)
+
+    function stream(peer) {
+      const stream = this.afs.replicate({
+           upload: true,
+           download: false
+      })
+      stream.once('end', onend)
+  
+     function onend(){
+       console.log(`Uploaded!`)
+     }
+  
+      return stream
+    }
+
+    function handleConnection(connection, info){
+      console.log(`Peer connected: ${info.host} on port: ${info.port}`)
+    }
   }
 }
