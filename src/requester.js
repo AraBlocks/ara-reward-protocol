@@ -32,7 +32,7 @@ class Requester {
     const responseHandler = function (err, response) {
       this.handleQuoteResponse(err, response, farmer)
     }
-    farmer.getQuote(this.sow, responseHandler.bind(this))
+    farmer.requestQuote(this.sow, responseHandler.bind(this))
   }
 
   /**

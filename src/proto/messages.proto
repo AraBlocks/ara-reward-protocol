@@ -29,6 +29,12 @@ message Agreement {
   bytes data = 5;
 }
 
+message Reward {
+	SOW sow = 1;
+	ARAid farmer = 2;
+	int64 reward = 3;
+}
+
 // A signature of a peer associated with an ARAid
 message Signature {
   ARAid ara_id = 1;

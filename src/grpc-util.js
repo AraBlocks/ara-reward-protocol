@@ -21,8 +21,9 @@ class FarmerServer {
   createServer(farmer) {
     const server = new grpc.Server()
     server.addService(services.RFPService, {
-      getQuote: farmer.handleQuoteRequest.bind(farmer),
-      sendAgreement: farmer.handleAgreementReceipt.bind(farmer)
+      requestQuote: farmer.handleQuoteRequest.bind(farmer),
+      sendAgreement: farmer.handleAgreementReceipt.bind(farmer),
+      deliverReward: farmer.handleRewardDelivery.bind(farmer)
     })
     return server
   }
