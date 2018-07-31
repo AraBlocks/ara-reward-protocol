@@ -11,104 +11,69 @@ const did = 'did:ara:1debc451b5bfba29f46bcbbeb9d4957bed0140b6ba56f8d3826b656992f
 download(did)
 
 async function download (did) {
-    // Create a swarm for downloading the content
+      // Create a swarm for downloading the content
     const { afs } = await create({did})
-    const peerMap = new Map()
 
     // Join the discovery swarm for the requested content
     const opts = {
-        stream: requesterstream,
-        connect: connect
+        stream,
     }
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
     swarm.join(did)
 
-    function connect(connection, wire){
-        connection.on(MSG.AGREEMENT.str, () => {
-            console.log("Agreement reached. Starting AFS pipe.")
-            pump(wire, afsstream(), wire)
-        })
-        pump(wire, connection, wire)
-    }
-
-    function requesterstream(peer) {
+    function stream(peer) {
         const us = idify(ip.address(), this.address().port)
         const them = idify(peer.host, peer.port)
       
-        if (us === them || (peerMap.has(them) && peerMap.get(them))) {
+        if (us === them) {
           return through()
         }
-      
-        peerMap.set(them, true)
-        
-        const { stream } = new RequesterStream(peer, { wait: 100, timeout: 10000 })
+              
+        const { stream } = new RequesterStream(afs, peer, { wait: 100, timeout: 10000 })
         stream.on('error', onerror)
         stream.on(MSG.SOW.str, onsow)
         stream.on(MSG.QUOTE.str, onquote)
         stream.on(MSG.AGREEMENT.str, onagreement)
         stream.on('end', onend)
 
-        function onsow(sow, peer) {
-            console.log('sow:', sow.getId(), peer.host, peer.port)
-          }
-          
-          function onquote(quote, peer) {
-            console.log('quote:', quote.getPerUnitCost(), peer.host, peer.port)
-          }
-          
-          function onagreement(agreement, peer) {
-            console.log('agreement:', agreement.getId(), peer.host, peer.port)
-          }
-          
-          function onend() {
-            console.log('end')
-          }
-          
-          function onerror(err) {
-            console.error('error:', err.message)
-            console.error(err.stack)
-          }
-
         return stream
       }
 
-   function afsstream() {
-       const stream = afs.replicate({
-            upload: false,
-            download: true
-       })
-       stream.once('end', onend)
+    function onsow(sow, peer) {
+      console.log('sow:', sow.getId(), peer.host, peer.port)
+    }
+    
+    function onquote(quote, peer) {
+      console.log('quote:', quote.getPerUnitCost(), peer.host, peer.port)
+    }
+    
+    function onagreement(agreement, peer) {
+      console.log('agreement:', agreement.getId(), peer.host, peer.port)
+    }
+    
+    function onend() {
+      console.log('end')
+    }
+    
+    function onerror(err) {
+      console.error('error:', err.message)
+      console.error(err.stack)
+    }
 
-       async function onend(){
-            console.log(await afs.readdir('.'))
-            console.log(`Downloaded!`)
-            afs.close()
-            swarm.destroy()
-            console.log("Swarm destroyed")
-        }
-
-       return stream
-   }
-
-    async function handleConnection(connection, info){
+    function handleConnection(connection, info){
         console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
-        // try {
-        //     await afs.download('.')
-        // }
-        // catch (err) {
-        //     console.log(`Error: ${err}`)
-        // }
     }
 }
 
 function idify(host, port){
-  return `${host}`.replace('::ffff:', '')
+  return `${host}:${port}`.replace('::ffff:', '')
 }
 
 class RequesterStream extends StreamProtocol {
-  constructor(peer, opts){
+  constructor(afs, peer, opts){
     super(peer, opts)
+      this.afs = afs
 
       process.nextTick((() => {
         const sow = new messages.SOW()
@@ -123,12 +88,44 @@ class RequesterStream extends StreamProtocol {
     super.onquote(quote, done)
     const agreement = new messages.Agreement()
     agreement.setId(2)
-    this.sendagreement(agreement)
+    this.sendagreement(agreement, false)
   }
 
   onsow(sow, done){
     super.onsow(sow, done)
     console.log("Received SOW. Destroying Stream.")
     this.stream.destroy()
+  }
+
+  onagreement(agreement, done){
+    super.onagreement(agreement, done)
+    this.onstartwork(agreement.getId()).bind(this)
+  }
+
+  async onstartwork(port){
+    console.log("Starting AFS Connection with ", this.peer.host, port)
+
+    const opts = {
+        stream: stream.bind(this),
+    }
+    this.swarm = createSwarm(opts)
+    this.swarm.addPeer(this.peer.host, { host: this.peer.host, port: port })
+
+    function stream(peer) {
+      const stream = this.afs.replicate({
+          upload: false,
+          download: true
+      })
+      stream.once('end', onend.bind(this))
+
+      async function onend(){
+          console.log(`Downloaded!`)
+          console.log(await this.afs.readdir('.'))
+          this.afs.close()
+          this.swarm.destroy()
+          console.log("Swarm destroyed")
+      } 
+     return stream
+    }
   }
 }
