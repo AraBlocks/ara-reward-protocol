@@ -5,7 +5,7 @@ const { messages } = require('ara-farming-protocol')
 const ip = require('ip')
 const through = require('through')
 const { create } = require('ara-filesystem')
-
+const mirror = require('mirror-folder')
 
 const did = 'did:ara:1debc451b5bfba29f46bcbbeb9d4957bed0140b6ba56f8d3826b656992f4cb2a' 
 download(did)
@@ -109,6 +109,7 @@ class RequesterStream extends StreamProtocol {
         stream: stream.bind(this),
     }
     this.swarm = createSwarm(opts)
+    this.swarm.once('connection', handleConnection.bind(this)) // TODO: make this "on"
     this.swarm.addPeer(this.peer.host, { host: this.peer.host, port: port })
 
     function stream(peer) {
@@ -116,16 +117,35 @@ class RequesterStream extends StreamProtocol {
           upload: false,
           download: true
       })
-      stream.once('end', onend.bind(this))
+     return stream
+    }
 
-      async function onend(){
+    async function onend(err, list){
+      if (err){
+          console.log("OnEnd:", err)
+        }
+      else {
+          console.log(list)
           console.log(`Downloaded!`)
           console.log(await this.afs.readdir('.'))
           this.afs.close()
           this.swarm.destroy()
           console.log("Swarm destroyed")
-      } 
-     return stream
+        }
+    }   
+
+    async function handleConnection(connection, info){
+      console.log(`Peer connected: ${info.host} on port: ${info.port}`)
+      this.afs.once('content', () => {
+        console.log('Content is ready')
+        const dir = '~/.ara/afs/6b03c55d680a39b4dfcfb1983adf2f3da4970ba98a6a54c005436699a651a05c/home/'
+        const progress = mirror({name: '/', fs: this.afs}, { name: dir }, (error) => {
+          if (error) console.log("Mirror", error)
+        })
+        progress.on('put', (src) => console.log('Mirrored', src))
+        progress.on('skip', (src) => console.log('Skipped', src))
+        progress.on('end', () => console.log('Mirroring Ended'))
+      })
     }
   }
 }
