@@ -11,7 +11,6 @@ const requester = new ExampleRequester(
   new messages.SOW(),
   new Matcher(),
   new messages.Signature(),
-  '',
   ''
 )
 
@@ -19,56 +18,33 @@ const reward = new messages.Reward()
 reward.setFarmer(new messages.ARAid())
 reward.setSow(new messages.SOW())
 
-test('requester.submitJob.succeed', async (t) => {
-  const stubContract = {
-    createJob: sinon.stub().resolves(true)
-  }
-
-  requester.smartContract = stubContract
-  await requester.submitJob(100).then((result) => {
-    t.true(result)
-  })
-})
-
-test('requester.submitJob.fail', async (t) => {
-  const stubContract = {
-    createJob: sinon.stub().resolves(false)
-  }
-
-  requester.smartContract = stubContract
-  await requester.submitJob(100).then((result) => {
-    t.true(!result)
-  })
-})
-
-test('requester.sendReward.succeed', async (t) => {
-  const fakeDeliver = sinon.fake()
+test('requester.sendReward.succeed', async t => {
+  let fakeDelivery = sinon.fake()
 
   const stubContract = {
-    submitReward: sinon.stub().resolves(true)
+    submitReward: sinon.stub().resolves()
   }
   const server = {
-    deliverReward: fakeDeliver
+    deliverReward: sinon.stub().callsFake(fakeDelivery)
   }
+  requester.wallet = stubContract
+  await requester.sendReward(server, reward)
 
-  requester.smartContract = stubContract
-  await requester.sendReward(server, reward).then(() => {
-    t.true(fakeDeliver.calledOnce)
-  })
+  t.true(fakeDelivery.calledOnce)
 })
 
-test('requester.sendReward.fail', async (t) => {
-  const fakeDeliver = sinon.fake()
+test('requester.sendReward.succeed', async t => {
+  let fakeDelivery = sinon.fake()
 
   const stubContract = {
-    submitReward: sinon.stub().resolves(false)
-  }
-  const server = {
-    deliverReward: fakeDeliver
+    submitReward: sinon.stub().rejects()
   }
 
-  requester.smartContract = stubContract
-  await requester.sendReward(server, reward).then(() => {
-    t.true(fakeDeliver.notCalled)
-  })
+  const server = {
+    deliverReward: sinon.stub().callsFake(fakeDelivery)
+  }
+
+  requester.wallet = stubContract
+  await requester.sendReward(server, reward)
+  t.true(!fakeDelivery.called)
 })

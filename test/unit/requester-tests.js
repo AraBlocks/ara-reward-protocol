@@ -3,9 +3,6 @@ const sinon = require('sinon')
 const messages = require('../../src/proto/messages_pb')
 const { Requester } = require('../../src/requester')
 const { Matcher } = require('../../src/matcher')
-const {
-  ExampleRequester
-} = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
 
 test('requester.handleQuoteResponse.ValidPeer', t => {
   const sow = new messages.SOW()

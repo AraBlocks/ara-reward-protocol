@@ -49,11 +49,13 @@ class ExampleRequester extends Requester {
   onHireConfirmed(contract, server) {
     const quote = contract.getQuote()
     const farmerId = quote.getFarmer().getDid()
-    this.hiredFarmers.set(farmerId, [ server, quote ])
-    console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract
-      .getQuote()
-      .getFarmer()
-      .getDid()}`)
+    this.hiredFarmers.set(farmerId, [server, quote])
+    console.log(
+      `Requester: Contract ${contract.getId()} signed by farmer ${contract
+        .getQuote()
+        .getFarmer()
+        .getDid()}`
+    )
   }
 
   /**
@@ -107,17 +109,23 @@ class ExampleRequester extends Requester {
     const rewardValue = reward.getReward()
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
-      .then((result) => {
+      .then(result => {
         server.deliverReward(reward, (err, response) => {
           if (err) {
-            console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
+            console.log(
+              `RequesterExample: fail to notify farmer ${farmerId} about the reward`
+            )
           } else {
-            console.log(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
+            console.log(
+              `RequesterExample: farmer ${farmerId} has been notified about the reward delivery`
+            )
           }
         })
       })
-      .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
+      .catch(err => {
+        console.log(
+          `RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`
+        )
       })
   }
 }
