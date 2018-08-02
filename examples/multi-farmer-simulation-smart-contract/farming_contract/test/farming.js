@@ -59,5 +59,3 @@ contract('Farming', async (accounts) => {
     assert.equal(empty_reward, 0)
   })
 })
-// const balance = await web3.eth.getBalance(account_one)
-// console.log(balance.toString())
