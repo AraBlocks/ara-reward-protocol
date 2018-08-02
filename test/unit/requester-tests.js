@@ -4,7 +4,7 @@ const messages = require('../../src/proto/messages_pb')
 const { Requester } = require('../../src/requester')
 const { Matcher } = require('../../src/matcher')
 
-test('requester.handleQuoteResponse.ValidPeer', t => {
+test('requester.handleQuoteResponse.ValidPeer', (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
@@ -20,7 +20,7 @@ test('requester.handleQuoteResponse.ValidPeer', t => {
   t.true(quoteMatchFake.calledOnce)
 })
 
-test('requester.handleQuoteResponse.InvalidPeer', t => {
+test('requester.handleQuoteResponse.InvalidPeer', (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
@@ -36,7 +36,7 @@ test('requester.handleQuoteResponse.InvalidPeer', t => {
   t.true(quoteMatchFake.notCalled)
 })
 
-test('requester.handleSignedContract.ValidContract', t => {
+test('requester.handleSignedContract.ValidContract', (t) => {
   const sow = new messages.SOW()
   const contract = new messages.Contract()
 
@@ -52,7 +52,7 @@ test('requester.handleSignedContract.ValidContract', t => {
   t.true(contractConfirmFake.calledOnce)
 })
 
-test('requester.handleSignedContract.InvalidContract', t => {
+test('requester.handleSignedContract.InvalidContract', (t) => {
   const sow = new messages.SOW()
   const contract = new messages.Contract()
 
@@ -71,7 +71,7 @@ test('requester.handleSignedContract.InvalidContract', t => {
   t.true(invalidQuoteFake.calledOnce)
 })
 
-test('requester.hireFarmer', t => {
+test('requester.hireFarmer', (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
   const stubMatcher = new Matcher()
@@ -91,7 +91,7 @@ test('requester.hireFarmer', t => {
   t.true(awardContractFake.calledOnce)
 })
 
-test('requester.processFarmers', t => {
+test('requester.processFarmers', (t) => {
   const sow = new messages.SOW()
   const stubMatcher = new Matcher()
   const requester = new Requester(sow, stubMatcher)
@@ -101,6 +101,6 @@ test('requester.processFarmers', t => {
     getQuote: getQuoteFake
   }
 
-  requester.processFarmers([stubRFP])
+  requester.processFarmers([ stubRFP ])
   t.true(getQuoteFake.calledOnce)
 })

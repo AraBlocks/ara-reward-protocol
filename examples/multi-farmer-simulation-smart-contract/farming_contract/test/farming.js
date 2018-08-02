@@ -1,12 +1,12 @@
-var Farming = artifacts.require('./Farming.sol')
+const Farming = artifacts.require('./Farming.sol')
 
-contract('Farming', async accounts => {
+contract('Farming', async (accounts) => {
   it('should deposit budget for a job using the first account', async () => {
     const jobId = 1
     const budget = 1000
 
     // Get accounts
-    var account_one = accounts[0]
+    const account_one = accounts[0]
 
     const instance = await Farming.deployed()
     await instance.submitJob(jobId, { from: account_one, value: budget })
@@ -20,8 +20,8 @@ contract('Farming', async accounts => {
     const reward = 1000
 
     // Get accounts
-    var account_one = accounts[0]
-    var accounts_two = accounts[1]
+    const account_one = accounts[0]
+    const accounts_two = accounts[1]
 
     const instance = await Farming.deployed()
     await instance.submitReward(jobId, accounts_two, reward, {
@@ -40,8 +40,8 @@ contract('Farming', async accounts => {
     const reward = 1000
 
     // Get accounts
-    var account_one = accounts[0]
-    var accounts_two = accounts[1]
+    const account_one = accounts[0]
+    const accounts_two = accounts[1]
 
     const instance = await Farming.deployed()
     await instance.submitReward(jobId, accounts_two, reward, {

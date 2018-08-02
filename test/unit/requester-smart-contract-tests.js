@@ -1,8 +1,6 @@
 const test = require('ava')
 const sinon = require('sinon')
 const messages = require('../../src/proto/messages_pb')
-const { Requester } = require('../../src/requester')
-const { Matcher } = require('../../src/matcher')
 const {
   ExampleRequester
 } = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
@@ -11,15 +9,15 @@ const requester = new ExampleRequester(
   new messages.SOW(),
   new Matcher(),
   new messages.Signature(),
-  ''
+  null
 )
 
 const reward = new messages.Reward()
 reward.setFarmer(new messages.ARAid())
 reward.setSow(new messages.SOW())
 
-test('requester.sendReward.succeed', async t => {
-  let fakeDelivery = sinon.fake()
+test('requester.sendReward.succeed', async (t) => {
+  const fakeDelivery = sinon.fake()
 
   const stubContract = {
     submitReward: sinon.stub().resolves()
@@ -33,8 +31,8 @@ test('requester.sendReward.succeed', async t => {
   t.true(fakeDelivery.calledOnce)
 })
 
-test('requester.sendReward.succeed', async t => {
-  let fakeDelivery = sinon.fake()
+test('requester.sendReward.succeed', async (t) => {
+  const fakeDelivery = sinon.fake()
 
   const stubContract = {
     submitReward: sinon.stub().rejects()
