@@ -74,9 +74,7 @@ class ExampleFarmer extends Farmer {
    */
   handleRewardDelivery(call, callback) {
     this.reward = call.request
-    setTimeout(() => {
-      this.withdrawReward()
-    }, 1000)
+    this.withdrawReward()
     callback(null, this.farmerId)
   }
 }
