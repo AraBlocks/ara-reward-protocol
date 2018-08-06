@@ -4,7 +4,11 @@ const messages = require('../../src/proto/messages_pb')
 const { Requester } = require('../../src/requester')
 const { Matcher } = require('../../src/matcher')
 
+<<<<<<< HEAD
 test('requester.handleQuoteResponse.ValidPeer', async (t) => {
+=======
+test('requester.handleQuoteResponse.ValidPeer', (t) => {
+>>>>>>> origin/master
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
