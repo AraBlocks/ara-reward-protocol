@@ -5,7 +5,8 @@ const through = require('through')
 const { create } = require('ara-filesystem')
 const { ExampleRequester } = require('./requester')
 const utils = require('../utils')
-
+const pify = require('pify')
+const cliProgress = require('cli-progress')
 
 const did = 'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c' 
 download(did)
@@ -34,59 +35,119 @@ async function download (did) {
 
       // Create a swarm for downloading the content
     const { afs } = await create({did})
+    let downloaded = false
+    afs.on('content', onupdate)
+    //afs.on('update', onupdate) // TODO: test this
 
-    // Join the discovery swarm for the requested content
-    const opts = {
-        stream,
+    const contentSwarm = createContentSwarm(afs)
+    contentSwarm.on('close', onend)
+
+    const farmerSwarm = createFarmerSwarm(did, requester)
+
+    async function onend(){
+      if (!downloaded) {
+        downloaded = true
+        console.log(await afs.readdir('.'))
+        console.log(`Downloaded!`)
+        afs.close()
+          
+        if (contentSwarm) contentSwarm.destroy()
+        if (farmerSwarm) farmerSwarm.destroy()
+
+        console.log("Swarm destroyed")
+      }
     }
-    const swarm = createSwarm(opts)
-    swarm.on('connection', handleConnection)
-    swarm.join(did)
 
-    function stream(peer) {
-        const us = utils.idify(ip.address(), this.address().port)
-        const them = utils.idify(peer.host, peer.port)
-      
-        if (us === them) {
-          return through()
-        }
-              
-        const connection = new afpstream.RequestStream(peer, { wait: 100, timeout: 10000 })
-        requester.processFarmer(connection)
+    async function onupdate(){
+      const feed = afs.partitions.resolve(afs.HOME).content
+      if (feed){
+        const pBar = new cliProgress.Bar({}, cliProgress.Presets.shades_classic)
+        let pStarted = false
 
-        return connection.stream
-    }
+        feed.on('download', () => {
+          if (!feed.length) return
+          if (!pStarted) {
+            pStarted = true
+            pBar.start(feed.length, 0)
+          }
+          pBar.update(feed.downloaded())
 
-    function handleConnection(connection, info){
-        console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
+          // const downloaded = feed.downloaded()
+          // const perc = 100 * downloaded / total
+
+        })
+        feed.once('sync', () => {
+          pBar.stop()
+        })
+        feed.once('sync', onend)
+      }
     }
 
     function startWork(peer){
       console.log("Starting AFS Connection with ", peer.host, peer.port)
-    
-      const opts = {
-          stream,
-      }
-      const swarm = createSwarm(opts)
-      swarm.addPeer(peer.host, { host: peer.host, port: peer.port })
-    
-      function stream(peer) {
-        const stream = afs.replicate({
-            upload: false,
-            download: true
-        })
-        stream.once('end', onend)
-    
-        async function onend(){
-            console.log(`Downloaded!`)
-            console.log(await afs.readdir('.'))
-            afs.close()
-            swarm.destroy()
-            console.log("Swarm destroyed")
-        } 
-       return stream
-      }
+      contentSwarm.addPeer(peer.host, { host: peer.host, port: peer.port })
     }
+}
+
+function createFarmerSwarm(did, requester){
+  const opts = {
+      stream,
+  }
+  const swarm = createSwarm(opts)
+  swarm.on('connection', handleConnection)
+
+  swarm.join(did)
+
+  function stream(peer) {
+    const us = utils.idify(ip.address(), this.address().port)
+    const them = utils.idify(peer.host, peer.port)
+  
+    if (us === them || 'utp' === peer.type) {
+      return through()
+    }
+
+    const connection = new afpstream.RequestStream(peer, { wait: 100, timeout: 10000 })
+    requester.processFarmer(connection)
+
+    return connection.stream
+  }
+
+  function handleConnection(connection, info){
+    console.log(`Farmer Swarm: Peer connected: ${utils.idify(info.host, info.port)}`)
+  }
+
+  return swarm
+}
+
+// Creates a private swarm for downloading a piece of content
+function createContentSwarm(afs){
+  const opts = {
+      stream,
+  }
+
+  const swarm = createSwarm(opts)
+  swarm.on('connection', handleConnection)
+
+  function stream(peer) {
+    const stream = afs.replicate({
+        upload: false,
+        download: true,
+        live: false
+    })
+
+    stream.once('end', () => {
+      console.log("Replicate stream ended")
+      swarm.destroy()
+    })
+
+    return stream
+  } 
+
+  async function handleConnection(connection, info){
+    console.log(`Content Swarm: Peer connected: ${utils.idify(info.host, info.port)}`)
+  }
+
+  return swarm
 }
 
 
