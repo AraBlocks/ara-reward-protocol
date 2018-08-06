@@ -16,23 +16,23 @@ class Requester {
   /**
    * Iterates through an array of Farmers and gets quotes from them for
    * the defined SOW
-   * @param {[services.RFPClient]} farmers
+   * @param {[services.RFPClient]} connections
    */
-  async processFarmers(farmers) {
-    farmers.forEach((farmer) => {
-      this.processFarmer(farmer)
+  async processFarmers(connections) {
+    connections.forEach((connection) => {
+      this.processFarmer(connection)
     })
   }
 
   /**
    * Gets quotes from a single farmer for the defined SOW
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  async processFarmer(farmer) {
+  async processFarmer(connection) {
     const responseHandler = function (err, response) {
-      this.handleQuoteResponse(err, response, farmer)
+      this.onQuote(err, response, connection)
     }
-    farmer.requestQuote(this.sow, responseHandler.bind(this))
+    connection.sendSow(this.sow, responseHandler.bind(this))
   }
 
   /**
@@ -41,15 +41,15 @@ class Requester {
    * the farmer.
    * @param {Error} err
    * @param {messages.Quote} response
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  async handleQuoteResponse(err, response, farmer) {
+  async onQuote(err, response, connection) {
     if (err) {
       console.log(`Quote Response Error: ${err}`)
     } else {
       const valid = await this.validatePeer(response.getFarmer())
       if (valid) {
-        const callback = () => this.hireFarmer(response, farmer)
+        const callback = () => this.hireFarmer(response, connection)
         this.matcher.validateQuote(response, callback.bind(this))
       }
     }
@@ -58,14 +58,14 @@ class Requester {
   /**
    * Generates an agreement and sends it to a specific farmer
    * @param {messages.Quote} quote
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  async hireFarmer(quote, farmer) {
+  async hireFarmer(quote, connection) {
     const agreement = await this.generateAgreement(quote)
     const responseHandler = function (err, response) {
-      this.handleSignedAgreement(err, response, farmer)
+      this.handleSignedAgreement(err, response, connection)
     }
-    farmer.sendAgreement(agreement, responseHandler.bind(this))
+    connection.sendAgreement(agreement, responseHandler.bind(this))
   }
 
   /**
@@ -73,17 +73,16 @@ class Requester {
    * distribution of work.
    * @param {Error} err
    * @param {messages.Agreement} response
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  async handleSignedAgreement(err, response, farmer) {
+  async onAgreement(err, response, connection) {
     if (err) {
       console.log(`Award Response Error: ${err}`)
     } else {
       const valid = await this.validateAgreement(response)
       if (valid) {
-        this.onHireConfirmed(response, farmer)
-      }
-      else {
+        this.onHireConfirmed(response, connection)
+      } else {
         this.matcher.invalidateQuote(response.getQuote())
       }
     }
@@ -120,9 +119,9 @@ class Requester {
    * This is called when an agreement has been marked as valid and a farmer
    * is ready to start work
    * @param {messages.Agreement} agreement
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  onHireConfirmed(agreement, farmer) {
+  async onHireConfirmed(agreement, connection) {
     throw new Error('Extended classes must implement onHireConfirmed')
   }
 }

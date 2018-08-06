@@ -1,10 +1,7 @@
-const { randomBytes } = require('crypto')
 const duplexify = require('duplexify')
 const through2 = require('through2')
-const through = require('through')
 const varint = require('varint')
-const pump = require('pump')
-const messages = require('./proto/messages_pb')
+const messages = require('../proto/messages_pb')
 require('events').EventEmitter.defaultMaxListeners = 15
 
 const MSG = {
@@ -31,79 +28,84 @@ class StreamProtocol {
     this.peer = peer
     this.opts = opts
 
-    this.receiver = through2(this.onreceive.bind(this))
+    this.receiver = through2(this.onReceive.bind(this))
     this.sender = through2()
     this.stream = duplexify(this.receiver, this.sender)
-    this.stream.once('end', this.onend)
-    this.stream.once('close', this.onclose)
+    this.stream.once('end', this.onEnd)
+    this.stream.once('close', this.onClose)
 
     this.timeout = null
     this.ended = false
   }
 
-  async sendsow(sow) {
-    this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
+  async sendSow(sow) {
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
   }
 
-  async sendquote(quote) {
-    this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
+  async sendQuote(quote) {
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
   }
 
-  async sendagreement(agreement, timer) {
-    if (timer) this.timeout = setTimeout(this.ontimeout.bind(this), this.opts.timeout)
+  async sendAgreement(agreement) {
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
   }
 
-  async sendreward(reward){
+  async sendReward(reward){
     this.stream.push(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
+    // TODO: timer?
   }
 
-  ontimeout() {
+  async onTimeout() {
     console.log("SO much timeout!", this.peer)
     if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
   }
 
-  onclose() {
+  async onClose() {
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
 
-  onend() {
+  async onEnd() {
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
 
-  onsow(sow, done) {
+  async onSow(sow, done) {
     done(null)
+    console.log('sow:', sow.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
-  onquote(quote, done) {
+  async onQuote(quote, done) {
     done(null)
+    console.log('quote:', quote.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
-  onagreement(agreement, done) {
+  async onAgreement(agreement, done) {
     done(null)
+    console.log('agreement:', agreement.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
-  onreward(reward, done) {
+  async onReward(reward, done) {
     done(null)
+    console.log('reward:', reward.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
-  onreceive(chunk, enc, done) {
+  onReceive(chunk, enc, done) {
     try {
       const { head, data } = MSG.decode(chunk)
       clearTimeout(this.timeout)
       switch (head) {
-        case MSG.SOW.head: this.onsow(messages.SOW.deserializeBinary(data), done); break
-        case MSG.QUOTE.head: this.onquote(messages.Quote.deserializeBinary(data), done); break
-        case MSG.AGREEMENT.head: this.onagreement(messages.Agreement.deserializeBinary(data), done); break
-        case MSG.REWARD.head: this.onreward(messages.Reward.deserializeBinary(data), done); break
+        case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data), done); break
+        case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data), done); break
+        case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data), done); break
+        case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data), done); break
         default: throw new TypeError('Unknown message type: '+ head)
       }
     }
@@ -116,6 +118,8 @@ class StreamProtocol {
     if (this.stream) this.stream.emit('close')
   }
 }
+
+
 
 module.exports = {
   StreamProtocol,

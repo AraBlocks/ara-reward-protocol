@@ -26,7 +26,7 @@ An agreed upon statement of work for a specific job between a farmer and a reque
 
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript.
+AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a streaming implementation using duplexify.
 
 A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 
@@ -227,54 +227,7 @@ Different service requesters may have different needs when selecting peers, such
 
 ## Examples
 
-Note: as ara-farming-protocol is not yet on npm, you may need to run the following commands prior to running an example:
-
-```
-$ npm link
-$ npm link ara-farming-protocol
-```
-
-### Multifarmer Simulation
-
-This example generates and connects to 10 local farmers, then hires up to 5 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
-
-```
-$ node examples/multi-farmer-simulation/multi-farmer-simulation.js
-```
-
-### Multifarmer with Ethereum Smart Contract Simulation
-
-This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
-
-For this example, first install Ganache and Truffle through https://truffleframework.com/. Launch Ganache and run the codes below in Terminal:
-
-```
-$ cd examples/multi-farmer-simulation-smart-contract/farming_contract
-$ truffle compile
-$ truffle migrate
-```
-
-Replace wallet addresses in multi-farmer-simulation-smart-contract/constant.js with those from Ganache, and the contract address from the output.
-
-```
-$ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js
-```
-
-### Remote Peers
-
-The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
-
-On the farmer's computer/terminal:
-
-```
-$ node examples/remote-peers/remote-farmer.js
-```
-
-On the requester's computer/terminal:
-
-```
-$ node examples/remote-peers/remote-requester.js
-```
+See [examples](/examples/README.md)
 
 ## Local Development Setup
 

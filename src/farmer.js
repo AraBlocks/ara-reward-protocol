@@ -7,7 +7,7 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.Quote)} callback Response callback
    */
-  async handleQuoteRequest(call, callback) {
+  async onSow(call, callback) {
     const sow = call.request
     const valid = await this.validatePeer(sow.getRequester())
     if (valid) {
@@ -23,7 +23,7 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.Agreement)} callback Response callback
    */
-  async handleAgreementReceipt(call, callback) {
+  async onAgreement(call, callback) {
     const agreement = call.request
     const valid = await this.validateAgreement(agreement)
     if (valid) {
@@ -39,8 +39,8 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  handleRewardDelivery(call, callback) {
-    throw new Error('Extended classes must implement handleRewardDelivery.')
+  onReward(call, callback) {
+    throw new Error('Extended classes must implement onReward.')
   }
 
   /**

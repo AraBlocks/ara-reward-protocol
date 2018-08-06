@@ -1,17 +1,19 @@
-const { MaxCostMatcher } = require('./src/matchers/max-cost-matcher')
+const messages = require('./src/proto/messages_pb')
+const services = require('./src/proto/route-guide_grpc_pb')
 const { Requester } = require('./src/requester')
 const { Matcher } = require('./src/matcher')
 const { Farmer } = require('./src/farmer')
-const grpcUtil = require('./src/grpc-util')
-const messages = require('./src/proto/messages_pb')
-const services = require('./src/proto/route-guide_grpc_pb')
+const afpstream = require('./src/duplex/index')
+const afpgrpc = require('./src/grpc/index')
+const matchers = require('./src/matchers/index')
 
 module.exports = {
-  Farmer,
+  messages,
+  services,
+  afpstream,
+  afpgrpc,
+  matchers,
   Requester,
   Matcher,
-  MaxCostMatcher,
-  grpcUtil,
-  messages,
-  services
+  Farmer,
 }
