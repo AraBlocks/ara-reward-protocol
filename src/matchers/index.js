@@ -1,5 +1,5 @@
 const { MaxCostMatcher } = require('./max-cost-matcher')
 
-exports = {
+module.exports = {
     MaxCostMatcher
 }

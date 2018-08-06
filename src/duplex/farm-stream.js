@@ -12,6 +12,6 @@ class FarmStream extends StreamProtocol {
     }
   }
 
-  exports = {
+  module.exports = {
       FarmStream
   }

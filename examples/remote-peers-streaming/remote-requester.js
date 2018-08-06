@@ -1,5 +1,3 @@
-const { StreamProtocol, MSG } = require('../../src/stream-protocol')
-const pump = require('pump')
 const { createSwarm } = require('ara-network/discovery')
 const { messages, matchers, afpstream } = require('ara-farming-protocol')
 const ip = require('ip')

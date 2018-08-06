@@ -50,7 +50,7 @@ async function broadcast(did) {
     if (us === them) {
       return through()
     }
-    const connection = new afpstream.StreamProtocol(peer, { wait: 100, timeout: 10000 })
+    const connection = new afpstream.FarmStream(peer, { wait: 100, timeout: 10000 })
     farmer.processRequester(connection)
 
     return connection.stream

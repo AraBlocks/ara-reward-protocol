@@ -12,6 +12,6 @@ class RequestStream extends StreamProtocol {
     }
   }
 
-  exports = {
+  module.exports = {
       RequestStream
   }
