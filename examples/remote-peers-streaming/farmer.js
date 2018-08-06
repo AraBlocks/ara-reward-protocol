@@ -5,14 +5,14 @@ const ip = require('ip')
 
 
 class ExampleFarmer extends afpstream.sFarmer {
-  constructor(farmerId, farmerSig, price, onStartWork) {
+  constructor(farmerId, farmerSig, price, startWork) {
     super()
     this.badRequesterId = 10057
     this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
-    this.onStartWork = onStartWork
+    this.startWork = startWork
   }
 
   /**
@@ -50,7 +50,7 @@ class ExampleFarmer extends afpstream.sFarmer {
     const port = await pify(fp)(Math.floor(30000 * Math.random()), ip.address())
     console.log('Listening on port ', port)
     agreement.setId(port) // HACK
-    this.onStartWork(port)
+    this.startWork(port)
     return agreement
   }
 

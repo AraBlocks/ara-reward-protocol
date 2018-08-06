@@ -7,7 +7,7 @@ const { ExampleRequester } = require('./requester')
 const utils = require('../utils')
 
 
-const did = 'did:ara:1debc451b5bfba29f46bcbbeb9d4957bed0140b6ba56f8d3826b656992f4cb2a' 
+const did = 'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c' 
 download(did)
 
 async function download (did) {
@@ -68,14 +68,14 @@ async function download (did) {
           stream,
       }
       const swarm = createSwarm(opts)
-      swarm.addPeer(peer.host, peer)
+      swarm.addPeer(peer.host, { host: peer.host, port: peer.port })
     
       function stream(peer) {
         const stream = afs.replicate({
             upload: false,
             download: true
         })
-        stream.once('end', onend.bind(this))
+        stream.once('end', onend)
     
         async function onend(){
             console.log(`Downloaded!`)

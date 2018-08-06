@@ -1,12 +1,12 @@
 const { messages, afpstream } = require('ara-farming-protocol')
 
 class ExampleRequester extends afpstream.sRequester {
-  constructor(sow, matcher, requesterSig, onStartWork) {
+  constructor(sow, matcher, requesterSig, startWork) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'
     this.agreementId = 101
     this.requesterSig = requesterSig
-    this.onStartWork = onStartWork
+    this.startWork = startWork
   }
 
   /**
@@ -56,7 +56,7 @@ class ExampleRequester extends afpstream.sRequester {
     const port = agreement.getId() // HACK
     const peer = connection.peer
     peer.port = port
-    this.onStartWork(peer)
+    this.startWork(peer)
   }
 }
 
