@@ -5,17 +5,17 @@ const messages = require('../proto/messages_pb')
 require('events').EventEmitter.defaultMaxListeners = 15
 
 const MSG = {
-  SOW       : { head: 1 << 1, str: 'sow' },
-  QUOTE     : { head: 2 << 1, str: 'quote'},
-  AGREEMENT : { head: 3 << 1, str: 'agreement'},
-  REWARD    : { head: 4 << 1, str: 'reward'},
+  SOW: { head: 1 << 1, str: 'sow' },
+  QUOTE: { head: 2 << 1, str: 'quote' },
+  AGREEMENT: { head: 3 << 1, str: 'agreement' },
+  REWARD: { head: 4 << 1, str: 'reward' },
 
-  encode : function (head, data) {
+  encode(head, data) {
     head = Buffer.from(varint.encode(head))
     return Buffer.concat([ head, data ])
   },
 
-  decode : function (chunk) {
+  decode(chunk) {
     const head = varint.decode(chunk, 0)
     const data = chunk.slice(varint.decode.bytes)
     return { head, data }
@@ -23,8 +23,7 @@ const MSG = {
 }
 
 class StreamProtocol {
-
-  constructor (peer, opts) {
+  constructor(peer, opts) {
     this.peer = peer
     this.opts = opts
 
@@ -53,13 +52,13 @@ class StreamProtocol {
     this.stream.push(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
   }
 
-  async sendReward(reward){
+  async sendReward(reward) {
     this.stream.push(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
     // TODO: timer?
   }
 
   async onTimeout() {
-    console.log("SO much timeout!", this.peer)
+    console.log('SO much timeout!', this.peer)
     if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
   }
 
@@ -102,24 +101,21 @@ class StreamProtocol {
       const { head, data } = MSG.decode(chunk)
       clearTimeout(this.timeout)
       switch (head) {
-        case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data), done); break
-        case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data), done); break
-        case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data), done); break
-        case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data), done); break
-        default: throw new TypeError('Unknown message type: '+ head)
+      case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data), done); break
+      case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data), done); break
+      case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data), done); break
+      case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data), done); break
+      default: throw new TypeError(`Unknown message type: ${head}`)
       }
-    }
-    catch (e) {
-      console.log("Error: on receive")
+    } catch (e) {
+      console.log('Error: on receive')
     }
   }
 
-  close(){
+  close() {
     if (this.stream) this.stream.emit('close')
   }
 }
-
-
 
 module.exports = {
   StreamProtocol,

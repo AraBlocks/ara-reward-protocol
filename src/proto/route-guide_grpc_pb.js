@@ -61,8 +61,8 @@ function deserialize_messages_SOW(buffer_arg) {
 
 
 var RFPService = exports.RFPService = {
-  requestQuote: {
-    path: '/routeguide.RFP/RequestQuote',
+  sendSow: {
+    path: '/routeguide.RFP/SendSow',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.SOW,
@@ -83,8 +83,8 @@ var RFPService = exports.RFPService = {
     responseSerialize: serialize_messages_Agreement,
     responseDeserialize: deserialize_messages_Agreement,
   },
-  deliverReward: {
-    path: '/routeguide.RFP/DeliverReward',
+  sendReward: {
+    path: '/routeguide.RFP/SendReward',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.Reward,

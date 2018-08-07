@@ -4,23 +4,23 @@ const ip = require('ip')
 const through = require('through')
 const { create } = require('ara-filesystem')
 const { ExampleFarmer } = require('./farmer')
-const utils = require('../utils')
+const util = require('../util')
 
 const dids = [
   'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c',
   '5a0ca463a488b4d3d85ea243087043e1b87b35eae8e15c86c99c4b4d9c14179b'
 ]
 
-for (let i = 0; i < dids.length; i++){
+for (let i = 0; i < dids.length; i++) {
   broadcast(dids[i])
 }
 
 async function broadcast(did) {
-  console.log("Broadcasting: ", did)
+  console.log('Broadcasting: ', did)
 
   // The ARAid of the Farmer
   const farmerID = new messages.ARAid()
-  const farmerDID = "did:ara:75"
+  const farmerDID = 'did:ara:75'
   farmerID.setDid(farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
@@ -44,8 +44,8 @@ async function broadcast(did) {
   swarm.join(did)
 
   function stream(peer) {
-    const us = utils.idify(ip.address(), this.address().port)
-    const them = utils.idify(peer.host, peer.port)
+    const us = util.idify(ip.address(), this.address().port)
+    const them = util.idify(peer.host, peer.port)
 
     if (us === them) {
       return through()

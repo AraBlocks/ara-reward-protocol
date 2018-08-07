@@ -6,8 +6,8 @@ class sRequester extends Requester {
   }
 
   async processFarmer(connection) {
-    connection.stream.on('quote', (quote) => this.onQuote(quote, connection))
-    connection.stream.on('agreement', (agreement) => this.onAgreement(agreement, connection))
+    connection.stream.on('quote', quote => this.onQuote(quote, connection))
+    connection.stream.on('agreement', agreement => this.onAgreement(agreement, connection))
 
     super.processFarmer(connection)
   }

@@ -63,7 +63,7 @@ class Requester {
   async hireFarmer(quote, connection) {
     const agreement = await this.generateAgreement(quote)
     const responseHandler = function (err, response) {
-      this.handleSignedAgreement(err, response, connection)
+      this.onAgreement(err, response, connection)
     }
     connection.sendAgreement(agreement, responseHandler.bind(this))
   }

@@ -117,7 +117,7 @@ class ExampleRequester extends Requester {
         })
       })
       .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
+        console.log(`RequesterExample: Fail to submit the reward for farmer ${farmerId} to contract`)
       })
   }
 }

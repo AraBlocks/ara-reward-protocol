@@ -7,19 +7,19 @@ const path = '/Users/brandon/Development/testfolder'
 
 unarchive(did, path)
 
-async function unarchive (did, path) {
-    const { afs } = await create({did})
+async function unarchive(did, path) {
+  const { afs } = await create({ did })
 
-    path = unixify(path)
-	const progress = mirror({name: '/home', fs: afs}, {name: path}, {}, (error) => {
-		if (error) console.log("Mirror", error)
-	})
-	progress.on('put', (src) => console.log('Mirrored', src.name))
-	progress.on('skip', (src) => console.log('Skipped', src.name))
-	progress.on('end', onend)
+  path = unixify(path)
+  const progress = mirror({ name: '/home', fs: afs }, { name: path }, {}, (error) => {
+    if (error) console.log('Mirror', error)
+  })
+  progress.on('put', src => console.log('Mirrored', src.name))
+  progress.on('skip', src => console.log('Skipped', src.name))
+  progress.on('end', onend)
 
-	function onend(){
-		console.log("Mirror Complete")
-		afs.close()
-	}
+  function onend() {
+    console.log('Mirror Complete')
+    afs.close()
+  }
 }

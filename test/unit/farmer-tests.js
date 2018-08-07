@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const messages = require('../../src/proto/messages_pb')
 const { Farmer } = require('../../src/farmer')
 
-test('farmer.handleQuoteRequest.ValidPeer', async (t) => {
+test('farmer.onSow.ValidPeer', async (t) => {
   const quoteId = 1234
   const sow = new messages.SOW()
 
@@ -18,14 +18,14 @@ test('farmer.handleQuoteRequest.ValidPeer', async (t) => {
     request: sow
   }
 
-  farmer.handleQuoteRequest(stubCall, (error, response) => {
+  farmer.onSow(stubCall, (error, response) => {
     t.true(null === error)
     t.true(quote === response)
     t.true(quoteId === response.getId())
   })
 })
 
-test('farmer.handleQuoteRequest.InvalidPeer', async (t) => {
+test('farmer.onSow.InvalidPeer', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
@@ -37,13 +37,13 @@ test('farmer.handleQuoteRequest.InvalidPeer', async (t) => {
     request: sow
   }
 
-  farmer.handleQuoteRequest(stubCall, (error, response) => {
+  farmer.onSow(stubCall, (error, response) => {
     t.true(null != error)
     t.true(null === response)
   })
 })
 
-test('farmer.handleAgreementReceipt.ValidAgreement', async (t) => {
+test('farmer.onAgreement.ValidAgreement', async (t) => {
   const agreementId = 1234
 
   const agreement = new messages.Agreement()
@@ -57,14 +57,14 @@ test('farmer.handleAgreementReceipt.ValidAgreement', async (t) => {
     request: agreement
   }
 
-  farmer.handleAgreementReceipt(stubCall, (error, response) => {
+  farmer.onAgreement(stubCall, (error, response) => {
     t.true(null === error)
     t.true(agreement === response)
     t.true(agreementId === response.getId())
   })
 })
 
-test('farmer.handleAgreementReceipt.InvalidAgreement', async (t) => {
+test('farmer.onAgreement.InvalidAgreement', async (t) => {
   const agreement = new messages.Agreement()
 
   const farmer = new Farmer()
@@ -76,7 +76,7 @@ test('farmer.handleAgreementReceipt.InvalidAgreement', async (t) => {
     request: agreement
   }
 
-  farmer.handleAgreementReceipt(stubCall, (error, response) => {
+  farmer.onAgreement(stubCall, (error, response) => {
     t.true(null != error)
     t.true(null === response)
     t.true(signAgreementFake.notCalled)
