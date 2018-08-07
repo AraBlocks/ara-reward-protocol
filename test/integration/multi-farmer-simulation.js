@@ -1,9 +1,11 @@
-const test = require('ava')
 const sinon = require('sinon')
+const test = require('ava')
 
-const { messages, matchers, afpgrpc, Requester, Farmer } = require('../../index')
+const {
+  messages, matchers, afpgrpc, RequesterBase, FarmerBase
+} = require('../../index')
 
-class ExampleRequester extends Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'
@@ -59,7 +61,7 @@ class ExampleRequester extends Requester {
   }
 }
 
-class ExampleFarmer extends Farmer {
+class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price) {
     super()
     this.badRequesterId = 10057
@@ -114,7 +116,6 @@ class ExampleFarmer extends Farmer {
   }
 }
 
-
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(count) {
   const sPort = 50051
@@ -168,10 +169,10 @@ requesterSig.setId = requesterID
 requesterSig.setData('avalidsignature')
 
 const requester = new ExampleRequester(sow, matcher, requesterSig)
-requester.processFarmers(farmerConnections)
-
 
 test('multi-farmer-simulation', (t) => {
-  //TODO
+  requester.processFarmers(farmerConnections)
+
+  // TODO
   t.true(true)
 })

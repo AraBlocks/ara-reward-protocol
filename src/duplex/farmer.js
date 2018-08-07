@@ -1,7 +1,7 @@
-const { Farmer } = require('../farmer')
+const { FarmerBase } = require('../farmer')
 
 // Class defining the required working conditions demanded by (and RPC methods of) a Farmer
-class sFarmer extends Farmer {
+class Farmer extends FarmerBase {
   async processRequester(connection) {
     connection.stream.on('sow', sow => this.onSow(sow, connection))
     connection.stream.on('agreement', agreement => this.onAgreement(agreement, connection))
@@ -30,4 +30,4 @@ class sFarmer extends Farmer {
   }
 }
 
-module.exports = { sFarmer }
+module.exports = { Farmer }

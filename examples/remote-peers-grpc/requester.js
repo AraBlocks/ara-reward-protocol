@@ -1,6 +1,6 @@
-const { messages, Requester } = require('ara-farming-protocol')
+const { messages, RequesterBase } = require('ara-farming-protocol')
 
-class ExampleRequester extends Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, onStartWork) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'

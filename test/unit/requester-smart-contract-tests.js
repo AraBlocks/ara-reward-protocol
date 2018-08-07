@@ -1,12 +1,12 @@
 const { ExampleRequester } = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
-const { Matcher } = require('../../src/matcher')
+const { MatcherBase } = require('../../src/matcher')
 const messages = require('../../src/proto/messages_pb')
 const sinon = require('sinon')
 const test = require('ava')
 
 const requester = new ExampleRequester(
   new messages.SOW(),
-  new Matcher(),
+  new MatcherBase(),
   new messages.Signature(),
   null
 )
@@ -30,7 +30,7 @@ test('requester.sendReward.succeed', async (t) => {
   t.true(fakeDelivery.calledOnce)
 })
 
-test('requester.sendReward.succeed', async (t) => {
+test('requester.sendReward.fail', async (t) => {
   const fakeDelivery = sinon.fake()
 
   const stubContract = {
@@ -43,5 +43,6 @@ test('requester.sendReward.succeed', async (t) => {
 
   requester.wallet = stubContract
   await requester.sendReward(server, reward)
-  t.true(!fakeDelivery.called)
+
+  t.true(fakeDelivery.notCalled)
 })

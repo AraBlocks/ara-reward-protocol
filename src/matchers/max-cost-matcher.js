@@ -1,7 +1,7 @@
-const { Matcher } = require('../matcher')
+const { MatcherBase } = require('../matcher')
 
 // Matcher which hires a maximum number of workers for a maximum cost
-class MaxCostMatcher extends Matcher {
+class MaxCostMatcher extends MatcherBase {
   constructor(maxCost, maxWorkers) {
     super()
     this.maxCost = maxCost

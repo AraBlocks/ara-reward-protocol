@@ -1,6 +1,6 @@
-const { Requester } = require('../requester')
+const { RequesterBase } = require('../requester')
 
-class sRequester extends Requester {
+class Requester extends RequesterBase {
   constructor(sow, matcher) {
     super(sow, matcher)
   }
@@ -21,4 +21,4 @@ class sRequester extends Requester {
   }
 }
 
-module.exports = { sRequester }
+module.exports = { Requester }

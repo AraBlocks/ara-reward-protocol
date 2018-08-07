@@ -1,19 +1,19 @@
+const { RequesterBase } = require('./src/requester')
+const { MatcherBase } = require('./src/matcher')
+const { FarmerBase } = require('./src/farmer')
 const messages = require('./src/proto/messages_pb')
 const services = require('./src/proto/route-guide_grpc_pb')
-const { Requester } = require('./src/requester')
-const { Matcher } = require('./src/matcher')
-const { Farmer } = require('./src/farmer')
+const matchers = require('./src/matchers/index')
 const afpstream = require('./src/duplex/index')
 const afpgrpc = require('./src/grpc/index')
-const matchers = require('./src/matchers/index')
 
 module.exports = {
+  RequesterBase,
+  MatcherBase,
+  FarmerBase,
   messages,
   services,
+  matchers,
   afpstream,
   afpgrpc,
-  matchers,
-  Requester,
-  Matcher,
-  Farmer,
 }

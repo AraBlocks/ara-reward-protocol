@@ -1,7 +1,7 @@
-const { Farmer } = require('../../src/farmer')
+const { FarmerBase } = require('../../src/farmer')
 const messages = require('../../src/proto/messages_pb')
 
-class ExampleFarmer extends Farmer {
+class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price, wallet) {
     super()
     this.quoteId = 1

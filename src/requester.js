@@ -1,7 +1,7 @@
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
 
-class Requester {
+class RequesterBase {
   /**
    * Class that handles the communication for requesting a specific SOW
    * for a single task.
@@ -126,4 +126,4 @@ class Requester {
   }
 }
 
-module.exports = { Requester }
+module.exports = { RequesterBase }

@@ -3,7 +3,7 @@ const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
 
-class ExampleFarmer extends afpstream.sFarmer {
+class ExampleFarmer extends afpstream.Farmer {
   constructor(farmerId, farmerSig, price, startWork) {
     super()
     this.badRequesterId = 10057

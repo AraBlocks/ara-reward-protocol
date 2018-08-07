@@ -1,6 +1,6 @@
 const { messages, afpstream } = require('ara-farming-protocol')
 
-class ExampleRequester extends afpstream.sRequester {
+class ExampleRequester extends afpstream.Requester {
   constructor(sow, matcher, requesterSig, startWork) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'

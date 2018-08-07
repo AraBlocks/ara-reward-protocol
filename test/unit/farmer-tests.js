@@ -1,4 +1,4 @@
-const { Farmer } = require('../../src/farmer')
+const { FarmerBase } = require('../../src/farmer')
 const messages = require('../../src/proto/messages_pb')
 const sinon = require('sinon')
 const test = require('ava')
@@ -10,7 +10,7 @@ test('farmer.onSow.ValidPeer', async (t) => {
   const quote = new messages.Quote()
   quote.setId(quoteId)
 
-  const farmer = new Farmer()
+  const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
   sinon.stub(farmer, 'validatePeer').resolves(true)
 
@@ -29,7 +29,7 @@ test('farmer.onSow.InvalidPeer', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
-  const farmer = new Farmer()
+  const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
   sinon.stub(farmer, 'validatePeer').resolves(false)
 
@@ -49,7 +49,7 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
   const agreement = new messages.Agreement()
   agreement.setId(agreementId)
 
-  const farmer = new Farmer()
+  const farmer = new FarmerBase()
   sinon.stub(farmer, 'validateAgreement').resolves(true)
   sinon.stub(farmer, 'signAgreement').resolves(agreement)
 
@@ -67,7 +67,7 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
 test('farmer.onAgreement.InvalidAgreement', async (t) => {
   const agreement = new messages.Agreement()
 
-  const farmer = new Farmer()
+  const farmer = new FarmerBase()
   const signAgreementFake = sinon.fake()
   sinon.stub(farmer, 'validateAgreement').resolves(false)
   sinon.stub(farmer, 'signAgreement').callsFake(signAgreementFake)

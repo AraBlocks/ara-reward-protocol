@@ -1,6 +1,6 @@
 const messages = require('./proto/messages_pb')
 
-class Matcher {
+class MatcherBase {
   /**
    * This is called to validate a quote. If a quote is considered
    * valid, then this should calls hireFarmerCallback to continue
@@ -21,4 +21,4 @@ class Matcher {
   }
 }
 
-module.exports = { Matcher }
+module.exports = { MatcherBase }

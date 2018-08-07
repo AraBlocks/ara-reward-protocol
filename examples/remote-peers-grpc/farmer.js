@@ -1,6 +1,6 @@
-const { messages, Farmer } = require('ara-farming-protocol')
+const { messages, FarmerBase } = require('ara-farming-protocol')
 
-class ExampleFarmer extends Farmer {
+class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price, onStartWork) {
     super()
     this.badRequesterId = 10057

@@ -40,7 +40,7 @@ async function download(did) {
   afs.on('content', onupdate)
   // afs.on('update', onupdate) // TODO: test this
 
-    // Create a swarm for downloading the content
+  // Create a swarm for downloading the content
   const contentSwarm = createContentSwarm(afs)
   contentSwarm.on('close', onend)
 

@@ -23,26 +23,31 @@
   },
   "homepage": "https://github.com/littlstar/farming-protocol#readme",
   "devDependencies": {
-    "ara-network": "github:arablocks/ara-network",
-    "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
-    "ava": "^0.25.0",
-    "eslint": "^4.19.1",
-    "eslint-config-ara": "github:arablocks/eslint-config-ara",
     "eslint-plugin-import": "^2.12.0",
-    "pump": "^3.0.0",
-    "sinon": "^6.0.1"
+    "eslint-config-ara": "github:arablocks/eslint-config-ara",
+    "eslint": "^4.19.1",
+    "sinon": "^6.0.1",
+    "ava": "^0.25.0"
   },
   "dependencies": {
-    "cli-progress": "^2.0.0",
-    "debug": "^3.1.0",
-    "duplexify": "^3.6.0",
-    "find-free-port": "^2.0.0",
+    "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
     "google-protobuf": "^3.6.0",
-    "grpc": "^1.13.0-pre1",
-    "grpc-tools": "^1.6.6",
+    "ara-filesystem": "github:arablocks/ara-filesystem",
+    "find-free-port": "^2.0.0",
     "mirror-folder": "^3.0.0",
-    "pify": "^3.0.0",
+    "cli-progress": "^2.0.0",
+    "ara-network": "github:arablocks/ara-network",
+    "grpc-tools": "^1.6.6",
+    "duplexify": "^3.6.0",
+    "through2":"^2.0.3",
+    "through":"^2.3.8",
+    "unixify": "^1.0.0",
     "varint": "^5.0.0",
-    "web3": "^1.0.0-beta.34"
+    "debug": "^3.1.0",
+    "pump": "^3.0.0",
+    "pify": "^3.0.0",
+    "web3": "^1.0.0-beta.34",
+    "grpc": "^1.13.0-pre1",
+    "ip":"^1.1.5"
   }
 }

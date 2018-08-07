@@ -1,7 +1,7 @@
-const { Requester } = require('../../src/requester')
+const { RequesterBase } = require('../../src/requester')
 const messages = require('../../src/proto/messages_pb')
 
-class ExampleRequester extends Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet) {
     super(sow, matcher)
     this.requesterSig = requesterSig
