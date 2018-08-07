@@ -35,10 +35,14 @@ async function download(did) {
   const requester = new ExampleRequester(sow, matcher, requesterSig, startWork)
 
   // Load the sparse afs
-  const { afs } = await create({ did })
+  const { afs } = await create({did})
   let downloaded = false
-  afs.on('content', onupdate)
-  // afs.on('update', onupdate) // TODO: test this
+  const content = afs.partitions.resolve(afs.HOME).content
+  if (content){
+      content.once('download', onupdate)
+  } else {
+      afs.once('content', onupdate)
+  }
 
   // Create a swarm for downloading the content
   const contentSwarm = createContentSwarm(afs)

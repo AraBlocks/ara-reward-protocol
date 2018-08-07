@@ -28,17 +28,22 @@ async function broadcast(did) {
   farmerSig.setAraId(farmerID)
   farmerSig.setData('avalidsignature')
 
-  // The Farmer instance which sets a specific price, an ID, and a signature
-  const price = 6
-  const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
-
-  // Create a swarm for uploading the content
+  // Load the afs
   const { afs } = await create({ did })
 
+  // The Farmer instance which sets a specific price, an ID, and a signature
+  const price = 6
+  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs))
+
   // Join the discovery swarm for the requested content
+  const swarm = createFarmingSwarm(did, farmer)
+}
+
+function createFarmingSwarm(did, farmer){
   const opts = {
     stream,
   }
+
   const swarm = createSwarm(opts)
   swarm.on('connection', handleConnection)
   swarm.join(did)
@@ -60,31 +65,33 @@ async function broadcast(did) {
     console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
   }
 
-  async function startWork(port) {
-    const opts = {
-      stream: stream.bind(this)
+  return swarm
+}
+
+async function startWork(port, afs) {
+  const opts = {
+    stream
+  }
+  const swarm = createSwarm(opts)
+  swarm.on('connection', handleConnection)
+  swarm.listen(port)
+
+  function stream(peer) {
+    const stream = afs.replicate({
+      upload: true,
+      download: false
+    })
+    stream.once('end', onend)
+
+    function onend() {
+      console.log('Uploaded!')
+      swarm.destroy()
     }
-    const swarm = createSwarm(opts)
-    swarm.on('connection', handleConnection)
-    swarm.listen(port)
 
-    function stream(peer) {
-      const stream = afs.replicate({
-        upload: true,
-        download: false
-      })
-      stream.once('end', onend)
+    return stream
+  }
 
-      function onend() {
-        console.log('Uploaded!')
-        swarm.destroy()
-      }
-
-      return stream
-    }
-
-    function handleConnection(connection, info) {
-      console.log(`Peer connected: ${info.host} on port: ${info.port}`)
-    }
+  function handleConnection(connection, info) {
+    console.log(`Peer connected: ${info.host} on port: ${info.port}`)
   }
 }
