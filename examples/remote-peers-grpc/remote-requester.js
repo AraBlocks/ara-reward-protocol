@@ -95,18 +95,6 @@ async function main() {
     // Handle when a peer connects to the swarm
     async function handleConnection(connection, info) {
       console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
-
-      try {
-        downloadAFS.on('sync', () => {
-          console.log('SYNC!')
-        })
-        downloadAFS.on('syncing', () => {
-          console.log('SYNCING!')
-        })
-        await downloadAFS.download('.')
-      } catch (err) {
-        console.log(`Error: ${err}`)
-      }
     }
   }
 

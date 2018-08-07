@@ -1,8 +1,8 @@
-const test = require('ava')
-const sinon = require('sinon')
-const messages = require('../../src/proto/messages_pb')
 const { Requester } = require('../../src/requester')
 const { Matcher } = require('../../src/matcher')
+const messages = require('../../src/proto/messages_pb')
+const sinon = require('sinon')
+const test = require('ava')
 
 test('requester.onQuote.ValidPeer', async (t) => {
   const sow = new messages.SOW()

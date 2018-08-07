@@ -1,7 +1,8 @@
 const duplexify = require('duplexify')
+const messages = require('../proto/messages_pb')
 const through2 = require('through2')
 const varint = require('varint')
-const messages = require('../proto/messages_pb')
+
 require('events').EventEmitter.defaultMaxListeners = 15
 
 const MSG = {

@@ -1,9 +1,7 @@
-const test = require('ava')
-const sinon = require('sinon')
+const { ExampleFarmer } = require('../../examples/multi-farmer-simulation-smart-contract/farmer.js')
 const messages = require('../../src/proto/messages_pb')
-const {
-  ExampleFarmer
-} = require('../../examples/multi-farmer-simulation-smart-contract/farmer.js')
+const sinon = require('sinon')
+const test = require('ava')
 
 const farmer = new ExampleFarmer(null, new messages.Signature(), 1, null)
 

@@ -1,10 +1,8 @@
-const test = require('ava')
-const sinon = require('sinon')
-const messages = require('../../src/proto/messages_pb')
+const { ExampleRequester } = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
 const { Matcher } = require('../../src/matcher')
-const {
-  ExampleRequester
-} = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
+const messages = require('../../src/proto/messages_pb')
+const sinon = require('sinon')
+const test = require('ava')
 
 const requester = new ExampleRequester(
   new messages.SOW(),

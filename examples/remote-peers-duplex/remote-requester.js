@@ -1,12 +1,12 @@
-const { createSwarm } = require('ara-network/discovery')
 const { messages, matchers, afpstream } = require('ara-farming-protocol')
-const ip = require('ip')
-const through = require('through')
-const { create } = require('ara-filesystem')
 const { ExampleRequester } = require('./requester')
+const { createSwarm } = require('ara-network/discovery')
+const { create } = require('ara-filesystem')
+const through = require('through')
+const clip = require('cli-progress')
 const util = require('../util')
 const pify = require('pify')
-const cliProgress = require('cli-progress')
+const ip = require('ip')
 
 const did = 'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c'
 download(did)
@@ -31,19 +31,23 @@ async function download(did) {
   sow.setWorkUnit('MB')
   sow.setRequester(requesterID)
 
+  // Create the requester object
   const requester = new ExampleRequester(sow, matcher, requesterSig, startWork)
 
-  // Create a swarm for downloading the content
+  // Load the sparse afs
   const { afs } = await create({ did })
   let downloaded = false
   afs.on('content', onupdate)
   // afs.on('update', onupdate) // TODO: test this
 
+    // Create a swarm for downloading the content
   const contentSwarm = createContentSwarm(afs)
   contentSwarm.on('close', onend)
 
+  // Create a swarm for finding farmers
   const farmerSwarm = createFarmerSwarm(did, requester)
 
+  // Handle when the swarms end
   async function onend() {
     if (!downloaded) {
       downloaded = true
@@ -58,10 +62,11 @@ async function download(did) {
     }
   }
 
+  // Handle when the content needs updated
   async function onupdate() {
     const feed = afs.partitions.resolve(afs.HOME).content
     if (feed) {
-      const pBar = new cliProgress.Bar({}, cliProgress.Presets.shades_classic)
+      const pBar = new clip.Bar({}, clip.Presets.shades_classic)
       let pStarted = false
 
       feed.on('download', () => {
@@ -82,12 +87,14 @@ async function download(did) {
     }
   }
 
+  // Handle when ready to start work
   function startWork(peer) {
     console.log('Starting AFS Connection with ', peer.host, peer.port)
     contentSwarm.addPeer(peer.host, { host: peer.host, port: peer.port })
   }
 }
 
+// Creates a swarm to find farmers
 function createFarmerSwarm(did, requester) {
   const opts = {
     stream,

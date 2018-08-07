@@ -1,7 +1,7 @@
-const test = require('ava')
-const sinon = require('sinon')
-const messages = require('../../src/proto/messages_pb')
 const { Farmer } = require('../../src/farmer')
+const messages = require('../../src/proto/messages_pb')
+const sinon = require('sinon')
+const test = require('ava')
 
 test('farmer.onSow.ValidPeer', async (t) => {
   const quoteId = 1234

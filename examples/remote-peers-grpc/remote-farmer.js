@@ -1,5 +1,5 @@
-const { messages, grpcUtil } = require('ara-farming-protocol')
 const { createChannel, createSwarm } = require('ara-network/discovery')
+const { messages, afpgrpc } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
 const afs = require('ara-filesystem')
 const ip = require('ip')
@@ -32,7 +32,7 @@ async function main() {
 
   // Start broadcasting the willingness to farm
   const port = `${ip.address()}:${farmPort}`
-  const farmerServer = new grpcUtil.FarmerServer(farmer, port)
+  const farmerServer = new afpgrpc.util.FarmerServer(farmer, port)
   farmerServer.start()
 
   // Broadcast on the discovery channel for what the farmer can produce

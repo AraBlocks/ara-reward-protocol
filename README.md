@@ -81,14 +81,14 @@ For broadcasting the ability to farm.
 
 ```js
 const { ExampleFarmer } = require('./farmer')
-const { grpcUtil } = require('ara-farming-protocol')
+const { afpgrpc } = require('ara-farming-protocol')
 
 // The application's custom classes
 const farmer = new ExampleFarmer()
 
 // Broadcast on a specific port
 const port = `localhost:50051` 
-grpcUtil.broadcastFarmer(farmer, port)
+afpgrpc.util.broadcastFarmer(farmer, port)
 ```
 
 ### Requesting
@@ -97,7 +97,7 @@ For requesting a farming job.
 
 ```js
 const { ExampleRequester } = require('./requester')
-const { grpcUtil } = require('ara-farming-protocol')
+const { afpgrpc } = require('ara-farming-protocol')
 
 // The statement of work for the request
 const sow = new messages.SOW()
@@ -107,7 +107,7 @@ const matcher = new ExampleMatcher()
 const requester = new ExampleRequester(sow, matcher)
 
 // Connect to a farmer (or set of farmers)
-const connection = grpcUtil.connectToFarmer(port)
+const connection = afpgrpc.util.connectToFarmer(port)
 requester.processFarmers([connection])
 ```
 

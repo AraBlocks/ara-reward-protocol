@@ -1,6 +1,6 @@
 const { messages, afpstream } = require('ara-farming-protocol')
-const fp = require('find-free-port')
 const pify = require('pify')
+const fp = require('find-free-port')
 const ip = require('ip')
 
 class ExampleFarmer extends afpstream.sFarmer {

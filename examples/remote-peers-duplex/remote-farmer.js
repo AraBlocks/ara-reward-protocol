@@ -1,10 +1,10 @@
-const { createSwarm } = require('ara-network/discovery')
 const { messages, afpstream } = require('ara-farming-protocol')
-const ip = require('ip')
-const through = require('through')
-const { create } = require('ara-filesystem')
 const { ExampleFarmer } = require('./farmer')
+const { createSwarm } = require('ara-network/discovery')
+const { create } = require('ara-filesystem')
+const through = require('through')
 const util = require('../util')
+const ip = require('ip')
 
 const dids = [
   'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c',
