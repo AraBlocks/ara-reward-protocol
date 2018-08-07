@@ -13,14 +13,6 @@ $ npm link ara-farming-protocol
 
 ## Examples
 
-### Multi-farmer Simulation
-
-This example generates and connects to 10 local farmers, then hires up to 5 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
-
-```
-$ node examples/multi-farmer-simulation/multi-farmer-simulation.js
-```
-
 ### Multifarmer with Ethereum Smart Contract Simulation
 
 This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
@@ -46,27 +38,27 @@ The requester example finds peers on the discovery channel did:ara:desiredConten
 On the farmer's computer/terminal:
 
 ```
-$ node examples/remote-peers/remote-farmer.js
+$ node examples/remote-peers-grpc/remote-farmer.js
 ```
 
 On the requester's computer/terminal:
 
 ```
-$ node examples/remote-peers/remote-requester.js
+$ node examples/remote-peers-grpc/remote-requester.js
 ```
 
-## Remote Peers with Streaming
+## Remote Peers with Duplexify
 
 The requester example finds peers on the discovery channel and communicates via duplex stream to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example then broadcasts on a randomly selected port and replicates an AFS.
 
 On the farmer's computer/terminal:
 
 ```
-$ node examples/remote-peers-streaming/remote-farmer.js
+$ node examples/remote-peers-duplex/remote-farmer.js
 ```
 
 On the requester's computer/terminal:
 
 ```
-$ node examples/remote-peers-streaming/remote-requester.js
+$ node examples/remote-peers-duplex/remote-requester.js
 ```
