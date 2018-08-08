@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 const { abi } = require('./build/contracts/Farming.json')
-const { provider } = require('../constant')
+const { provider } = require('../constants')
 
 class ContractABI {
   constructor(contractAdd, walletAdd) {

@@ -1,8 +1,8 @@
 const { ExampleFarmer } = require('./farmer')
 const { ExampleRequester } = require('./requester')
 const { messages, matchers, afpgrpc } = require('ara-farming-protocol')
-const { contractAddress, walletAddresses } = require('./constant.js')
-const ContractABI = require('./farming_contract/contract-abi.js')
+const { contractAddress, walletAddresses } = require('../constants.js')
+const ContractABI = require('../farming_contract/contract-abi.js')
 
 const wallets =   [
   new ContractABI(contractAddress, walletAddresses[0]),
