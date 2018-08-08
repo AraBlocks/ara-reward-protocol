@@ -22,22 +22,22 @@ class ExampleRequester extends RequesterBase {
   /**
    * Generates a contract for quote
    * @param {messages.Quote} quote
-   * @returns {messages.Contract}
+   * @returns {messages.Agreement}
    */
-  generateContract(quote) {
-    const contract = new messages.Contract()
-    contract.setId(this.contractId)
-    contract.setQuote(quote)
-    contract.setRequesterSignature(this.requesterSig)
-    return contract
+  generateAgreement(quote) {
+    const agreement = new messages.Agreement()
+    agreement.setId(this.contractId)
+    agreement.setQuote(quote)
+    agreement.setRequesterSignature(this.requesterSig)
+    return agreement
   }
 
   /**
    * Returns whether a contract is valid.
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
+  validateAgreement(agreement) {
     return true
   }
 
@@ -117,7 +117,7 @@ class ExampleRequester extends RequesterBase {
         })
       })
       .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward for farmer ${farmerId} to contract`)
+        console.log(`RequesterExample: Fail to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
       })
   }
 }

@@ -1,7 +1,17 @@
 const { ExampleFarmer } = require('./farmer')
 const { ExampleRequester } = require('./requester')
 const { messages, matchers, afpgrpc } = require('ara-farming-protocol')
-const wallets = require('./constant.js')
+const { contractAddress, walletAddresses } = require('./constant.js')
+const ContractABI = require('./farming_contract/contract-abi.js')
+
+const wallets =   [
+  new ContractABI(contractAddress, walletAddresses[0]),
+  new ContractABI(contractAddress, walletAddresses[1]),
+  new ContractABI(contractAddress, walletAddresses[2]),
+  new ContractABI(contractAddress, walletAddresses[3]),
+  new ContractABI(contractAddress, walletAddresses[4])
+]
+
 
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(count) {

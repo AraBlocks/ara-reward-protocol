@@ -5,6 +5,7 @@ archiver="/d/Development/EnvironmentA/ara-network-node-identity-archiver"
 resolver="/d/Development/EnvironmentA/ara-network-node-identity-resolver"
 afs="/d/Development/EnvironmentA/ara-filesystem"
 consttemplate="/d/Development/EnvironmentA/farming-protocol/scripts/constants-template.js"
+trufftemplate="/d/Development/EnvironmentA/farming-protocol/scripts/truffle-template.js"
 entrydir="/d/Development/EnvironmentA/farming-protocol"
 
 echo "Opening Farming Directory..."
@@ -23,6 +24,12 @@ echo "Waiting for ganache..."
 while [ "$(netstat -na | grep 8545 | grep -c ESTABLISHED)" = 0 ]
 do sleep 2
 done
+
+echo "Cloning truffle config..."
+host="192.168.128.250"
+port="8545"
+
+sed "s/HostPlaceholder/$host/" $trufftemplate | sed "s/PortPlaceholder/$port/" > $afs/truffle.js
 
 echo "Migrating Contracts..."
 cd $afs

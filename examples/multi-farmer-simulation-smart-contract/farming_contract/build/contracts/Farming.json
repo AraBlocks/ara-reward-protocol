@@ -41,6 +41,25 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "jobId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getJobBudget",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -63,6 +82,29 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "jobId",
+          "type": "uint256"
+        },
+        {
+          "name": "farmerAddress",
+          "type": "string"
+        }
+      ],
+      "name": "getRewardBalance",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -81,20 +123,20 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x608060405234801561001057600080fd5b506103f9806100206000396000f300608060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063180aedf3146100675780639e7fd3d2146100a8578063e7aa01941461010e578063f895899f1461012e575b600080fd5b34801561007357600080fd5b50610092600480360381019080803590602001909291905050506101ab565b6040518082815260200191505060405180910390f35b61010c60048036038101908080359060200190929190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091929192905050506101c9565b005b61012c60048036038101908080359060200190929190505050610322565b005b34801561013a57600080fd5b506101a960048036038101908080359060200190929190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091929192908035906020019092919050505061033f565b005b60006020528060005260406000206000915090508060010154905081565b600080600080858152602001908152602001600020915081600001836040518082805190602001908083835b60208310151561021a57805182526020820191506020810190506020830392506101f5565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020549050600082600001846040518082805190602001908083835b60208310151561028c5780518252602082019150602081019050602083039250610267565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020819055508082600101600082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f1935050505015801561031b573d6000803e3d6000fd5b5050505050565b346000808381526020019081526020016000206001018190555050565b600080600085815260200190815260200160002090508181600001846040518082805190602001908083835b602083101515610390578051825260208201915060208101905060208303925061036b565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902081905550505050505600a165627a7a72305820597835af84557000761aee360eb8107ec2f71fef046efb8a1b9be7427c8c18fc0029",
-  "deployedBytecode": "0x608060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063180aedf3146100675780639e7fd3d2146100a8578063e7aa01941461010e578063f895899f1461012e575b600080fd5b34801561007357600080fd5b50610092600480360381019080803590602001909291905050506101ab565b6040518082815260200191505060405180910390f35b61010c60048036038101908080359060200190929190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091929192905050506101c9565b005b61012c60048036038101908080359060200190929190505050610322565b005b34801561013a57600080fd5b506101a960048036038101908080359060200190929190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091929192908035906020019092919050505061033f565b005b60006020528060005260406000206000915090508060010154905081565b600080600080858152602001908152602001600020915081600001836040518082805190602001908083835b60208310151561021a57805182526020820191506020810190506020830392506101f5565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020549050600082600001846040518082805190602001908083835b60208310151561028c5780518252602082019150602081019050602083039250610267565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020819055508082600101600082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f1935050505015801561031b573d6000803e3d6000fd5b5050505050565b346000808381526020019081526020016000206001018190555050565b600080600085815260200190815260200160002090508181600001846040518082805190602001908083835b602083101515610390578051825260208201915060208101905060208303925061036b565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902081905550505050505600a165627a7a72305820597835af84557000761aee360eb8107ec2f71fef046efb8a1b9be7427c8c18fc0029",
-  "sourceMap": "26:724:0:-;;;170:29;8:9:-1;5:2;;;30:1;27;20:12;5:2;170:29:0;26:724;;;;;;",
-  "deployedSourceMap": "26:724:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;49:32;;8:9:-1;5:2;;;30:1;27;20:12;5:2;49:32:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;476:272;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;205:92;;;;;;;;;;;;;;;;;;;;;;;;;;303:167;;8:9:-1;5:2;;;30:1;27;20:12;5:2;303:167:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;49:32;;;;;;;;;;;;;;;;;;;;;;:::o;476:272::-;555:15;594:11;573:4;:11;578:5;573:11;;;;;;;;;;;555:29;;608:3;:11;;620:13;608:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;608:26:0;;;;;;;;;;;;;;;;;;;;;;594:40;;673:1;644:3;:11;;656:13;644:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;644:26:0;;;;;;;;;;;;;;;;;;;;;:30;;;;698:6;684:3;:10;;;:20;;;;;;;;;;;714:10;:19;;:27;734:6;714:27;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;714:27:0;476:272;;;;:::o;205:92::-;281:9;260:4;:11;265:5;260:11;;;;;;;;;;;:18;;:30;;;;205:92;:::o;303:167::-;389:15;407:4;:11;412:5;407:11;;;;;;;;;;;389:29;;457:6;428:3;:11;;440:13;428:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;428:26:0;;;;;;;;;;;;;;;;;;;;;:35;;;;303:167;;;;:::o",
-  "source": "pragma solidity ^0.4.24;\n\ncontract Farming {\n    mapping(uint => Job) public jobs;\n\n    struct Job {\n      mapping(string => uint) rewards;\n      uint budget;\n    }\n\n    constructor () public {\n    }\n\n    function submitJob(uint jobId) public payable{\n        jobs[jobId].budget = msg.value;\n    }\n\n    function submitReward(uint jobId, string farmerAddress, uint reward) public {\n        Job storage job = jobs[jobId];\n        job.rewards[farmerAddress] = reward;\n    }\n\n    function claimReward(uint jobId, string farmerAddress) public payable{\n        Job storage job = jobs[jobId];\n        uint reward = job.rewards[farmerAddress];\n        job.rewards[farmerAddress] = 0;\n        job.budget -= reward;\n        msg.sender.transfer(reward);\n    }\n}\n",
-  "sourcePath": "/Users/huydao/GitHub/farming-sdk/examples/multi-farmer-simulation-smart-contract/farming_contract/contracts/Farming.sol",
+  "bytecode": "0x608060405234801561001057600080fd5b5061057e806100206000396000f300608060405260043610610077576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806291cc7c1461007c578063180aedf314610103578063362543a9146101445780639e7fd3d214610185578063e7aa0194146101eb578063f895899f1461020b575b600080fd5b34801561008857600080fd5b506100ed60048036038101908080359060200190929190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509192919290505050610288565b6040518082815260200191505060405180910390f35b34801561010f57600080fd5b5061012e60048036038101908080359060200190929190505050610311565b6040518082815260200191505060405180910390f35b34801561015057600080fd5b5061016f6004803603810190808035906020019092919050505061032f565b6040518082815260200191505060405180910390f35b6101e960048036038101908080359060200190929190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919291929050505061034e565b005b610209600480360381019080803590602001909291905050506104a7565b005b34801561021757600080fd5b5061028660048036038101908080359060200190929190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509192919290803590602001909291905050506104c4565b005b6000806000848152602001908152602001600020600001826040518082805190602001908083835b6020831015156102d557805182526020820191506020810190506020830392506102b0565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902054905092915050565b60006020528060005260406000206000915090508060010154905081565b6000806000838152602001908152602001600020600101549050919050565b600080600080858152602001908152602001600020915081600001836040518082805190602001908083835b60208310151561039f578051825260208201915060208101905060208303925061037a565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020549050600082600001846040518082805190602001908083835b60208310151561041157805182526020820191506020810190506020830392506103ec565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020819055508082600101600082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f193505050501580156104a0573d6000803e3d6000fd5b5050505050565b346000808381526020019081526020016000206001018190555050565b600080600085815260200190815260200160002090508181600001846040518082805190602001908083835b60208310151561051557805182526020820191506020810190506020830392506104f0565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902081905550505050505600a165627a7a723058207d1a4db0f30c75f1e76198d46b30a6acee25b8549ccc45a55b4b0b085a7821f90029",
+  "deployedBytecode": "0x608060405260043610610077576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806291cc7c1461007c578063180aedf314610103578063362543a9146101445780639e7fd3d214610185578063e7aa0194146101eb578063f895899f1461020b575b600080fd5b34801561008857600080fd5b506100ed60048036038101908080359060200190929190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509192919290505050610288565b6040518082815260200191505060405180910390f35b34801561010f57600080fd5b5061012e60048036038101908080359060200190929190505050610311565b6040518082815260200191505060405180910390f35b34801561015057600080fd5b5061016f6004803603810190808035906020019092919050505061032f565b6040518082815260200191505060405180910390f35b6101e960048036038101908080359060200190929190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919291929050505061034e565b005b610209600480360381019080803590602001909291905050506104a7565b005b34801561021757600080fd5b5061028660048036038101908080359060200190929190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509192919290803590602001909291905050506104c4565b005b6000806000848152602001908152602001600020600001826040518082805190602001908083835b6020831015156102d557805182526020820191506020810190506020830392506102b0565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902054905092915050565b60006020528060005260406000206000915090508060010154905081565b6000806000838152602001908152602001600020600101549050919050565b600080600080858152602001908152602001600020915081600001836040518082805190602001908083835b60208310151561039f578051825260208201915060208101905060208303925061037a565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020549050600082600001846040518082805190602001908083835b60208310151561041157805182526020820191506020810190506020830392506103ec565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020819055508082600101600082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f193505050501580156104a0573d6000803e3d6000fd5b5050505050565b346000808381526020019081526020016000206001018190555050565b600080600085815260200190815260200160002090508181600001846040518082805190602001908083835b60208310151561051557805182526020820191506020810190506020830392506104f0565b6001836020036101000a038019825116818451168082178552505050505050905001915050908152602001604051809103902081905550505050505600a165627a7a723058207d1a4db0f30c75f1e76198d46b30a6acee25b8549ccc45a55b4b0b085a7821f90029",
+  "sourceMap": "28:1017:0:-;;;180:30;8:9:-1;5:2;;;30:1;27;20:12;5:2;180:30:0;28:1017;;;;;;",
+  "deployedSourceMap": "28:1017:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;610:146;;8:9:-1;5:2;;;30:1;27;20:12;5:2;610:146:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;52:32;;8:9:-1;5:2;;;30:1;27;20:12;5:2;52:32:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;320:104;;8:9:-1;5:2;;;30:1;27;20:12;5:2;320:104:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;764:278;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;218:94;;;;;;;;;;;;;;;;;;;;;;;;;;432:170;;8:9:-1;5:2;;;30:1;27;20:12;5:2;432:170:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;610:146;690:4;714;:11;719:5;714:11;;;;;;;;;;;:19;;734:13;714:34;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;714:34:0;;;;;;;;;;;;;;;;;;;;;;707:41;;610:146;;;;:::o;52:32::-;;;;;;;;;;;;;;;;;;;;;;:::o;320:104::-;374:4;398;:11;403:5;398:11;;;;;;;;;;;:18;;;391:25;;320:104;;;:::o;764:278::-;844:15;884:11;862:4;:11;867:5;862:11;;;;;;;;;;;844:29;;898:3;:11;;910:13;898:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;898:26:0;;;;;;;;;;;;;;;;;;;;;;884:40;;964:1;935:3;:11;;947:13;935:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;935:26:0;;;;;;;;;;;;;;;;;;;;;:30;;;;990:6;976:3;:10;;;:20;;;;;;;;;;;1007:10;:19;;:27;1027:6;1007:27;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1007:27:0;764:278;;;;:::o;218:94::-;295:9;274:4;:11;279:5;274:11;;;;;;;;;;;:18;;:30;;;;218:94;:::o;432:170::-;519:15;537:4;:11;542:5;537:11;;;;;;;;;;;519:29;;588:6;559:3;:11;;571:13;559:26;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;51:19;36:153;;;182:3;176:10;171:3;164:23;98:2;93:3;89:12;82:19;;123:2;118:3;114:12;107:19;;148:2;143:3;139:12;132:19;;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;559:26:0;;;;;;;;;;;;;;;;;;;;;:35;;;;432:170;;;;:::o",
+  "source": "pragma solidity ^0.4.24;\r\n\r\ncontract Farming {\r\n    mapping(uint => Job) public jobs;\r\n\r\n    struct Job {\r\n      mapping(string => uint) rewards;\r\n      uint budget;\r\n    }\r\n\r\n    constructor () public {\r\n    }\r\n\r\n    function submitJob(uint jobId) public payable{\r\n        jobs[jobId].budget = msg.value;\r\n    }\r\n\r\n    function getJobBudget(uint jobId) public view returns(uint) {\r\n        return jobs[jobId].budget;\r\n    }\r\n\r\n    function submitReward(uint jobId, string farmerAddress, uint reward) public {\r\n        Job storage job = jobs[jobId];\r\n        job.rewards[farmerAddress] = reward;\r\n    }\r\n\r\n    function getRewardBalance(uint jobId, string farmerAddress) public view returns(uint) {\r\n        return jobs[jobId].rewards[farmerAddress];\r\n    }\r\n\r\n    function claimReward(uint jobId, string farmerAddress) public payable{\r\n        Job storage job = jobs[jobId];\r\n        uint reward = job.rewards[farmerAddress];\r\n        job.rewards[farmerAddress] = 0;\r\n        job.budget -= reward;\r\n        msg.sender.transfer(reward);\r\n    }\r\n}\r\n",
+  "sourcePath": "D:\\Development\\EnvironmentA\\farming-protocol\\examples\\multi-farmer-simulation-smart-contract\\farming_contract\\contracts\\Farming.sol",
   "ast": {
-    "absolutePath": "/Users/huydao/GitHub/farming-sdk/examples/multi-farmer-simulation-smart-contract/farming_contract/contracts/Farming.sol",
+    "absolutePath": "/D/Development/EnvironmentA/farming-protocol/examples/multi-farmer-simulation-smart-contract/farming_contract/contracts/Farming.sol",
     "exportedSymbols": {
       "Farming": [
-        98
+        128
       ]
     },
-    "id": 99,
+    "id": 129,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -114,9 +156,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 98,
+        "id": 128,
         "linearizedBaseContracts": [
-          98
+          128
         ],
         "name": "Farming",
         "nodeType": "ContractDefinition",
@@ -126,8 +168,8 @@
             "id": 5,
             "name": "jobs",
             "nodeType": "VariableDeclaration",
-            "scope": 98,
-            "src": "49:32:0",
+            "scope": 128,
+            "src": "52:32:0",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -140,14 +182,14 @@
                 "id": 2,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
-                "src": "57:4:0",
+                "src": "60:4:0",
                 "typeDescriptions": {
                   "typeIdentifier": "t_uint256",
                   "typeString": "uint256"
                 }
               },
               "nodeType": "Mapping",
-              "src": "49:20:0",
+              "src": "52:20:0",
               "typeDescriptions": {
                 "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                 "typeString": "mapping(uint256 => struct Farming.Job)"
@@ -158,7 +200,7 @@
                 "name": "Job",
                 "nodeType": "UserDefinedTypeName",
                 "referencedDeclaration": 12,
-                "src": "65:3:0",
+                "src": "68:3:0",
                 "typeDescriptions": {
                   "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                   "typeString": "struct Farming.Job"
@@ -178,7 +220,7 @@
                 "name": "rewards",
                 "nodeType": "VariableDeclaration",
                 "scope": 12,
-                "src": "107:31:0",
+                "src": "113:31:0",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -191,14 +233,14 @@
                     "id": 6,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "115:6:0",
+                    "src": "121:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "107:23:0",
+                  "src": "113:23:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                     "typeString": "mapping(string => uint256)"
@@ -207,7 +249,7 @@
                     "id": 7,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "125:4:0",
+                    "src": "131:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -223,7 +265,7 @@
                 "name": "budget",
                 "nodeType": "VariableDeclaration",
                 "scope": 12,
-                "src": "146:11:0",
+                "src": "153:11:0",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -234,7 +276,7 @@
                   "id": 10,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:4:0",
+                  "src": "153:4:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -246,15 +288,15 @@
             ],
             "name": "Job",
             "nodeType": "StructDefinition",
-            "scope": 98,
-            "src": "88:76:0",
+            "scope": 128,
+            "src": "93:79:0",
             "visibility": "public"
           },
           {
             "body": {
               "id": 15,
               "nodeType": "Block",
-              "src": "192:7:0",
+              "src": "202:8:0",
               "statements": []
             },
             "documentation": null,
@@ -269,17 +311,17 @@
               "id": 13,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "182:2:0"
+              "src": "192:2:0"
             },
             "payable": false,
             "returnParameters": {
               "id": 14,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "192:0:0"
+              "src": "202:0:0"
             },
-            "scope": 98,
-            "src": "170:29:0",
+            "scope": 128,
+            "src": "180:30:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
@@ -288,7 +330,7 @@
             "body": {
               "id": 29,
               "nodeType": "Block",
-              "src": "250:47:0",
+              "src": "263:49:0",
               "statements": [
                 {
                   "expression": {
@@ -309,7 +351,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5,
-                          "src": "260:4:0",
+                          "src": "274:4:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                             "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
@@ -323,7 +365,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 18,
-                          "src": "265:5:0",
+                          "src": "279:5:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -334,7 +376,7 @@
                         "isPure": false,
                         "lValueRequested": false,
                         "nodeType": "IndexAccess",
-                        "src": "260:11:0",
+                        "src": "274:11:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage",
                           "typeString": "struct Farming.Job storage ref"
@@ -348,7 +390,7 @@
                       "memberName": "budget",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 11,
-                      "src": "260:18:0",
+                      "src": "274:18:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -364,8 +406,8 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 170,
-                        "src": "281:3:0",
+                        "referencedDeclaration": 200,
+                        "src": "295:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
@@ -379,13 +421,13 @@
                       "memberName": "value",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": null,
-                      "src": "281:9:0",
+                      "src": "295:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "260:30:0",
+                    "src": "274:30:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -393,7 +435,7 @@
                   },
                   "id": 28,
                   "nodeType": "ExpressionStatement",
-                  "src": "260:30:0"
+                  "src": "274:30:0"
                 }
               ]
             },
@@ -415,7 +457,7 @@
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
                   "scope": 30,
-                  "src": "224:10:0",
+                  "src": "237:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -426,7 +468,7 @@
                     "id": 17,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "224:4:0",
+                    "src": "237:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -436,206 +478,101 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "223:12:0"
+              "src": "236:12:0"
             },
             "payable": true,
             "returnParameters": {
               "id": 20,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "250:0:0"
+              "src": "263:0:0"
             },
-            "scope": 98,
-            "src": "205:92:0",
+            "scope": 128,
+            "src": "218:94:0",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 53,
+              "id": 42,
               "nodeType": "Block",
-              "src": "379:91:0",
+              "src": "380:44:0",
               "statements": [
-                {
-                  "assignments": [
-                    40
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 40,
-                      "name": "job",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 54,
-                      "src": "389:15:0",
-                      "stateVariable": false,
-                      "storageLocation": "storage",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                        "typeString": "struct Farming.Job"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 39,
-                        "name": "Job",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 12,
-                        "src": "389:3:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                          "typeString": "struct Farming.Job"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 44,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "baseExpression": {
-                      "argumentTypes": null,
-                      "id": 41,
-                      "name": "jobs",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 5,
-                      "src": "407:4:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
-                        "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
-                      }
-                    },
-                    "id": 43,
-                    "indexExpression": {
-                      "argumentTypes": null,
-                      "id": 42,
-                      "name": "jobId",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 32,
-                      "src": "412:5:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "isConstant": false,
-                    "isLValue": true,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "nodeType": "IndexAccess",
-                    "src": "407:11:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Job_$12_storage",
-                      "typeString": "struct Farming.Job storage ref"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "389:29:0"
-                },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 51,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
+                    "expression": {
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "expression": {
-                          "argumentTypes": null,
-                          "id": 45,
-                          "name": "job",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 40,
-                          "src": "428:3:0",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                            "typeString": "struct Farming.Job storage pointer"
-                          }
-                        },
-                        "id": 48,
-                        "isConstant": false,
-                        "isLValue": true,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "memberName": "rewards",
-                        "nodeType": "MemberAccess",
-                        "referencedDeclaration": 9,
-                        "src": "428:11:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
-                          "typeString": "mapping(string memory => uint256)"
-                        }
-                      },
-                      "id": 49,
-                      "indexExpression": {
-                        "argumentTypes": null,
-                        "id": 47,
-                        "name": "farmerAddress",
+                        "id": 37,
+                        "name": "jobs",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 34,
-                        "src": "440:13:0",
+                        "referencedDeclaration": 5,
+                        "src": "398:4:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                          "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                        }
+                      },
+                      "id": 39,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 38,
+                        "name": "jobId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 32,
+                        "src": "403:5:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
                         }
                       },
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
-                      "lValueRequested": true,
+                      "lValueRequested": false,
                       "nodeType": "IndexAccess",
-                      "src": "428:26:0",
+                      "src": "398:11:0",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
+                        "typeIdentifier": "t_struct$_Job_$12_storage",
+                        "typeString": "struct Farming.Job storage ref"
                       }
                     },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 50,
-                      "name": "reward",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 36,
-                      "src": "457:6:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "428:35:0",
+                    "id": 40,
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "budget",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": 11,
+                    "src": "398:18:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 52,
-                  "nodeType": "ExpressionStatement",
-                  "src": "428:35:0"
+                  "functionReturnParameters": 36,
+                  "id": 41,
+                  "nodeType": "Return",
+                  "src": "391:25:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 54,
+            "id": 43,
             "implemented": true,
             "isConstructor": false,
-            "isDeclaredConst": false,
+            "isDeclaredConst": true,
             "modifiers": [],
-            "name": "submitReward",
+            "name": "getJobBudget",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 37,
+              "id": 33,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -643,8 +580,8 @@
                   "id": 32,
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "325:10:0",
+                  "scope": 43,
+                  "src": "342:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -655,59 +592,7 @@
                     "id": 31,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "325:4:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 34,
-                  "name": "farmerAddress",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "337:20:0",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 33,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "337:6:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 36,
-                  "name": "reward",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "359:11:0",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 35,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "359:4:0",
+                    "src": "342:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -717,39 +602,66 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "324:47:0"
+              "src": "341:12:0"
             },
             "payable": false,
             "returnParameters": {
-              "id": 38,
+              "id": 36,
               "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "379:0:0"
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 35,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 43,
+                  "src": "374:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 34,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "374:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "373:6:0"
             },
-            "scope": 98,
-            "src": "303:167:0",
-            "stateMutability": "nonpayable",
+            "scope": 128,
+            "src": "320:104:0",
+            "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 96,
+              "id": 66,
               "nodeType": "Block",
-              "src": "545:203:0",
+              "src": "508:94:0",
               "statements": [
                 {
                   "assignments": [
-                    62
+                    53
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 62,
+                      "id": 53,
                       "name": "job",
                       "nodeType": "VariableDeclaration",
-                      "scope": 97,
-                      "src": "555:15:0",
+                      "scope": 67,
+                      "src": "519:15:0",
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "typeDescriptions": {
@@ -758,11 +670,11 @@
                       },
                       "typeName": {
                         "contractScope": null,
-                        "id": 61,
+                        "id": 52,
                         "name": "Job",
                         "nodeType": "UserDefinedTypeName",
                         "referencedDeclaration": 12,
-                        "src": "555:3:0",
+                        "src": "519:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                           "typeString": "struct Farming.Job"
@@ -772,31 +684,31 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 66,
+                  "id": 57,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 63,
+                      "id": 54,
                       "name": "jobs",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 5,
-                      "src": "573:4:0",
+                      "src": "537:4:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                         "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
                       }
                     },
-                    "id": 65,
+                    "id": 56,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 64,
+                      "id": 55,
                       "name": "jobId",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 56,
-                      "src": "578:5:0",
+                      "referencedDeclaration": 45,
+                      "src": "542:5:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -807,111 +719,19 @@
                     "isPure": false,
                     "lValueRequested": false,
                     "nodeType": "IndexAccess",
-                    "src": "573:11:0",
+                    "src": "537:11:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_struct$_Job_$12_storage",
                       "typeString": "struct Farming.Job storage ref"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "555:29:0"
-                },
-                {
-                  "assignments": [
-                    68
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 68,
-                      "name": "reward",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 97,
-                      "src": "594:11:0",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      },
-                      "typeName": {
-                        "id": 67,
-                        "name": "uint",
-                        "nodeType": "ElementaryTypeName",
-                        "src": "594:4:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 73,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "baseExpression": {
-                      "argumentTypes": null,
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 69,
-                        "name": "job",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 62,
-                        "src": "608:3:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                          "typeString": "struct Farming.Job storage pointer"
-                        }
-                      },
-                      "id": 70,
-                      "isConstant": false,
-                      "isLValue": true,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "rewards",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 9,
-                      "src": "608:11:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
-                        "typeString": "mapping(string memory => uint256)"
-                      }
-                    },
-                    "id": 72,
-                    "indexExpression": {
-                      "argumentTypes": null,
-                      "id": 71,
-                      "name": "farmerAddress",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 58,
-                      "src": "620:13:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_string_memory_ptr",
-                        "typeString": "string memory"
-                      }
-                    },
-                    "isConstant": false,
-                    "isLValue": true,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "nodeType": "IndexAccess",
-                    "src": "608:26:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "594:40:0"
+                  "src": "519:29:0"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 80,
+                    "id": 64,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -922,18 +742,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 74,
+                          "id": 58,
                           "name": "job",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 62,
-                          "src": "644:3:0",
+                          "referencedDeclaration": 53,
+                          "src": "559:3:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                             "typeString": "struct Farming.Job storage pointer"
                           }
                         },
-                        "id": 77,
+                        "id": 61,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -941,21 +761,21 @@
                         "memberName": "rewards",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 9,
-                        "src": "644:11:0",
+                        "src": "559:11:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                           "typeString": "mapping(string memory => uint256)"
                         }
                       },
-                      "id": 78,
+                      "id": 62,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 76,
+                        "id": 60,
                         "name": "farmerAddress",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 58,
-                        "src": "656:13:0",
+                        "referencedDeclaration": 47,
+                        "src": "571:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
                           "typeString": "string memory"
@@ -966,7 +786,584 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "644:26:0",
+                      "src": "559:26:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 63,
+                      "name": "reward",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 49,
+                      "src": "588:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "559:35:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 65,
+                  "nodeType": "ExpressionStatement",
+                  "src": "559:35:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 67,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "submitReward",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 50,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 45,
+                  "name": "jobId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "454:10:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "454:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 47,
+                  "name": "farmerAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "466:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 46,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 49,
+                  "name": "reward",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "488:11:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 48,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "488:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "453:47:0"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 51,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "508:0:0"
+            },
+            "scope": 128,
+            "src": "432:170:0",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 83,
+              "nodeType": "Block",
+              "src": "696:60:0",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 76,
+                          "name": "jobs",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 5,
+                          "src": "714:4:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                            "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                          }
+                        },
+                        "id": 78,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 77,
+                          "name": "jobId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 69,
+                          "src": "719:5:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "714:11:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage",
+                          "typeString": "struct Farming.Job storage ref"
+                        }
+                      },
+                      "id": 79,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "rewards",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 9,
+                      "src": "714:19:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                        "typeString": "mapping(string memory => uint256)"
+                      }
+                    },
+                    "id": 81,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 80,
+                      "name": "farmerAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 71,
+                      "src": "734:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "714:34:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 75,
+                  "id": 82,
+                  "nodeType": "Return",
+                  "src": "707:41:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 84,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRewardBalance",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 72,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 69,
+                  "name": "jobId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "636:10:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 68,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "636:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 71,
+                  "name": "farmerAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "648:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 70,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "648:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "635:34:0"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 75,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 74,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "690:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 73,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "690:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "689:6:0"
+            },
+            "scope": 128,
+            "src": "610:146:0",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 126,
+              "nodeType": "Block",
+              "src": "833:209:0",
+              "statements": [
+                {
+                  "assignments": [
+                    92
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 92,
+                      "name": "job",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 127,
+                      "src": "844:15:0",
+                      "stateVariable": false,
+                      "storageLocation": "storage",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                        "typeString": "struct Farming.Job"
+                      },
+                      "typeName": {
+                        "contractScope": null,
+                        "id": 91,
+                        "name": "Job",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 12,
+                        "src": "844:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                          "typeString": "struct Farming.Job"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 96,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 93,
+                      "name": "jobs",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5,
+                      "src": "862:4:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                        "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                      }
+                    },
+                    "id": 95,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 94,
+                      "name": "jobId",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 86,
+                      "src": "867:5:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "862:11:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Job_$12_storage",
+                      "typeString": "struct Farming.Job storage ref"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "844:29:0"
+                },
+                {
+                  "assignments": [
+                    98
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 98,
+                      "name": "reward",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 127,
+                      "src": "884:11:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 97,
+                        "name": "uint",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "884:4:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 103,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 99,
+                        "name": "job",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 92,
+                        "src": "898:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                          "typeString": "struct Farming.Job storage pointer"
+                        }
+                      },
+                      "id": 100,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "rewards",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 9,
+                      "src": "898:11:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                        "typeString": "mapping(string memory => uint256)"
+                      }
+                    },
+                    "id": 102,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 101,
+                      "name": "farmerAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 88,
+                      "src": "910:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "898:26:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "884:40:0"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 110,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 104,
+                          "name": "job",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 92,
+                          "src": "935:3:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                            "typeString": "struct Farming.Job storage pointer"
+                          }
+                        },
+                        "id": 107,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "rewards",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 9,
+                        "src": "935:11:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                          "typeString": "mapping(string memory => uint256)"
+                        }
+                      },
+                      "id": 108,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 106,
+                        "name": "farmerAddress",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 88,
+                        "src": "947:13:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "935:26:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -977,14 +1374,14 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 79,
+                      "id": 109,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "673:1:0",
+                      "src": "964:1:0",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_0_by_1",
@@ -992,20 +1389,20 @@
                       },
                       "value": "0"
                     },
-                    "src": "644:30:0",
+                    "src": "935:30:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 81,
+                  "id": 111,
                   "nodeType": "ExpressionStatement",
-                  "src": "644:30:0"
+                  "src": "935:30:0"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 86,
+                    "id": 116,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1014,18 +1411,18 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 82,
+                        "id": 112,
                         "name": "job",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 62,
-                        "src": "684:3:0",
+                        "referencedDeclaration": 92,
+                        "src": "976:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                           "typeString": "struct Farming.Job storage pointer"
                         }
                       },
-                      "id": 84,
+                      "id": 114,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -1033,7 +1430,7 @@
                       "memberName": "budget",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 11,
-                      "src": "684:10:0",
+                      "src": "976:10:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1043,26 +1440,26 @@
                     "operator": "-=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 85,
+                      "id": 115,
                       "name": "reward",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 68,
-                      "src": "698:6:0",
+                      "referencedDeclaration": 98,
+                      "src": "990:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "684:20:0",
+                    "src": "976:20:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 87,
+                  "id": 117,
                   "nodeType": "ExpressionStatement",
-                  "src": "684:20:0"
+                  "src": "976:20:0"
                 },
                 {
                   "expression": {
@@ -1070,12 +1467,12 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 93,
+                        "id": 123,
                         "name": "reward",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 68,
-                        "src": "734:6:0",
+                        "referencedDeclaration": 98,
+                        "src": "1027:6:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1093,18 +1490,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 88,
+                          "id": 118,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 170,
-                          "src": "714:3:0",
+                          "referencedDeclaration": 200,
+                          "src": "1007:3:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 91,
+                        "id": 121,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1112,13 +1509,13 @@
                         "memberName": "sender",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": null,
-                        "src": "714:10:0",
+                        "src": "1007:10:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         }
                       },
-                      "id": 92,
+                      "id": 122,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1126,13 +1523,13 @@
                       "memberName": "transfer",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": null,
-                      "src": "714:19:0",
+                      "src": "1007:19:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
                         "typeString": "function (uint256)"
                       }
                     },
-                    "id": 94,
+                    "id": 124,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1140,20 +1537,20 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "714:27:0",
+                    "src": "1007:27:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 95,
+                  "id": 125,
                   "nodeType": "ExpressionStatement",
-                  "src": "714:27:0"
+                  "src": "1007:27:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 97,
+            "id": 127,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1161,16 +1558,16 @@
             "name": "claimReward",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 59,
+              "id": 89,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 56,
+                  "id": 86,
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 97,
-                  "src": "497:10:0",
+                  "scope": 127,
+                  "src": "785:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1178,10 +1575,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 55,
+                    "id": 85,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "497:4:0",
+                    "src": "785:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1192,11 +1589,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 58,
+                  "id": 88,
                   "name": "farmerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 97,
-                  "src": "509:20:0",
+                  "scope": 127,
+                  "src": "797:20:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1204,10 +1601,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 57,
+                    "id": 87,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "509:6:0",
+                    "src": "797:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1217,36 +1614,36 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "496:34:0"
+              "src": "784:34:0"
             },
             "payable": true,
             "returnParameters": {
-              "id": 60,
+              "id": 90,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "545:0:0"
+              "src": "833:0:0"
             },
-            "scope": 98,
-            "src": "476:272:0",
+            "scope": 128,
+            "src": "764:278:0",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 99,
-        "src": "26:724:0"
+        "scope": 129,
+        "src": "28:1017:0"
       }
     ],
-    "src": "0:751:0"
+    "src": "0:1047:0"
   },
   "legacyAST": {
-    "absolutePath": "/Users/huydao/GitHub/farming-sdk/examples/multi-farmer-simulation-smart-contract/farming_contract/contracts/Farming.sol",
+    "absolutePath": "/D/Development/EnvironmentA/farming-protocol/examples/multi-farmer-simulation-smart-contract/farming_contract/contracts/Farming.sol",
     "exportedSymbols": {
       "Farming": [
-        98
+        128
       ]
     },
-    "id": 99,
+    "id": 129,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -1266,9 +1663,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 98,
+        "id": 128,
         "linearizedBaseContracts": [
-          98
+          128
         ],
         "name": "Farming",
         "nodeType": "ContractDefinition",
@@ -1278,8 +1675,8 @@
             "id": 5,
             "name": "jobs",
             "nodeType": "VariableDeclaration",
-            "scope": 98,
-            "src": "49:32:0",
+            "scope": 128,
+            "src": "52:32:0",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1292,14 +1689,14 @@
                 "id": 2,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
-                "src": "57:4:0",
+                "src": "60:4:0",
                 "typeDescriptions": {
                   "typeIdentifier": "t_uint256",
                   "typeString": "uint256"
                 }
               },
               "nodeType": "Mapping",
-              "src": "49:20:0",
+              "src": "52:20:0",
               "typeDescriptions": {
                 "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                 "typeString": "mapping(uint256 => struct Farming.Job)"
@@ -1310,7 +1707,7 @@
                 "name": "Job",
                 "nodeType": "UserDefinedTypeName",
                 "referencedDeclaration": 12,
-                "src": "65:3:0",
+                "src": "68:3:0",
                 "typeDescriptions": {
                   "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                   "typeString": "struct Farming.Job"
@@ -1330,7 +1727,7 @@
                 "name": "rewards",
                 "nodeType": "VariableDeclaration",
                 "scope": 12,
-                "src": "107:31:0",
+                "src": "113:31:0",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1343,14 +1740,14 @@
                     "id": 6,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "115:6:0",
+                    "src": "121:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "107:23:0",
+                  "src": "113:23:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                     "typeString": "mapping(string => uint256)"
@@ -1359,7 +1756,7 @@
                     "id": 7,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "125:4:0",
+                    "src": "131:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1375,7 +1772,7 @@
                 "name": "budget",
                 "nodeType": "VariableDeclaration",
                 "scope": 12,
-                "src": "146:11:0",
+                "src": "153:11:0",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1386,7 +1783,7 @@
                   "id": 10,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:4:0",
+                  "src": "153:4:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1398,15 +1795,15 @@
             ],
             "name": "Job",
             "nodeType": "StructDefinition",
-            "scope": 98,
-            "src": "88:76:0",
+            "scope": 128,
+            "src": "93:79:0",
             "visibility": "public"
           },
           {
             "body": {
               "id": 15,
               "nodeType": "Block",
-              "src": "192:7:0",
+              "src": "202:8:0",
               "statements": []
             },
             "documentation": null,
@@ -1421,17 +1818,17 @@
               "id": 13,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "182:2:0"
+              "src": "192:2:0"
             },
             "payable": false,
             "returnParameters": {
               "id": 14,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "192:0:0"
+              "src": "202:0:0"
             },
-            "scope": 98,
-            "src": "170:29:0",
+            "scope": 128,
+            "src": "180:30:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
@@ -1440,7 +1837,7 @@
             "body": {
               "id": 29,
               "nodeType": "Block",
-              "src": "250:47:0",
+              "src": "263:49:0",
               "statements": [
                 {
                   "expression": {
@@ -1461,7 +1858,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5,
-                          "src": "260:4:0",
+                          "src": "274:4:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                             "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
@@ -1475,7 +1872,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 18,
-                          "src": "265:5:0",
+                          "src": "279:5:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -1486,7 +1883,7 @@
                         "isPure": false,
                         "lValueRequested": false,
                         "nodeType": "IndexAccess",
-                        "src": "260:11:0",
+                        "src": "274:11:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage",
                           "typeString": "struct Farming.Job storage ref"
@@ -1500,7 +1897,7 @@
                       "memberName": "budget",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 11,
-                      "src": "260:18:0",
+                      "src": "274:18:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1516,8 +1913,8 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 170,
-                        "src": "281:3:0",
+                        "referencedDeclaration": 200,
+                        "src": "295:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
@@ -1531,13 +1928,13 @@
                       "memberName": "value",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": null,
-                      "src": "281:9:0",
+                      "src": "295:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "260:30:0",
+                    "src": "274:30:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1545,7 +1942,7 @@
                   },
                   "id": 28,
                   "nodeType": "ExpressionStatement",
-                  "src": "260:30:0"
+                  "src": "274:30:0"
                 }
               ]
             },
@@ -1567,7 +1964,7 @@
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
                   "scope": 30,
-                  "src": "224:10:0",
+                  "src": "237:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1578,7 +1975,7 @@
                     "id": 17,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "224:4:0",
+                    "src": "237:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1588,206 +1985,101 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "223:12:0"
+              "src": "236:12:0"
             },
             "payable": true,
             "returnParameters": {
               "id": 20,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "250:0:0"
+              "src": "263:0:0"
             },
-            "scope": 98,
-            "src": "205:92:0",
+            "scope": 128,
+            "src": "218:94:0",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 53,
+              "id": 42,
               "nodeType": "Block",
-              "src": "379:91:0",
+              "src": "380:44:0",
               "statements": [
-                {
-                  "assignments": [
-                    40
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 40,
-                      "name": "job",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 54,
-                      "src": "389:15:0",
-                      "stateVariable": false,
-                      "storageLocation": "storage",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                        "typeString": "struct Farming.Job"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 39,
-                        "name": "Job",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 12,
-                        "src": "389:3:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                          "typeString": "struct Farming.Job"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 44,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "baseExpression": {
-                      "argumentTypes": null,
-                      "id": 41,
-                      "name": "jobs",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 5,
-                      "src": "407:4:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
-                        "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
-                      }
-                    },
-                    "id": 43,
-                    "indexExpression": {
-                      "argumentTypes": null,
-                      "id": 42,
-                      "name": "jobId",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 32,
-                      "src": "412:5:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "isConstant": false,
-                    "isLValue": true,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "nodeType": "IndexAccess",
-                    "src": "407:11:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Job_$12_storage",
-                      "typeString": "struct Farming.Job storage ref"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "389:29:0"
-                },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 51,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
+                    "expression": {
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "expression": {
-                          "argumentTypes": null,
-                          "id": 45,
-                          "name": "job",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 40,
-                          "src": "428:3:0",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                            "typeString": "struct Farming.Job storage pointer"
-                          }
-                        },
-                        "id": 48,
-                        "isConstant": false,
-                        "isLValue": true,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "memberName": "rewards",
-                        "nodeType": "MemberAccess",
-                        "referencedDeclaration": 9,
-                        "src": "428:11:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
-                          "typeString": "mapping(string memory => uint256)"
-                        }
-                      },
-                      "id": 49,
-                      "indexExpression": {
-                        "argumentTypes": null,
-                        "id": 47,
-                        "name": "farmerAddress",
+                        "id": 37,
+                        "name": "jobs",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 34,
-                        "src": "440:13:0",
+                        "referencedDeclaration": 5,
+                        "src": "398:4:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                          "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                        }
+                      },
+                      "id": 39,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 38,
+                        "name": "jobId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 32,
+                        "src": "403:5:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
                         }
                       },
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
-                      "lValueRequested": true,
+                      "lValueRequested": false,
                       "nodeType": "IndexAccess",
-                      "src": "428:26:0",
+                      "src": "398:11:0",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
+                        "typeIdentifier": "t_struct$_Job_$12_storage",
+                        "typeString": "struct Farming.Job storage ref"
                       }
                     },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 50,
-                      "name": "reward",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 36,
-                      "src": "457:6:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "428:35:0",
+                    "id": 40,
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "budget",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": 11,
+                    "src": "398:18:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 52,
-                  "nodeType": "ExpressionStatement",
-                  "src": "428:35:0"
+                  "functionReturnParameters": 36,
+                  "id": 41,
+                  "nodeType": "Return",
+                  "src": "391:25:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 54,
+            "id": 43,
             "implemented": true,
             "isConstructor": false,
-            "isDeclaredConst": false,
+            "isDeclaredConst": true,
             "modifiers": [],
-            "name": "submitReward",
+            "name": "getJobBudget",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 37,
+              "id": 33,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -1795,8 +2087,8 @@
                   "id": 32,
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "325:10:0",
+                  "scope": 43,
+                  "src": "342:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1807,59 +2099,7 @@
                     "id": 31,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "325:4:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 34,
-                  "name": "farmerAddress",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "337:20:0",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 33,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "337:6:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 36,
-                  "name": "reward",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 54,
-                  "src": "359:11:0",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 35,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "359:4:0",
+                    "src": "342:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1869,39 +2109,66 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "324:47:0"
+              "src": "341:12:0"
             },
             "payable": false,
             "returnParameters": {
-              "id": 38,
+              "id": 36,
               "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "379:0:0"
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 35,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 43,
+                  "src": "374:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 34,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "374:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "373:6:0"
             },
-            "scope": 98,
-            "src": "303:167:0",
-            "stateMutability": "nonpayable",
+            "scope": 128,
+            "src": "320:104:0",
+            "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 96,
+              "id": 66,
               "nodeType": "Block",
-              "src": "545:203:0",
+              "src": "508:94:0",
               "statements": [
                 {
                   "assignments": [
-                    62
+                    53
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 62,
+                      "id": 53,
                       "name": "job",
                       "nodeType": "VariableDeclaration",
-                      "scope": 97,
-                      "src": "555:15:0",
+                      "scope": 67,
+                      "src": "519:15:0",
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "typeDescriptions": {
@@ -1910,11 +2177,11 @@
                       },
                       "typeName": {
                         "contractScope": null,
-                        "id": 61,
+                        "id": 52,
                         "name": "Job",
                         "nodeType": "UserDefinedTypeName",
                         "referencedDeclaration": 12,
-                        "src": "555:3:0",
+                        "src": "519:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                           "typeString": "struct Farming.Job"
@@ -1924,31 +2191,31 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 66,
+                  "id": 57,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 63,
+                      "id": 54,
                       "name": "jobs",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 5,
-                      "src": "573:4:0",
+                      "src": "537:4:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
                         "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
                       }
                     },
-                    "id": 65,
+                    "id": 56,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 64,
+                      "id": 55,
                       "name": "jobId",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 56,
-                      "src": "578:5:0",
+                      "referencedDeclaration": 45,
+                      "src": "542:5:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1959,111 +2226,19 @@
                     "isPure": false,
                     "lValueRequested": false,
                     "nodeType": "IndexAccess",
-                    "src": "573:11:0",
+                    "src": "537:11:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_struct$_Job_$12_storage",
                       "typeString": "struct Farming.Job storage ref"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "555:29:0"
-                },
-                {
-                  "assignments": [
-                    68
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 68,
-                      "name": "reward",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 97,
-                      "src": "594:11:0",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      },
-                      "typeName": {
-                        "id": 67,
-                        "name": "uint",
-                        "nodeType": "ElementaryTypeName",
-                        "src": "594:4:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 73,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "baseExpression": {
-                      "argumentTypes": null,
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 69,
-                        "name": "job",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 62,
-                        "src": "608:3:0",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
-                          "typeString": "struct Farming.Job storage pointer"
-                        }
-                      },
-                      "id": 70,
-                      "isConstant": false,
-                      "isLValue": true,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "rewards",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 9,
-                      "src": "608:11:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
-                        "typeString": "mapping(string memory => uint256)"
-                      }
-                    },
-                    "id": 72,
-                    "indexExpression": {
-                      "argumentTypes": null,
-                      "id": 71,
-                      "name": "farmerAddress",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 58,
-                      "src": "620:13:0",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_string_memory_ptr",
-                        "typeString": "string memory"
-                      }
-                    },
-                    "isConstant": false,
-                    "isLValue": true,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "nodeType": "IndexAccess",
-                    "src": "608:26:0",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "594:40:0"
+                  "src": "519:29:0"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 80,
+                    "id": 64,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2074,18 +2249,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 74,
+                          "id": 58,
                           "name": "job",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 62,
-                          "src": "644:3:0",
+                          "referencedDeclaration": 53,
+                          "src": "559:3:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                             "typeString": "struct Farming.Job storage pointer"
                           }
                         },
-                        "id": 77,
+                        "id": 61,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
@@ -2093,21 +2268,21 @@
                         "memberName": "rewards",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 9,
-                        "src": "644:11:0",
+                        "src": "559:11:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
                           "typeString": "mapping(string memory => uint256)"
                         }
                       },
-                      "id": 78,
+                      "id": 62,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 76,
+                        "id": 60,
                         "name": "farmerAddress",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 58,
-                        "src": "656:13:0",
+                        "referencedDeclaration": 47,
+                        "src": "571:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
                           "typeString": "string memory"
@@ -2118,7 +2293,584 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "644:26:0",
+                      "src": "559:26:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 63,
+                      "name": "reward",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 49,
+                      "src": "588:6:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "559:35:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 65,
+                  "nodeType": "ExpressionStatement",
+                  "src": "559:35:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 67,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "submitReward",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 50,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 45,
+                  "name": "jobId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "454:10:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "454:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 47,
+                  "name": "farmerAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "466:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 46,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 49,
+                  "name": "reward",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 67,
+                  "src": "488:11:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 48,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "488:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "453:47:0"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 51,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "508:0:0"
+            },
+            "scope": 128,
+            "src": "432:170:0",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 83,
+              "nodeType": "Block",
+              "src": "696:60:0",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 76,
+                          "name": "jobs",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 5,
+                          "src": "714:4:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                            "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                          }
+                        },
+                        "id": 78,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 77,
+                          "name": "jobId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 69,
+                          "src": "719:5:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "714:11:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage",
+                          "typeString": "struct Farming.Job storage ref"
+                        }
+                      },
+                      "id": 79,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "rewards",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 9,
+                      "src": "714:19:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                        "typeString": "mapping(string memory => uint256)"
+                      }
+                    },
+                    "id": 81,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 80,
+                      "name": "farmerAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 71,
+                      "src": "734:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "714:34:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 75,
+                  "id": 82,
+                  "nodeType": "Return",
+                  "src": "707:41:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 84,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRewardBalance",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 72,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 69,
+                  "name": "jobId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "636:10:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 68,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "636:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 71,
+                  "name": "farmerAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "648:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 70,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "648:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "635:34:0"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 75,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 74,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 84,
+                  "src": "690:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 73,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "690:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "689:6:0"
+            },
+            "scope": 128,
+            "src": "610:146:0",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 126,
+              "nodeType": "Block",
+              "src": "833:209:0",
+              "statements": [
+                {
+                  "assignments": [
+                    92
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 92,
+                      "name": "job",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 127,
+                      "src": "844:15:0",
+                      "stateVariable": false,
+                      "storageLocation": "storage",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                        "typeString": "struct Farming.Job"
+                      },
+                      "typeName": {
+                        "contractScope": null,
+                        "id": 91,
+                        "name": "Job",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 12,
+                        "src": "844:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                          "typeString": "struct Farming.Job"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 96,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 93,
+                      "name": "jobs",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5,
+                      "src": "862:4:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Job_$12_storage_$",
+                        "typeString": "mapping(uint256 => struct Farming.Job storage ref)"
+                      }
+                    },
+                    "id": 95,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 94,
+                      "name": "jobId",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 86,
+                      "src": "867:5:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "862:11:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Job_$12_storage",
+                      "typeString": "struct Farming.Job storage ref"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "844:29:0"
+                },
+                {
+                  "assignments": [
+                    98
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 98,
+                      "name": "reward",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 127,
+                      "src": "884:11:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 97,
+                        "name": "uint",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "884:4:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 103,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 99,
+                        "name": "job",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 92,
+                        "src": "898:3:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                          "typeString": "struct Farming.Job storage pointer"
+                        }
+                      },
+                      "id": 100,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "rewards",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 9,
+                      "src": "898:11:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                        "typeString": "mapping(string memory => uint256)"
+                      }
+                    },
+                    "id": 102,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 101,
+                      "name": "farmerAddress",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 88,
+                      "src": "910:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_memory_ptr",
+                        "typeString": "string memory"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "898:26:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "884:40:0"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 110,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 104,
+                          "name": "job",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 92,
+                          "src": "935:3:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
+                            "typeString": "struct Farming.Job storage pointer"
+                          }
+                        },
+                        "id": 107,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "rewards",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 9,
+                        "src": "935:11:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_uint256_$",
+                          "typeString": "mapping(string memory => uint256)"
+                        }
+                      },
+                      "id": 108,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 106,
+                        "name": "farmerAddress",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 88,
+                        "src": "947:13:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "935:26:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -2129,14 +2881,14 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 79,
+                      "id": 109,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "673:1:0",
+                      "src": "964:1:0",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_0_by_1",
@@ -2144,20 +2896,20 @@
                       },
                       "value": "0"
                     },
-                    "src": "644:30:0",
+                    "src": "935:30:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 81,
+                  "id": 111,
                   "nodeType": "ExpressionStatement",
-                  "src": "644:30:0"
+                  "src": "935:30:0"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 86,
+                    "id": 116,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2166,18 +2918,18 @@
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 82,
+                        "id": 112,
                         "name": "job",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 62,
-                        "src": "684:3:0",
+                        "referencedDeclaration": 92,
+                        "src": "976:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_Job_$12_storage_ptr",
                           "typeString": "struct Farming.Job storage pointer"
                         }
                       },
-                      "id": 84,
+                      "id": 114,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -2185,7 +2937,7 @@
                       "memberName": "budget",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 11,
-                      "src": "684:10:0",
+                      "src": "976:10:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -2195,26 +2947,26 @@
                     "operator": "-=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 85,
+                      "id": 115,
                       "name": "reward",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 68,
-                      "src": "698:6:0",
+                      "referencedDeclaration": 98,
+                      "src": "990:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "684:20:0",
+                    "src": "976:20:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 87,
+                  "id": 117,
                   "nodeType": "ExpressionStatement",
-                  "src": "684:20:0"
+                  "src": "976:20:0"
                 },
                 {
                   "expression": {
@@ -2222,12 +2974,12 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 93,
+                        "id": 123,
                         "name": "reward",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 68,
-                        "src": "734:6:0",
+                        "referencedDeclaration": 98,
+                        "src": "1027:6:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -2245,18 +2997,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 88,
+                          "id": 118,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 170,
-                          "src": "714:3:0",
+                          "referencedDeclaration": 200,
+                          "src": "1007:3:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 91,
+                        "id": 121,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2264,13 +3016,13 @@
                         "memberName": "sender",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": null,
-                        "src": "714:10:0",
+                        "src": "1007:10:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         }
                       },
-                      "id": 92,
+                      "id": 122,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2278,13 +3030,13 @@
                       "memberName": "transfer",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": null,
-                      "src": "714:19:0",
+                      "src": "1007:19:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
                         "typeString": "function (uint256)"
                       }
                     },
-                    "id": 94,
+                    "id": 124,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2292,20 +3044,20 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "714:27:0",
+                    "src": "1007:27:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 95,
+                  "id": 125,
                   "nodeType": "ExpressionStatement",
-                  "src": "714:27:0"
+                  "src": "1007:27:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 97,
+            "id": 127,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -2313,16 +3065,16 @@
             "name": "claimReward",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 59,
+              "id": 89,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 56,
+                  "id": 86,
                   "name": "jobId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 97,
-                  "src": "497:10:0",
+                  "scope": 127,
+                  "src": "785:10:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2330,10 +3082,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 55,
+                    "id": 85,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "497:4:0",
+                    "src": "785:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2344,11 +3096,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 58,
+                  "id": 88,
                   "name": "farmerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 97,
-                  "src": "509:20:0",
+                  "scope": 127,
+                  "src": "797:20:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2356,10 +3108,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 57,
+                    "id": 87,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "509:6:0",
+                    "src": "797:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2369,27 +3121,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "496:34:0"
+              "src": "784:34:0"
             },
             "payable": true,
             "returnParameters": {
-              "id": 60,
+              "id": 90,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "545:0:0"
+              "src": "833:0:0"
             },
-            "scope": 98,
-            "src": "476:272:0",
+            "scope": 128,
+            "src": "764:278:0",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 99,
-        "src": "26:724:0"
+        "scope": 129,
+        "src": "28:1017:0"
       }
     ],
-    "src": "0:751:0"
+    "src": "0:1047:0"
   },
   "compiler": {
     "name": "solc",
@@ -2399,10 +3151,10 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x868dbf21375ff855bb1122877a1f7f7442516f25",
-      "transactionHash": "0xd7c7b3303925743b6c5f6d4333bf04f31021960795b7857667522c8de9e2b77e"
+      "address": "0xb627772d472f6ee2e810b306307306a430851f4b",
+      "transactionHash": "0x21bdb1b205021d402748108ba5f7f179b1c5b16ac33ea96dff18ff93a15b5510"
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-07-13T20:53:18.597Z"
+  "updatedAt": "2018-08-08T17:09:08.865Z"
 }

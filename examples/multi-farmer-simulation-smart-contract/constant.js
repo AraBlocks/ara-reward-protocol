@@ -1,18 +1,16 @@
-const ContractABI = require('./farming_contract/contract-abi.js')
-
-const contractAddress = '0x868dbf21375ff855bb1122877a1f7f7442516f25'
+const contractAddress = '0xb627772d472f6ee2e810b306307306a430851f4b'
 const walletAddresses = [
-  '0xa151a089FC8f9F04cC5cea3062C7F0BD10E9e703',
-  '0xa34e9c6D2B1fF5b1a136DE7B09BAFCB808831E73',
-  '0x11370459eC9563ad81a7F9Fcf630C234fdA6054d',
-  '0xa9dA8DB97B6B546449795e1f9Ff182E79738795F',
-  '0xC09F5F1Ad984b2e5EE0E65735E60f78239Af6290'
+  '0xB776bb623dd9134B38E5A458e166326B96e7C5d0',
+  '0x2D7Fe08171001677AE7f64EED100ad32c3afAE27',
+  '0x4a00c57B8C71026742dC18C54526b1d808Ee4957',
+  '0x2fFCA7bb2c2d84F8ec92a399Ec020d276E8d1AA2',
+  '0xD33bef1f60060ad527Edf54596a4D7C9fE21D796'
 ]
 
-module.exports = [
-  new ContractABI(contractAddress, walletAddresses[0]),
-  new ContractABI(contractAddress, walletAddresses[1]),
-  new ContractABI(contractAddress, walletAddresses[2]),
-  new ContractABI(contractAddress, walletAddresses[3]),
-  new ContractABI(contractAddress, walletAddresses[4])
-]
+const provider = 'http://192.168.128.250:8545'
+
+module.exports = { 
+  provider,
+  contractAddress,
+  walletAddresses
+}

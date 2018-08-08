@@ -80,9 +80,6 @@ async function download(did) {
           pBar.start(feed.length, 0)
         }
         pBar.update(feed.downloaded())
-
-        // const downloaded = feed.downloaded()
-        // const perc = 100 * downloaded / total
       })
       feed.once('sync', () => {
         pBar.stop()

@@ -1,13 +1,14 @@
 const { StreamProtocol } = require('./stream-protocol')
+const debug = require('debug')('ara-farming-protocol:stream')
 
 class RequestStream extends StreamProtocol {
   constructor(peer, opts) {
     super(peer, opts)
   }
 
-  onSow(sow, done) {
+  async onSow(sow, done) {
     super.onSow(sow, done)
-    console.log('Received SOW. Destroying Stream.')
+    debug('Request Stream received SOW. Destroying Stream.')
     this.stream.destroy()
   }
 }

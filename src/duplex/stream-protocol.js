@@ -2,9 +2,11 @@ const duplexify = require('duplexify')
 const messages = require('../proto/messages_pb')
 const through2 = require('through2')
 const varint = require('varint')
+const debug = require('debug')('ara-farming-protocol:stream')
 
 require('events').EventEmitter.defaultMaxListeners = 15
 
+// Helper object for determining message types
 const MSG = {
   SOW: { head: 1 << 1, str: 'sow' },
   QUOTE: { head: 2 << 1, str: 'quote' },
@@ -23,6 +25,7 @@ const MSG = {
   }
 }
 
+// Class that mimics RPC Client functionality with duplex streams for afp
 class StreamProtocol {
   constructor(peer, opts) {
     this.peer = peer
@@ -54,12 +57,12 @@ class StreamProtocol {
   }
 
   async sendReward(reward) {
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.push(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
-    // TODO: timer?
   }
 
   async onTimeout() {
-    console.log('SO much timeout!', this.peer)
+    debug('Timeout with peer:', this.peer)
     if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
   }
 
@@ -75,25 +78,25 @@ class StreamProtocol {
 
   async onSow(sow, done) {
     done(null)
-    console.log('sow:', sow.getId(), this.peer.host, this.peer.port)
+    debug('On Sow:', sow.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
   async onQuote(quote, done) {
     done(null)
-    console.log('quote:', quote.getId(), this.peer.host, this.peer.port)
+    debug('On Quote:', quote.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
   async onAgreement(agreement, done) {
     done(null)
-    console.log('agreement:', agreement.getId(), this.peer.host, this.peer.port)
+    debug('On Agreement:', agreement.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
   async onReward(reward, done) {
     done(null)
-    console.log('reward:', reward.getId(), this.peer.host, this.peer.port)
+    debug('On Reward:', reward.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
@@ -109,7 +112,7 @@ class StreamProtocol {
       default: throw new TypeError(`Unknown message type: ${head}`)
       }
     } catch (e) {
-      console.log('Error: on receive')
+      debug('On Receive Error:', e)
     }
   }
 

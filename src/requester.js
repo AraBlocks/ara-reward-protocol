@@ -1,5 +1,6 @@
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
+const debug = require('debug')('ara-farming-protocol:requester')
 
 class RequesterBase {
   /**
@@ -45,7 +46,7 @@ class RequesterBase {
    */
   async onQuote(err, response, connection) {
     if (err) {
-      console.log(`Quote Response Error: ${err}`)
+      debug(`Quote Response Error: ${err}`)
     } else {
       const valid = await this.validatePeer(response.getFarmer())
       if (valid) {
@@ -77,7 +78,7 @@ class RequesterBase {
    */
   async onAgreement(err, response, connection) {
     if (err) {
-      console.log(`Award Response Error: ${err}`)
+      debug(`Award Response Error: ${err}`)
     } else {
       const valid = await this.validateAgreement(response)
       if (valid) {

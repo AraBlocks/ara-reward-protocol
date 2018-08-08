@@ -43,8 +43,6 @@ class ExampleFarmer extends FarmerBase {
    */
   async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
-
-    // TEMP:
     this.onStartWork(agreement)
 
     return agreement
