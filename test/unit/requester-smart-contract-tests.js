@@ -22,7 +22,7 @@ test('requester.sendReward.succeed', async (t) => {
     submitReward: sinon.stub().resolves()
   }
   const server = {
-    deliverReward: sinon.stub().callsFake(fakeDelivery)
+    sendReward: sinon.stub().callsFake(fakeDelivery)
   }
   requester.wallet = stubContract
   await requester.sendReward(server, reward)
@@ -38,7 +38,7 @@ test('requester.sendReward.fail', async (t) => {
   }
 
   const server = {
-    deliverReward: sinon.stub().callsFake(fakeDelivery)
+    sendReward: sinon.stub().callsFake(fakeDelivery)
   }
 
   requester.wallet = stubContract

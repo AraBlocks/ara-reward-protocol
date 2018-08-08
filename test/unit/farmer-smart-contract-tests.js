@@ -5,7 +5,7 @@ const test = require('ava')
 
 const farmer = new ExampleFarmer(null, new messages.Signature(), 1, null)
 
-test('farmer.handleRewardDelivery', (t) => {
+test('farmer.onReward', (t) => {
   const stubCall = {
     request: 'request'
   }
@@ -14,7 +14,7 @@ test('farmer.handleRewardDelivery', (t) => {
   const stubCallback = sinon.fake()
 
   sinon.stub(farmer, 'withdrawReward').callsFake(stubWithdraw)
-  farmer.handleRewardDelivery(stubCall, stubCallback)
+  farmer.onReward(stubCall, stubCallback)
 
   t.true(stubWithdraw.calledOnce)
   t.true(stubCallback.calledOnce)
