@@ -1,14 +1,18 @@
+const { contractAddress, walletAddresses } = require('../constants.js')
 const { messages, afpstream } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
-const util = require('../util')
+const { idify } = require('../util')
 const ip = require('ip')
 
+const wallet = new ContractABI(contractAddress, walletAddresses[0])
+
 const dids = [
-  'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c',
-  '5a0ca463a488b4d3d85ea243087043e1b87b35eae8e15c86c99c4b4d9c14179b'
+  'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea',
+  '556399cef520525d2733567eab2a3505d156fa2ca2a94c5aa9964e844a3dc1a8'
 ]
 
 for (let i = 0; i < dids.length; i++) {
@@ -33,7 +37,7 @@ async function broadcast(did) {
 
   // The Farmer instance which sets a specific price, an ID, and a signature
   const price = 6
-  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs))
+  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs), wallet)
 
   // Join the discovery swarm for the requested content
   const swarm = createFarmingSwarm(did, farmer)
@@ -49,8 +53,8 @@ function createFarmingSwarm(did, farmer){
   swarm.join(did)
 
   function stream(peer) {
-    const us = util.idify(ip.address(), this.address().port)
-    const them = util.idify(peer.host, peer.port)
+    const us = idify(ip.address(), this.address().port)
+    const them = idify(peer.host, peer.port)
 
     if (us === them) {
       return through()

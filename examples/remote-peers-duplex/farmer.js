@@ -4,7 +4,7 @@ const fp = require('find-free-port')
 const ip = require('ip')
 
 class ExampleFarmer extends afpstream.Farmer {
-  constructor(farmerId, farmerSig, price, startWork) {
+  constructor(farmerId, farmerSig, price, startWork, wallet) {
     super()
     this.badRequesterId = 10057
     this.quoteId = 1
@@ -12,6 +12,7 @@ class ExampleFarmer extends afpstream.Farmer {
     this.farmerId = farmerId
     this.farmerSig = farmerSig
     this.startWork = startWork
+    this.wallet = wallet
   }
 
   /**
@@ -61,6 +62,30 @@ class ExampleFarmer extends afpstream.Farmer {
   async validatePeer(peer) {
     const requesterId = peer.getDid()
     return requesterId != this.badRequesterId
+  }
+
+  async withdrawReward(reward) {
+    const sowId = reward.getSow().getId()
+    const farmerId = reward.getFarmer().getDid()
+    this.wallet
+      .claimReward(sowId, farmerId)
+      .then((result) => {
+        console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+      })
+      .catch((err) => {
+        console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+      })
+  }
+
+  /**
+   * Handles a reward on noticed of delivery
+   * @param {EventEmitter} call Call object for the handler to process
+   * @param {function(Error, messages.ARAid)} callback Response callback
+   */
+  onReward(call, callback) {
+    const reward = call.request
+    this.withdrawReward(reward)
+    callback(null, this.farmerId)
   }
 }
 

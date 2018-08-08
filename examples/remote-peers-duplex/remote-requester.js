@@ -1,19 +1,24 @@
+const { contractAddress, walletAddresses } = require('../constants.js')
 const { messages, matchers, afpstream } = require('ara-farming-protocol')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const { idify } = require('../util')
+const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
 const clip = require('cli-progress')
-const util = require('../util')
 const pify = require('pify')
 const ip = require('ip')
 
-const did = 'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c'
-download(did)
+const wallet = new ContractABI(contractAddress, walletAddresses[1])
 
-async function download(did) {
+const did = 'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea' // 50 MB
+//const did = '556399cef520525d2733567eab2a3505d156fa2ca2a94c5aa9964e844a3dc1a8' // 2 GB
+download(did, 10)
+
+async function download(did, reward) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
-  const matcher = new matchers.MaxCostMatcher(10, 5)
+  const matcher = new matchers.MaxCostMatcher(reward, 5)
 
   // The ARAid of the Requester
   const requesterID = new messages.ARAid()
@@ -32,7 +37,7 @@ async function download(did) {
   sow.setRequester(requesterID)
 
   // Create the requester object
-  const requester = new ExampleRequester(sow, matcher, requesterSig, startWork)
+  const requester = new ExampleRequester(sow, matcher, requesterSig, startWork, wallet)
 
   // Load the sparse afs
   const { afs } = await create({did})
@@ -45,25 +50,41 @@ async function download(did) {
   }
 
   // Create a swarm for downloading the content
-  const contentSwarm = createContentSwarm(afs)
+  const contentSwarm = createContentSwarm(afs, requester)
   contentSwarm.on('close', onend)
+  let farmerSwarm = null
 
-  // Create a swarm for finding farmers
-  const farmerSwarm = createFarmerSwarm(did, requester)
+  wallet
+    .submitJob(sow.getId(), reward)
+    .then((result) => {
+      console.log('Job has been submitted to the contract')
+      
+      // Create a swarm for finding farmers
+      farmerSwarm = createFarmerSwarm(did, requester)
+    })
+    .catch((err) => {
+      console.log('Job submission failed')
+      onend(err)
+    })
+
 
   // Handle when the swarms end
-  async function onend() {
-    if (!downloaded) {
+  async function onend(error) {
+    if (error) {
+      console.log(err)
+    } 
+    else if (!downloaded) {
       downloaded = true
       console.log(await afs.readdir('.'))
       console.log('Downloaded!')
-      afs.close()
-
-      if (contentSwarm) contentSwarm.destroy()
-      if (farmerSwarm) farmerSwarm.destroy()
-
-      console.log('Swarm destroyed')
+      requester.onJobFinished(report)
     }
+
+    console.log('Swarm destroyed')
+
+    if (afs) afs.close()
+    if (contentSwarm) contentSwarm.destroy()
+    if (farmerSwarm) farmerSwarm.destroy()
   }
 
   // Handle when the content needs updated
@@ -106,8 +127,8 @@ function createFarmerSwarm(did, requester) {
   swarm.join(did)
 
   function stream(peer) {
-    const us = util.idify(ip.address(), this.address().port)
-    const them = util.idify(peer.host, peer.port)
+    const us = idify(ip.address(), this.address().port)
+    const them = idify(peer.host, peer.port)
 
     if (us === them || 'utp' === peer.type) {
       return through()
@@ -120,14 +141,14 @@ function createFarmerSwarm(did, requester) {
   }
 
   function handleConnection(connection, info) {
-    console.log(`Farmer Swarm: Peer connected: ${util.idify(info.host, info.port)}`)
+    console.log(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
   }
 
   return swarm
 }
 
 // Creates a private swarm for downloading a piece of content
-function createContentSwarm(afs) {
+function createContentSwarm(afs, requester) {
   const opts = {
     stream,
   }
@@ -143,6 +164,7 @@ function createContentSwarm(afs) {
     })
 
     stream.once('end', () => {
+      requester.awardFarmer(peer)
       console.log('Replicate stream ended')
       swarm.destroy()
     })
@@ -151,7 +173,7 @@ function createContentSwarm(afs) {
   }
 
   async function handleConnection(connection, info) {
-    console.log(`Content Swarm: Peer connected: ${util.idify(info.host, info.port)}`)
+    console.log(`Content Swarm: Peer connected: ${idify(info.host, info.port)}`)
   }
 
   return swarm

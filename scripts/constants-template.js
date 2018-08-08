@@ -13,14 +13,13 @@ module.exports = {
   kStorageAddress: 'StoragePlaceholder',
   kPriceAddress: 'PricePlaceholder',
 
-  kFileMappings: {
-    kMetadataTree: {
-      name: 'metadata/tree',
-      index: 0
-    },
-    kMetadataSignatures: {
-      name: 'metadata/signatures',
-      index: 1
-    }
-  }
+  // metadata/tree constants
+  kMetadataTreeName: 'metadata/tree',
+  kMetadataTreeIndex: 0,
+  kMetadataTreeBufferSize: 40,
+
+  // metadata/signatures constants
+  kMetadataSignaturesName: 'metadata/signatures',
+  kMetadataSignaturesIndex: 1,
+  kMetadataSignaturesBufferSize: 64
 }
