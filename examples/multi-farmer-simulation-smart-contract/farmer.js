@@ -1,7 +1,7 @@
-const { Farmer } = require('../../src/farmer')
+const { FarmerBase } = require('../../src/farmer')
 const messages = require('../../src/proto/messages_pb')
 
-class ExampleFarmer extends Farmer {
+class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price, wallet) {
     super()
     this.quoteId = 1
@@ -27,22 +27,22 @@ class ExampleFarmer extends Farmer {
   }
 
   /**
-   * Returns whether a contract is valid
-   * @param {messages.Contract} contract
+   * Returns whether an agreement is valid
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
+  validateAgreement(agreement) {
     return true
   }
 
   /**
    * Sign and return a contract
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    contract.setFarmerSignature(this.farmerSig)
-    return contract
+  signAgreement(agreement) {
+    agreement.setFarmerSignature(this.farmerSig)
+    return agreement
   }
 
   /**
@@ -72,7 +72,7 @@ class ExampleFarmer extends Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  handleRewardDelivery(call, callback) {
+  onReward(call, callback) {
     this.reward = call.request
     this.withdrawReward()
     callback(null, this.farmerId)

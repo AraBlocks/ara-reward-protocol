@@ -1,14 +1,14 @@
 const messages = require('./proto/messages_pb')
 
-class Matcher {
+class MatcherBase {
   /**
    * This is called to validate a quote. If a quote is considered
    * valid, then this should calls hireFarmerCallback to continue
-   * contract award process.
+   * agreement process.
    * @param {messages.Quote} quote
-   * @param {function(messages.Contract)} hireFarmerCallback
+   * @param {function(messages.Agreement)} hireFarmerCallback
    */
-  validateQuote(quote, hireFarmerCallback) {
+  async validateQuote(quote, hireFarmerCallback) {
     throw new Error('Extended classes must implement validateQuote')
   }
 
@@ -16,9 +16,9 @@ class Matcher {
    * This is called when a quote is no longer valid.
    * @param {messages.Quote} quote
    */
-  invalidateQuote(quote) {
+  async invalidateQuote(quote) {
     throw new Error('Extended classes must implement invalidateQuote')
   }
 }
 
-module.exports = { Matcher }
+module.exports = { MatcherBase }

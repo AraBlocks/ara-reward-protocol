@@ -16,13 +16,21 @@ A peer in the network who participates in farming.
 
 A peer in the network who intends to distribute work amoungst farmers.
 
+### Job
+
+A task whose scope is defined by a statement of work.
+
+#### Agreement
+
+An agreed upon statement of work for a specific job between a farmer and a requester. This may reference a specific smart contract, or some other verifiable source, which can verify the details of an agreement.
+
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript.
+AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a streaming implementation using duplexify.
 
-A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
+A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 
-A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use the default gRPC implementation to connect to peers for discussing a task.
+A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use the default gRPC implementation to connect to peers for discussing a task.
 
 ### Real World Examples
 
@@ -57,13 +65,15 @@ $ npm i
 
 ## Usage
 
-The expected usage is for an application to implement some combinration of its own extensions to the following classes:
+The expected usage is for an application to implement some combination of its own extensions to the following classes:
 
 * Farmer
 * Matcher
 * Requester
-  For an application that enables a user to request distributed work to be done on the network, that application would create an implementation of the Requester (which handles communicating with farmers) and the Matcher (which handles selecting a subset of farmers for a task).
-  For an application that enables a user to participate in distributed work requests and receive rewards, that application would create an implementation of the Farmer (which handles communicating with requesters).
+
+For an application that enables a user to request distributed work to be done on the network, that application would create an implementation of the Requester (which handles communicating with farmers) and the Matcher (which handles selecting a subset of farmers for a task).
+
+For an application that enables a user to participate in distributed work requests and receive rewards, that application would create an implementation of the Farmer (which handles communicating with requesters).
 
 ### Farming
 
@@ -71,14 +81,14 @@ For broadcasting the ability to farm.
 
 ```js
 const { ExampleFarmer } = require('./farmer')
-const { broadcastFarmer } = require('../../src/farmer-server')
+const { afpgrpc } = require('ara-farming-protocol')
 
 // The application's custom classes
 const farmer = new ExampleFarmer()
 
 // Broadcast on a specific port
-const port = `localhost:50051`
-broadcastFarmer(farmer, port)
+const port = `localhost:50051` 
+afpgrpc.util.broadcastFarmer(farmer, port)
 ```
 
 ### Requesting
@@ -87,7 +97,7 @@ For requesting a farming job.
 
 ```js
 const { ExampleRequester } = require('./requester')
-const { connectToFarmer } = require('../../src/farmer-server')
+const { afpgrpc } = require('ara-farming-protocol')
 
 // The statement of work for the request
 const sow = new messages.SOW()
@@ -97,7 +107,7 @@ const matcher = new ExampleMatcher()
 const requester = new ExampleRequester(sow, matcher)
 
 // Connect to a farmer (or set of farmers)
-const connection = connectToFarmer(port)
+const connection = afpgrpc.util.connectToFarmer(port)
 requester.processFarmers([connection])
 ```
 
@@ -107,7 +117,7 @@ This section describes the classes that must be extended for AFP.
 
 #### Requester
 
-A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating contracts for a task, and for starting a task.
+A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task.
 
 ```js
   /**
@@ -120,37 +130,37 @@ A requester would extend the AFP Requester class to define the requester's speci
   }
 
   /**
-   * This should generate and return a contract for a quote.
+   * This should generate and return an agreement for a quote.
    * @param {messages.Quote} quote
-   * @returns {messages.Contract}
+   * @returns {messages.Agreement}
    */
-  generateContract(quote) {
-    throw new Error('Extended classes must implement generateContract.')
+  generateAgreement(quote) {
+    throw new Error('Extended classes must implement generateAgreement.')
   }
 
   /**
-   * This should return whether a contract is valid.
-   * @param {messages.Contract} contract
+   * This should return whether an agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.')
+  validateAgreement(agreement) {
+    throw new Error('Extended classes must implement validateAgreement.')
   }
 
   /**
-   * This is called when a contract has been marked as valid and a farmer
+   * This is called when an agreement has been marked as valid and a farmer
    * is ready to start work
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    * @param {services.RFPClient} farmer
    */
-  onHireConfirmed(contract) {
-    throw new Error('Extended classes must implement onHireConfirmed')
+  onHireConfirmed(agreement, farmer) {
+    throw new Error('Extended classes must implement onHireConfirmed.')
   }
 ```
 
 #### Farmer
 
-A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating a contract for a task.
+A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task.
 
 ```js
   /**
@@ -172,21 +182,21 @@ A farmer would extend the AFP Farmer class to define that farmer’s specificati
   }
 
   /**
-   * This should returns whether or not a contract is valid.
-   * @param {messages.Contract} contract
+   * This should return whether an agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
+  validateAgreement(agreement) {
     throw new Error('Extended classes must implement validateContract.')
   }
 
   /**
-   * This should sign and return a contract.
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * This should sign and return an agreement.
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    throw new Error('Extended classes must implement signContract.')
+  signAgreement(agreement) {
+    throw new Error('Extended classes must implement signAgreement.')
   }
 ```
 
@@ -198,7 +208,7 @@ Different service requesters may have different needs when selecting peers, such
   /**
    * This is called to validate a quote. If a quote is considered
    * valid, then this should calls hireFarmerCallback to continue
-   * contract award process.
+   * agreement award process.
    * @param {messages.Quote} quote
    * @param {function(messages.Contract)} hireFarmerCallback
    */
@@ -217,54 +227,7 @@ Different service requesters may have different needs when selecting peers, such
 
 ## Examples
 
-Note: as ara-farming-protocol is not yet on npm, you may need to run the following commands prior to running an example:
-
-```
-$ npm link
-$ npm link ara-farming-protocol
-```
-
-### Multifarmer Simulation
-
-This example generates and connects to 10 local farmers, then hires up to 5 farmers who charge <= 10 Ara per MB. The Requester Authenticator considers user 10057 as invalid requester. The Farmer Authenticator considers user 2 as an invalid farmer. In the case of an invalid farmer, the matcher finds a reserve farmer and hires that farmer instead.
-
-```
-$ node examples/multi-farmer-simulation/multi-farmer-simulation.js
-```
-
-### Multifarmer with Ethereum Smart Contract Simulation
-
-This example extends Multifarmer Simulation to work with an Ethereum smart contract. Upon the start of a job, the requester submits a budget to a simulated contract. When the job is finished, a report that documents the contribution of each farmer is generated. Based on this report, the requester will then distribute rewards through the contract and notify the farmers when the rewards have been sent.
-
-For this example, first install Ganache and Truffle through https://truffleframework.com/. Launch Ganache and run the codes below in Terminal:
-
-```
-$ cd examples/multi-farmer-simulation-smart-contract/farming_contract
-$ truffle compile
-$ truffle migrate
-```
-
-Replace wallet addresses in multi-farmer-simulation-smart-contract/constant.js with those from Ganache, and the contract address from the output.
-
-```
-$ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js
-```
-
-### Remote Peers
-
-The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
-
-On the farmer's computer/terminal:
-
-```
-$ node examples/remote-peers/remote-farmer.js
-```
-
-On the requester's computer/terminal:
-
-```
-$ node examples/remote-peers/remote-requester.js
-```
+See [examples](/examples/README.md)
 
 ## Local Development Setup
 

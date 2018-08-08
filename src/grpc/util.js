@@ -1,6 +1,6 @@
-const services = require('./proto/route-guide_grpc_pb')
+const { Farmer } = require('../farmer')
+const services = require('../proto/route-guide_grpc_pb')
 const grpc = require('grpc')
-const { Farmer } = require('./farmer')
 
 class FarmerServer {
   /**
@@ -21,9 +21,9 @@ class FarmerServer {
   createServer(farmer) {
     const server = new grpc.Server()
     server.addService(services.RFPService, {
-      requestQuote: farmer.handleQuoteRequest.bind(farmer),
-      awardContract: farmer.handleContractAward.bind(farmer),
-      deliverReward: farmer.handleRewardDelivery.bind(farmer)
+      sendSow: farmer.onSow.bind(farmer),
+      sendAgreement: farmer.onAgreement.bind(farmer),
+      sendReward: farmer.onReward.bind(farmer)
     })
     return server
   }

@@ -1,7 +1,17 @@
 const { ExampleFarmer } = require('./farmer')
 const { ExampleRequester } = require('./requester')
-const { messages, MaxCostMatcher, grpcUtil } = require('ara-farming-protocol')
-const wallets = require('./constant.js')
+const { messages, matchers, afpgrpc } = require('ara-farming-protocol')
+const { contractAddress, walletAddresses } = require('./constant.js')
+const ContractABI = require('./farming_contract/contract-abi.js')
+
+const wallets =   [
+  new ContractABI(contractAddress, walletAddresses[0]),
+  new ContractABI(contractAddress, walletAddresses[1]),
+  new ContractABI(contractAddress, walletAddresses[2]),
+  new ContractABI(contractAddress, walletAddresses[3]),
+  new ContractABI(contractAddress, walletAddresses[4])
+]
+
 
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(count) {
@@ -22,10 +32,10 @@ function simulateFarmerConnections(count) {
 
     // Generate Server
     const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallets[i])
-    grpcUtil.broadcastFarmer(farmer, port)
+    afpgrpc.util.broadcastFarmer(farmer, port)
 
     // Generate Client Connection
-    const connection = grpcUtil.connectToFarmer(port)
+    const connection = afpgrpc.util.connectToFarmer(port)
     farmerConnections.push(connection)
     farmerIDs.push(id)
   }
@@ -43,7 +53,7 @@ function simulateFarmerConnections(count) {
 const { farmerConnections, farmerIDs } = simulateFarmerConnections(4)
 
 // Requester
-const matcher = new MaxCostMatcher(10, 4)
+const matcher = new matchers.MaxCostMatcher(10, 4)
 
 const requesterID = new messages.ARAid()
 requesterID.setDid('ara:did:10056')

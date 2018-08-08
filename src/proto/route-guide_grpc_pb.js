@@ -15,15 +15,15 @@ function deserialize_messages_ARAid(buffer_arg) {
   return messages_pb.ARAid.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_messages_Contract(arg) {
-  if (!(arg instanceof messages_pb.Contract)) {
-    throw new Error('Expected argument of type messages.Contract');
+function serialize_messages_Agreement(arg) {
+  if (!(arg instanceof messages_pb.Agreement)) {
+    throw new Error('Expected argument of type messages.Agreement');
   }
   return new Buffer(arg.serializeBinary());
 }
 
-function deserialize_messages_Contract(buffer_arg) {
-  return messages_pb.Contract.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_messages_Agreement(buffer_arg) {
+  return messages_pb.Agreement.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_messages_Quote(arg) {
@@ -61,8 +61,8 @@ function deserialize_messages_SOW(buffer_arg) {
 
 
 var RFPService = exports.RFPService = {
-  requestQuote: {
-    path: '/routeguide.RFP/RequestQuote',
+  sendSow: {
+    path: '/routeguide.RFP/SendSow',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.SOW,
@@ -72,19 +72,19 @@ var RFPService = exports.RFPService = {
     responseSerialize: serialize_messages_Quote,
     responseDeserialize: deserialize_messages_Quote,
   },
-  awardContract: {
-    path: '/routeguide.RFP/AwardContract',
+  sendAgreement: {
+    path: '/routeguide.RFP/SendAgreement',
     requestStream: false,
     responseStream: false,
-    requestType: messages_pb.Contract,
-    responseType: messages_pb.Contract,
-    requestSerialize: serialize_messages_Contract,
-    requestDeserialize: deserialize_messages_Contract,
-    responseSerialize: serialize_messages_Contract,
-    responseDeserialize: deserialize_messages_Contract,
+    requestType: messages_pb.Agreement,
+    responseType: messages_pb.Agreement,
+    requestSerialize: serialize_messages_Agreement,
+    requestDeserialize: deserialize_messages_Agreement,
+    responseSerialize: serialize_messages_Agreement,
+    responseDeserialize: deserialize_messages_Agreement,
   },
-  deliverReward: {
-    path: '/routeguide.RFP/DeliverReward',
+  sendReward: {
+    path: '/routeguide.RFP/SendReward',
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.Reward,

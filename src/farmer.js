@@ -1,16 +1,17 @@
 const messages = require('./proto/messages_pb')
 
 // Class defining the required working conditions demanded by (and RPC methods of) a Farmer
-class Farmer {
+class FarmerBase {
   /**
    * Proto RPC method for getting a quote for an SOW
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.Quote)} callback Response callback
    */
-  handleQuoteRequest(call, callback) {
+  async onSow(call, callback) {
     const sow = call.request
-    if (this.validatePeer(sow.getRequester())) {
-      const quote = this.generateQuote(sow)
+    const valid = await this.validatePeer(sow.getRequester())
+    if (valid) {
+      const quote = await this.generateQuote(sow)
       callback(null, quote)
     } else {
       callback('Error: Invalid Auth', null)
@@ -18,16 +19,18 @@ class Farmer {
   }
 
   /**
-   * Proto RPC method for being awarded a contract
+   * Proto RPC method for being awarded a agreement
    * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.Contract)} callback Response callback
+   * @param {function(Error, messages.Agreement)} callback Response callback
    */
-  handleContractAward(call, callback) {
-    const contract = call.request
-    if (this.validateContract(contract)) {
-      callback(null, this.signContract(contract))
+  async onAgreement(call, callback) {
+    const agreement = call.request
+    const valid = await this.validateAgreement(agreement)
+    if (valid) {
+      const contract = await this.signAgreement(agreement)
+      callback(null, contract)
     } else {
-      callback('Error: Invalid Contract', null)
+      callback('Error: Invalid Agreement', null)
     }
   }
 
@@ -36,8 +39,8 @@ class Farmer {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  handleRewardDelivery(call, callback) {
-    throw new Error('Extended classes must implement handleRewardDelivery.')
+  onReward(call, callback) {
+    throw new Error('Extended classes must implement onReward.')
   }
 
   /**
@@ -45,7 +48,7 @@ class Farmer {
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
   }
 
@@ -54,27 +57,27 @@ class Farmer {
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     throw new Error('Extended classes must implement generateQuote.')
   }
 
   /**
-   * This should returns whether or not a contract is valid.
-   * @param {messages.Contract} contract
+   * This should returns whether or not a agreement is valid.
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
-    throw new Error('Extended classes must implement validateContract.')
+  async validateAgreement(agreement) {
+    throw new Error('Extended classes must implement validateAgreement.')
   }
 
   /**
-   * This should sign and return a contract.
-   * @param {messages.Contract} contract
-   * @returns {messages.Contract}
+   * This should sign and return a agreement.
+   * @param {messages.Agreement} agreement
+   * @returns {messages.Agreement}
    */
-  signContract(contract) {
-    throw new Error('Extended classes must implement signContract.')
+  async signAgreement(agreement) {
+    throw new Error('Extended classes must implement signAgreement.')
   }
 }
 
-module.exports = { Farmer }
+module.exports = { FarmerBase }

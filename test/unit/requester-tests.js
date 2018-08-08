@@ -1,106 +1,123 @@
-const test = require('ava')
-const sinon = require('sinon')
+const { RequesterBase } = require('../../src/requester')
+const { MatcherBase } = require('../../src/matcher')
 const messages = require('../../src/proto/messages_pb')
-const { Requester } = require('../../src/requester')
-const { Matcher } = require('../../src/matcher')
+const sinon = require('sinon')
+const test = require('ava')
 
-test('requester.handleQuoteResponse.ValidPeer', (t) => {
+test('requester.onQuote.ValidPeer', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
-  const stubMatcher = new Matcher()
+  const stubMatcher = new MatcherBase()
   const quoteMatchFake = sinon.fake()
   sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
 
-  const requester = new Requester(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').returns(true)
+  const requester = new RequesterBase(sow, stubMatcher)
+  sinon.stub(requester, 'validatePeer').resolves(true)
 
-  requester.handleQuoteResponse(null, quote, null)
+  await requester.onQuote(null, quote, null)
 
   t.true(quoteMatchFake.calledOnce)
 })
 
-test('requester.handleQuoteResponse.InvalidPeer', (t) => {
+test('requester.onQuote.InvalidPeer', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
-  const stubMatcher = new Matcher()
+  const stubMatcher = new MatcherBase()
   const quoteMatchFake = sinon.fake()
   sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
 
-  const requester = new Requester(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').returns(false)
+  const requester = new RequesterBase(sow, stubMatcher)
+  sinon.stub(requester, 'validatePeer').resolves(false)
 
-  requester.handleQuoteResponse(null, quote, null)
+  await requester.onQuote(null, quote, null)
 
   t.true(quoteMatchFake.notCalled)
 })
 
-test('requester.handleSignedContract.ValidContract', (t) => {
+test('requester.onAgreement.ValidAgreement', async (t) => {
   const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const agreement = new messages.Agreement()
 
-  const stubMatcher = new Matcher()
+  const stubMatcher = new MatcherBase()
 
-  const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(true)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  const requester = new RequesterBase(sow, stubMatcher)
+  const agreementConfirmFake = sinon.fake()
+  sinon.stub(requester, 'validateAgreement').resolves(true)
+  sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  requester.handleSignedContract(null, contract)
+  await requester.onAgreement(null, agreement)
 
-  t.true(contractConfirmFake.calledOnce)
+  t.true(agreementConfirmFake.calledOnce)
 })
 
-test('requester.handleSignedContract.InvalidContract', (t) => {
+test('requester.onAgreement.InvalidAgreement', async (t) => {
   const sow = new messages.SOW()
-  const contract = new messages.Contract()
+  const agreement = new messages.Agreement()
 
-  const stubMatcher = new Matcher()
+  const stubMatcher = new MatcherBase()
   const invalidQuoteFake = sinon.fake()
   sinon.stub(stubMatcher, 'invalidateQuote').callsFake(invalidQuoteFake)
 
-  const requester = new Requester(sow, stubMatcher)
-  const contractConfirmFake = sinon.fake()
-  sinon.stub(requester, 'validateContract').returns(false)
-  sinon.stub(requester, 'onHireConfirmed').callsFake(contractConfirmFake)
+  const requester = new RequesterBase(sow, stubMatcher)
+  const agreementConfirmFake = sinon.fake()
+  sinon.stub(requester, 'validateAgreement').resolves(false)
+  sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  requester.handleSignedContract(null, contract)
+  await requester.onAgreement(null, agreement)
 
-  t.true(contractConfirmFake.notCalled)
+  t.true(agreementConfirmFake.notCalled)
   t.true(invalidQuoteFake.calledOnce)
 })
 
-test('requester.hireFarmer', (t) => {
+test('requester.hireFarmer', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
-  const stubMatcher = new Matcher()
-  const requester = new Requester(sow, stubMatcher)
-  const genContractFake = sinon.fake()
-  sinon.stub(requester, 'generateContract').callsFake(genContractFake)
+  const stubMatcher = new MatcherBase()
+  const requester = new RequesterBase(sow, stubMatcher)
 
-  const awardContractFake = sinon.fake()
+  const genAgreementFake = sinon.fake()
+  sinon.stub(requester, 'generateAgreement').callsFake(genAgreementFake)
+
+  const sendAgreementFake = sinon.fake()
 
   const stubRFP = {
-    awardContract: awardContractFake
+    sendAgreement: sendAgreementFake
   }
 
-  requester.hireFarmer(quote, stubRFP)
+  await requester.hireFarmer(quote, stubRFP)
 
-  t.true(genContractFake.calledOnce)
-  t.true(awardContractFake.calledOnce)
+  t.true(genAgreementFake.calledOnce)
+  t.true(sendAgreementFake.calledOnce)
 })
 
-test('requester.processFarmers', (t) => {
+test('requester.processFarmers', async (t) => {
   const sow = new messages.SOW()
-  const stubMatcher = new Matcher()
-  const requester = new Requester(sow, stubMatcher)
+  const stubMatcher = new MatcherBase()
+  const requester = new RequesterBase(sow, stubMatcher)
 
-  const getQuoteFake = sinon.fake()
+  const sendSowFake = sinon.fake()
   const stubRFP = {
-    getQuote: getQuoteFake
+    sendSow: sendSowFake
   }
 
-  requester.processFarmers([ stubRFP ])
-  t.true(getQuoteFake.calledOnce)
+  await requester.processFarmers([ stubRFP ])
+
+  t.true(sendSowFake.calledOnce)
+})
+
+test('requester.processFarmer', async (t) => {
+  const sow = new messages.SOW()
+  const stubMatcher = new MatcherBase()
+  const requester = new RequesterBase(sow, stubMatcher)
+
+  const sendSowFake = sinon.fake()
+  const stubRFP = {
+    sendSow: sendSowFake
+  }
+
+  await requester.processFarmer(stubRFP)
+
+  t.true(sendSowFake.calledOnce)
 })

@@ -1,7 +1,7 @@
-const { Requester } = require('../../src/requester')
+const { RequesterBase } = require('../../src/requester')
 const messages = require('../../src/proto/messages_pb')
 
-class ExampleRequester extends Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet) {
     super(sow, matcher)
     this.requesterSig = requesterSig
@@ -22,22 +22,22 @@ class ExampleRequester extends Requester {
   /**
    * Generates a contract for quote
    * @param {messages.Quote} quote
-   * @returns {messages.Contract}
+   * @returns {messages.Agreement}
    */
-  generateContract(quote) {
-    const contract = new messages.Contract()
-    contract.setId(this.contractId)
-    contract.setQuote(quote)
-    contract.setRequesterSignature(this.requesterSig)
-    return contract
+  generateAgreement(quote) {
+    const agreement = new messages.Agreement()
+    agreement.setId(this.contractId)
+    agreement.setQuote(quote)
+    agreement.setRequesterSignature(this.requesterSig)
+    return agreement
   }
 
   /**
    * Returns whether a contract is valid.
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateContract(contract) {
+  validateAgreement(agreement) {
     return true
   }
 
@@ -108,7 +108,7 @@ class ExampleRequester extends Requester {
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
       .then((result) => {
-        server.deliverReward(reward, (err, response) => {
+        server.sendReward(reward, (err, response) => {
           if (err) {
             console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
           } else {
@@ -117,7 +117,7 @@ class ExampleRequester extends Requester {
         })
       })
       .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward for famer ${farmerId} to contract`)
+        console.log(`RequesterExample: Fail to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
       })
   }
 }

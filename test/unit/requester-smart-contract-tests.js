@@ -1,13 +1,12 @@
-const test = require('ava')
-const sinon = require('sinon')
+const { ExampleRequester } = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
+const { MatcherBase } = require('../../src/matcher')
 const messages = require('../../src/proto/messages_pb')
-const {
-  ExampleRequester
-} = require('../../examples/multi-farmer-simulation-smart-contract/requester.js')
+const sinon = require('sinon')
+const test = require('ava')
 
 const requester = new ExampleRequester(
   new messages.SOW(),
-  new Matcher(),
+  new MatcherBase(),
   new messages.Signature(),
   null
 )
@@ -23,7 +22,7 @@ test('requester.sendReward.succeed', async (t) => {
     submitReward: sinon.stub().resolves()
   }
   const server = {
-    deliverReward: sinon.stub().callsFake(fakeDelivery)
+    sendReward: sinon.stub().callsFake(fakeDelivery)
   }
   requester.wallet = stubContract
   await requester.sendReward(server, reward)
@@ -31,7 +30,7 @@ test('requester.sendReward.succeed', async (t) => {
   t.true(fakeDelivery.calledOnce)
 })
 
-test('requester.sendReward.succeed', async (t) => {
+test('requester.sendReward.fail', async (t) => {
   const fakeDelivery = sinon.fake()
 
   const stubContract = {
@@ -39,10 +38,11 @@ test('requester.sendReward.succeed', async (t) => {
   }
 
   const server = {
-    deliverReward: sinon.stub().callsFake(fakeDelivery)
+    sendReward: sinon.stub().callsFake(fakeDelivery)
   }
 
   requester.wallet = stubContract
   await requester.sendReward(server, reward)
-  t.true(!fakeDelivery.called)
+
+  t.true(fakeDelivery.notCalled)
 })

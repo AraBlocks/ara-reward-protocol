@@ -3,7 +3,7 @@ package routeguide;
 import "messages.proto";
 
 service RFP {
-  rpc RequestQuote(messages.SOW) returns(messages.Quote);
-  rpc AwardContract(messages.Contract) returns(messages.Contract);
-  rpc DeliverReward(messages.Reward) returns(messages.ARAid);
+  rpc SendSow(messages.SOW) returns(messages.Quote);
+  rpc SendAgreement(messages.Agreement) returns(messages.Agreement);
+  rpc SendReward(messages.Reward) returns(messages.ARAid);
 }

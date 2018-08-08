@@ -1,7 +1,7 @@
 syntax = "proto3";
 package messages;
 
-// Statement of Work
+// A statement of work for a specific job
 message SOW {
 	int32 id = 1;
   string work_unit = 2;
@@ -9,6 +9,7 @@ message SOW {
   bytes data = 4;
 }
 
+// A quote from a specific farmer for a specific job
 message Quote {
   int64 id = 1;
   int32 per_unit_cost = 2;
@@ -16,24 +17,31 @@ message Quote {
   ARAid farmer = 4;
 }
 
-message Contract {
+/**
+ * An abstract agreement between two parties (a requester and a farmer)
+ * spelling out the terms of a specific job 
+ **/
+message Agreement {
   int64 id = 1;
   Quote quote = 2;
   Signature requester_signature = 3;
   Signature farmer_signature = 4;
+  bytes data = 5;
 }
 
 message Reward {
 	SOW sow = 1;
 	ARAid farmer = 2;
-	int64 reward = 3
+	int64 reward = 3;
 }
 
+// A signature of a peer associated with an ARAid
 message Signature {
-  string ARAid = 1;
+  ARAid ara_id = 1;
   bytes data = 2;
 }
 
+// An ARAid
 message ARAid {
   string did = 1;
 }
