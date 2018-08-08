@@ -108,7 +108,7 @@ class ExampleRequester extends RequesterBase {
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
       .then((result) => {
-        server.deliverReward(reward, (err, response) => {
+        server.sendReward(reward, (err, response) => {
           if (err) {
             console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
           } else {

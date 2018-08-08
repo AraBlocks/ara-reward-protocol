@@ -72,7 +72,7 @@ class ExampleFarmer extends FarmerBase {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  handleRewardDelivery(call, callback) {
+  onReward(call, callback) {
     this.reward = call.request
     this.withdrawReward()
     callback(null, this.farmerId)
