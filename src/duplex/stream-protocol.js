@@ -12,6 +12,7 @@ const MSG = {
   QUOTE: { head: 2 << 1, str: 'quote' },
   AGREEMENT: { head: 3 << 1, str: 'agreement' },
   REWARD: { head: 4 << 1, str: 'reward' },
+  RECEIPT: { head: 5 << 1, str: 'receipt' },
 
   encode(head, data) {
     head = Buffer.from(varint.encode(head))
@@ -61,6 +62,11 @@ class StreamProtocol {
     this.stream.push(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
   }
 
+  async sendReceipt(receipt) {
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
+    this.stream.push(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
+  }
+
   async onTimeout() {
     debug('Timeout with peer:', this.peer)
     if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
@@ -98,6 +104,12 @@ class StreamProtocol {
     done(null)
     debug('On Reward:', reward.getId(), this.peer.host, this.peer.port)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
+  }
+
+  async onReceipt(receipt, done) {
+    done(null)
+    debug('On Receipt:', receipt.getId(), this.peer.host, this.peer.port)
+    this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
   }
 
   onReceive(chunk, enc, done) {

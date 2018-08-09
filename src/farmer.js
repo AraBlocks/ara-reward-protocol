@@ -39,7 +39,7 @@ class FarmerBase {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  onReward(call, callback) {
+  async onReward(call, callback) {
     const reward = call.request
     const valid = await this.validateReward(reward)
     if (valid) {
@@ -60,8 +60,8 @@ class FarmerBase {
   }
 
   /**
-   * This should returns whether a user is valid.
-   * @param {messages.ARAid} peer
+   * This should returns whether a reward is valid.
+   * @param {messages.Reward} reward
    * @returns {boolean}
    */
   async validateReward(reward) {

@@ -126,6 +126,11 @@ class RequesterBase {
     throw new Error('Extended classes must implement onHireConfirmed')
   }
 
+  /**
+   * 
+   * @param {messages.Receipt} receipt 
+   * @param {services.RFPClient} connection 
+   */
   async onReceipt(receipt, connection){
     throw new Error('Extended classes must implement onReceipt')
   }

@@ -9,6 +9,7 @@ const { idify } = require('../util')
 const ip = require('ip')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[0])
+const price = 1
 
 const dids = [
   'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea',
@@ -16,10 +17,10 @@ const dids = [
 ]
 
 for (let i = 0; i < dids.length; i++) {
-  broadcast(dids[i])
+  broadcast(dids[i], price)
 }
 
-async function broadcast(did) {
+async function broadcast(did, price) {
   console.log('Broadcasting: ', did)
 
   // The ARAid of the Farmer
@@ -36,7 +37,6 @@ async function broadcast(did) {
   const { afs } = await create({ did })
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const price = 6
   const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs), wallet)
 
   // Join the discovery swarm for the requested content

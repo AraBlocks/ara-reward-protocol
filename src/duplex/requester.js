@@ -8,7 +8,7 @@ class Requester extends RequesterBase {
   async processFarmer(connection) {
     connection.stream.on('quote', quote => this.onQuote(quote, connection))
     connection.stream.on('agreement', agreement => this.onAgreement(agreement, connection))
-    connection.stream.on('receipt' receipt => this.onReceipt(receipt, connection))
+    connection.stream.on('receipt', receipt => this.onReceipt(receipt, connection))
     super.processFarmer(connection)
   }
 

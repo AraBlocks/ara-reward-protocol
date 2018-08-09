@@ -30,14 +30,17 @@ message Agreement {
 }
 
 message Reward {
-	Agreement agreement = 1;
-	ARAid farmer = 2;
-	int64 reward = 3;
+  int64 id = 1;
+	Agreement agreement = 2;
+  int64 amount = 3;
+  Signature requester_signature = 4;
+  bytes data = 5;
 }
 
 message Receipt {
-  Reward reward = 1;
-  Signature farmer_signature = 2;
+  int64 id = 1;
+  Reward reward = 2;
+  Signature farmer_signature = 3;
 }
 
 // A signature of a peer associated with an ARAid

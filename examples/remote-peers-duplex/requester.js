@@ -69,6 +69,15 @@ class ExampleRequester extends afpstream.Requester {
     this.startWork(peer, port)
   }
 
+    /**
+   * 
+   * @param {messages.Receipt} receipt 
+   * @param {services.RFPClient} connection 
+   */
+  async onReceipt(receipt, connection){
+    debug(`Receipt ${receipt.getId()} signed by farmer`)
+  }
+
   addSwarmId(peerId, swarmId){
     this.swarmIdMap.set(swarmId, peerId)
     this.deliveryMap.set(swarmId, 0)

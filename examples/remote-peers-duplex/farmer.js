@@ -21,7 +21,6 @@ class ExampleFarmer extends afpstream.Farmer {
    * @returns {messages.Quote}
    */
   async generateQuote(sow) {
-    console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
     quote.setId(this.quoteId)
     quote.setFarmer(this.farmerId)
@@ -65,28 +64,41 @@ class ExampleFarmer extends afpstream.Farmer {
   }
 
   async withdrawReward(reward) {
-    const sowId = reward.getSow().getId()
-    const farmerId = reward.getFarmer().getDid()
+    const sowId = reward.getAgreement().getQuote().getSow().getId()
+    const farmerDid = this.farmerId.getDid()
     this.wallet
-      .claimReward(sowId, farmerId)
+      .claimReward(sowId, farmerDid)
       .then((result) => {
-        console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+        console.log(`Farmer ${farmerDid} has withdrawn reward`)
       })
       .catch((err) => {
-        console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+        console.log(`Farmer ${farmerDid} fails to withdrawn reward`)
       })
   }
 
   /**
-   * Handles a reward on noticed of delivery
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.ARAid)} callback Response callback
+   * This should returns whether a reward is valid.
+   * @param {messages.Reward} reward
+   * @returns {boolean}
    */
-  onReward(call, callback) {
-    const reward = call.request
-    this.withdrawReward(reward)
-    callback(null, this.farmerId)
+  async validateReward(reward) {
+    return true
   }
+
+  /**
+   * This should return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
+   */
+  async generateReceipt(reward) {
+    this.withdrawReward(reward)
+    const receipt = new messages.Receipt()
+    receipt.setId(1)
+    receipt.setReward(reward)
+    receipt.setFarmerSignature(this.farmerSig)
+    return receipt
+  }
+  
 }
 
 module.exports = { ExampleFarmer }
