@@ -32,11 +32,11 @@ class StreamProtocol {
     this.peer = peer
     this.opts = opts
 
-    this.receiver = through2(this.onReceive.bind(this))
-    this.sender = through2()
-    this.stream = duplexify(this.receiver, this.sender)
-    this.stream.once('end', this.onEnd)
-    this.stream.once('close', this.onClose)
+    this.receiver = through2({ autoDestroy: false }, this.onReceive.bind(this))
+    this.sender = through2({ autoDestroy: false })
+    this.stream = duplexify(this.receiver, this.sender, { autoDestroy: false })
+    this.stream.once('end', this.onEnd.bind(this))
+    this.stream.once('close', this.onClose.bind(this))
 
     this.timeout = null
     this.ended = false
@@ -68,16 +68,18 @@ class StreamProtocol {
   }
 
   async onTimeout() {
-    debug('Timeout with peer:', this.peer)
+    debug('Stream timed out with peer:', this.peer.host, this.peer.port)
     if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
   }
 
   async onClose() {
+    debug('Stream closed with peer:', this.peer.host, this.peer.port)
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
 
   async onEnd() {
+    debug('Stream ended with peer:', this.peer.host, this.peer.port)
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
@@ -121,6 +123,7 @@ class StreamProtocol {
       case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data), done); break
       case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data), done); break
       case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data), done); break
+      case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data), done); break
       default: throw new TypeError(`Unknown message type: ${head}`)
       }
     } catch (e) {
