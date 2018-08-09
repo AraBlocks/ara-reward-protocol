@@ -6,6 +6,12 @@ class FarmStream extends StreamProtocol {
     super(peer, opts)
   }
 
+  async onSow(sow, done){
+    const id = sow.getRequester().getDid()
+    this.stream.emit('handshake', id) // TODO: make this a nonce
+    super.onSow(sow, done)
+  }
+
   async onQuote(quote, done) {
     super.onQuote(quote, done)
     debug('Farm Stream received Quote. Destroying Stream.')

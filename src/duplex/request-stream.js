@@ -11,6 +11,12 @@ class RequestStream extends StreamProtocol {
     debug('Request Stream received SOW. Destroying Stream.')
     this.stream.destroy()
   }
+
+  async onQuote(quote, done) {
+  	const id = quote.getFarmer().getDid() // TODO: make this a nonce
+    this.stream.emit('handshake', id)
+    super.onQuote(quote, done)
+  }
 }
 
 module.exports = {

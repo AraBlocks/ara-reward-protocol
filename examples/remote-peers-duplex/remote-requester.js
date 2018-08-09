@@ -81,8 +81,7 @@ async function download(did, reward) {
       downloaded = true
       debug(await afs.readdir('.'))
       debug('Downloaded!')
-      await requester.sendRewards()
-      destroySwarms()
+      requester.sendRewards(destroySwarms)
     }
   }
 

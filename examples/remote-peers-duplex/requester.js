@@ -5,7 +5,7 @@ const pify = require('pify')
 
 
 class ExampleRequester extends afpstream.Requester {
-  constructor(sow, matcher, requesterSig, startWork, wallet) {
+  constructor(sow, matcher, requesterSig, startWork, wallet, onComplete) {
     super(sow, matcher)
     this.badFarmerId = 'ara:did:2'
     this.agreementId = 101
@@ -15,6 +15,8 @@ class ExampleRequester extends afpstream.Requester {
     this.hiredFarmers = new Map()
     this.swarmIdMap = new Map()
     this.deliveryMap = new Map()
+    this.receipts = 0
+    this.onComplete = null
   }
 
   /**
@@ -76,6 +78,7 @@ class ExampleRequester extends afpstream.Requester {
    */
   async onReceipt(receipt, connection){
     debug(`Receipt ${receipt.getId()} signed by farmer`)
+    this.incrementOnComplete()
   }
 
   addSwarmId(peerId, swarmId){
@@ -94,26 +97,37 @@ class ExampleRequester extends afpstream.Requester {
     }
   }
 
-  async sendRewards(){
+  sendRewards(callback){
     const blocksPerUnit = 400 // TODO: adjust this measurement
-    await this.deliveryMap.forEach(async (value, key, map) => {
+    this.onComplete = callback
+
+    this.deliveryMap.forEach((value, key, map) => {
       const peerId = this.swarmIdMap.get(key)
-      const units = Math.floor(value / blocksPerUnit)
-      if (units > 0) await this.awardFarmer(peerId, units)
+      const units = Math.floor(value / blocksPerUnit) // TODO: no rounding?
+      if (units > 0 && this.hiredFarmers.has(peerId)) {
+        this.awardFarmer(peerId, units)
+      } else {
+        debug(`Farmer ${peerId} will not be rewarded.`)
+        this.incrementOnComplete()
+      }
     })
+  }
+
+  incrementOnComplete(){
+    this.receipts++
+    if (this.onComplete && this.receipts === this.deliveryMap.size){
+      debug("Firing onComplete")
+      this.onComplete()
+    }
   }
 
   /**
    * Awards farmer for their work
    */
-  async awardFarmer(peerId, units) {
-    if (this.hiredFarmers.has(peerId)){
-      const { connection, agreement } = this.hiredFarmers.get(peerId)
-      const reward = this.generateReward(agreement, units)
-      await pify(this.sendReward.bind(this))(connection, reward)
-    } else {
-      debug("Error: Farmer not found")
-    }
+  awardFarmer(peerId, units) {
+    const { connection, agreement } = this.hiredFarmers.get(peerId)
+    const reward = this.generateReward(agreement, units)
+    this.sendReward(connection, reward)
   }
 
   /**
@@ -124,33 +138,31 @@ class ExampleRequester extends afpstream.Requester {
    */
   generateReward(agreement, units) {
     const quote = agreement.getQuote()
-    const sow = quote.getSow()
-    const farmer = quote.getFarmer()
     const amount = quote.getPerUnitCost() * units
     const reward = new messages.Reward()
-    reward.setSow(sow)
-    reward.setFarmer(farmer)
-    reward.setReward(amount)
+    reward.setId(1)
+    reward.setAgreement(agreement)
+    reward.setAmount(amount)
     return reward
   }
 
   /**
    * Submits a reward to the contract, and notifies the farmer that their reward is available for withdraw
    */
-  sendReward(connection, reward, cb) {
-    const farmerId = reward.getFarmer().getDid()
-    const sowId = reward.getSow().getId()
-    const rewardValue = reward.getReward()
-    debug(`Sending reward to farmer ${farmerId} for ${rewardValue} tokens`)
+  sendReward(connection, reward) {
+    const quote = reward.getAgreement().getQuote()
+    const sowId = quote.getSow().getId()
+    const farmerId = quote.getFarmer().getDid()
+    const amount = reward.getAmount()
+    debug(`Sending reward to farmer ${farmerId} for ${amount} tokens`)
 
     this.wallet
-      .submitReward(sowId, farmerId, rewardValue)
+      .submitReward(sowId, farmerId, amount)
       .then((result) => {
         connection.sendReward(reward)
       })
       .catch((err) => {
         debug(`Failed to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
-        cb(err)
       })
   }
 }
