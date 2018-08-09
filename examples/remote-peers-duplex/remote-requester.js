@@ -6,15 +6,16 @@ const { create } = require('ara-filesystem')
 const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
+const debug = require('debug')('afp:duplex-example:remote')
 const clip = require('cli-progress')
 const pify = require('pify')
 const ip = require('ip')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[1])
+const wallet = new ContractABI(contractAddress, walletAddresses[3])
 
 const did = 'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea' // 50 MB
 //const did = '556399cef520525d2733567eab2a3505d156fa2ca2a94c5aa9964e844a3dc1a8' // 2 GB
-download(did, 10)
+download(did, 1)
 
 async function download(did, reward) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
@@ -42,6 +43,7 @@ async function download(did, reward) {
   // Load the sparse afs
   const { afs } = await create({did})
   let downloaded = false
+  let destroyed = false
   const content = afs.partitions.resolve(afs.HOME).content
   if (content){
       content.once('download', onupdate)
@@ -53,17 +55,18 @@ async function download(did, reward) {
   const contentSwarm = createContentSwarm(afs, requester)
   contentSwarm.on('close', onend)
   let farmerSwarm = null
+  const rewardAllocation = reward * 10 // TODO: determine this based on download size
 
   wallet
-    .submitJob(sow.getId(), reward)
+    .submitJob(sow.getId(), rewardAllocation)
     .then((result) => {
-      console.log('Job has been submitted to the contract')
+      debug(`Job ${sow.getId()} has been submitted to the contract with ${rewardAllocation} tokens`)
       
       // Create a swarm for finding farmers
       farmerSwarm = createFarmerSwarm(did, requester)
     })
     .catch((err) => {
-      console.log('Job submission failed')
+      debug('Job submission failed')
       onend(err)
     })
 
@@ -71,20 +74,26 @@ async function download(did, reward) {
   // Handle when the swarms end
   async function onend(error) {
     if (error) {
-      console.log(err)
+      console.log(error)
+      destroySwarms()
     } 
     else if (!downloaded) {
       downloaded = true
-      console.log(await afs.readdir('.'))
-      console.log('Downloaded!')
-      requester.onJobFinished(report)
+      debug(await afs.readdir('.'))
+      debug('Downloaded!')
+      await requester.sendRewards()
+      destroySwarms()
     }
+  }
 
-    console.log('Swarm destroyed')
-
-    if (afs) afs.close()
-    if (contentSwarm) contentSwarm.destroy()
-    if (farmerSwarm) farmerSwarm.destroy()
+  function destroySwarms(){
+    if (!destroyed){
+      debug('Swarm destroyed')
+      destroyed = true
+      if (afs) afs.close()
+      if (contentSwarm) contentSwarm.destroy()
+      if (farmerSwarm) farmerSwarm.destroy()
+    }
   }
 
   // Handle when the content needs updated
@@ -94,7 +103,10 @@ async function download(did, reward) {
       const pBar = new clip.Bar({}, clip.Presets.shades_classic)
       let pStarted = false
 
-      feed.on('download', () => {
+      feed.on('download', (index, data, from) => {
+        const peerIdHex = from.remoteId.toString('hex')
+        requester.dataReceived(peerIdHex, 1)
+
         if (!feed.length) return
         if (!pStarted) {
           pStarted = true
@@ -110,9 +122,10 @@ async function download(did, reward) {
   }
 
   // Handle when ready to start work
-  function startWork(peer) {
-    console.log('Starting AFS Connection with ', peer.host, peer.port)
-    contentSwarm.addPeer(peer.host, { host: peer.host, port: peer.port })
+  function startWork(peer, port) {
+    const connectionId = idify(peer.host, port)
+    debug(`Starting AFS Connection with ${connectionId}`)
+    contentSwarm.addPeer(connectionId, { host: peer.host, port: port })
   }
 }
 
@@ -141,7 +154,7 @@ function createFarmerSwarm(did, requester) {
   }
 
   function handleConnection(connection, info) {
-    console.log(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
+    debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
   }
 
   return swarm
@@ -164,8 +177,7 @@ function createContentSwarm(afs, requester) {
     })
 
     stream.once('end', () => {
-      requester.awardFarmer(peer)
-      console.log('Replicate stream ended')
+      debug('Replicate stream ended')
       swarm.destroy()
     })
 
@@ -173,7 +185,10 @@ function createContentSwarm(afs, requester) {
   }
 
   async function handleConnection(connection, info) {
-    console.log(`Content Swarm: Peer connected: ${idify(info.host, info.port)}`)
+    const contentSwarmId = connection.remoteId.toString('hex')
+    const connectionId = idify(info.host, info.port)
+    requester.addSwarmId(connectionId, contentSwarmId)
+    debug(`Content Swarm: Peer connected: ${connectionId} with id: ${contentSwarmId}`)
   }
 
   return swarm

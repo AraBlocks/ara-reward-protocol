@@ -1,5 +1,5 @@
 const { StreamProtocol } = require('./stream-protocol')
-const debug = require('debug')('ara-farming-protocol:stream')
+const debug = require('debug')('afp:stream')
 
 class FarmStream extends StreamProtocol {
   constructor(peer, opts) {

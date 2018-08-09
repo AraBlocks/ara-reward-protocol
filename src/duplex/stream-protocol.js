@@ -2,7 +2,7 @@ const duplexify = require('duplexify')
 const messages = require('../proto/messages_pb')
 const through2 = require('through2')
 const varint = require('varint')
-const debug = require('debug')('ara-farming-protocol:stream')
+const debug = require('debug')('afp:stream')
 
 require('events').EventEmitter.defaultMaxListeners = 15
 

@@ -1,5 +1,8 @@
+const debug = require('debug')('afp:duplex-example:requester')
 const { messages, afpstream } = require('ara-farming-protocol')
 const { idify } = require('../util')
+const pify = require('pify')
+
 
 class ExampleRequester extends afpstream.Requester {
   constructor(sow, matcher, requesterSig, startWork, wallet) {
@@ -10,6 +13,8 @@ class ExampleRequester extends afpstream.Requester {
     this.startWork = startWork
     this.wallet = wallet
     this.hiredFarmers = new Map()
+    this.swarmIdMap = new Map()
+    this.deliveryMap = new Map()
   }
 
   /**
@@ -20,7 +25,7 @@ class ExampleRequester extends afpstream.Requester {
   async validatePeer(peer) {
     const farmerId = peer.getDid()
     if (farmerId == this.badFarmerId) {
-      console.log(`Requester: Invalid farmer ${farmerId}`)
+      debug(`Requester: Invalid farmer ${farmerId}`)
       return false
     }
     return true
@@ -55,41 +60,66 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection
    */
   async onHireConfirmed(agreement, connection) {
-    console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
-    const port = agreement.getId() // HACK
+    debug(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
-    peer.port = port
-    this.startWork(peer)
-    this.hiredFarmers.set(idify(peer.host, peer.port), connection)
+    const port = agreement.getId() // HACK
+    const peerId = idify(peer.host, port)
+    this.hiredFarmers.set(peerId, { connection, agreement })
+
+    this.startWork(peer, port)
+  }
+
+  addSwarmId(peerId, swarmId){
+    this.swarmIdMap.set(swarmId, peerId)
+    this.deliveryMap.set(swarmId, 0)
+  }
+
+  dataReceived(peerSwarmId, units){
+    if (this.deliveryMap.has(peerSwarmId)){
+      const total = this.deliveryMap.get(peerSwarmId) + units
+      this.deliveryMap.set(peerSwarmId, total)
+    } 
+    else
+    {
+      this.deliveryMap.set(peerSwarmId, units)
+    }
+  }
+
+  async sendRewards(){
+    const blocksPerUnit = 400 // TODO: adjust this measurement
+    await this.deliveryMap.forEach(async (value, key, map) => {
+      const peerId = this.swarmIdMap.get(key)
+      const units = Math.floor(value / blocksPerUnit)
+      if (units > 0) await this.awardFarmer(peerId, units)
+    })
   }
 
   /**
    * Awards farmer for their work
    */
-  awardFarmer(peer, quote, amount) {
-    const key = idify(peer.host, peer.port)
-    if (this.hiredFarmers.has(key)){
-      const connection = this.hiredFarmers.get(key)
-      const reward = this.generateReward(quote, amount)
-      this.sendReward(connection, reward)
+  async awardFarmer(peerId, units) {
+    if (this.hiredFarmers.has(peerId)){
+      const { connection, agreement } = this.hiredFarmers.get(peerId)
+      const reward = this.generateReward(agreement, units)
+      await pify(this.sendReward.bind(this))(connection, reward)
     } else {
-      console.log("Error: Farmer not found")
+      debug("Error: Farmer not found")
     }
   }
 
   /**
    * Calculates farmer reward
    * @param {messages.ARAid} farmer
-   * @param {messages.Quote} quote
+   * @param {messages.Agreement} agreement
    * @returns {messages.Reward}
    */
-  generateReward(quote, amount) {
+  generateReward(agreement, units) {
+    const quote = agreement.getQuote()
+    const sow = quote.getSow()
     const farmer = quote.getFarmer()
-    // const unitsDone = report.get(farmer.getDid())
-    // const cost = quote.getPerUnitCost() * unitsDone
-
+    const amount = quote.getPerUnitCost() * units
     const reward = new messages.Reward()
-    reward.setSow(this.sow)
+    reward.setSow(sow)
     reward.setFarmer(farmer)
     reward.setReward(amount)
     return reward
@@ -98,23 +128,20 @@ class ExampleRequester extends afpstream.Requester {
   /**
    * Submits a reward to the contract, and notifies the farmer that their reward is available for withdraw
    */
-  sendReward(connection, reward) {
+  sendReward(connection, reward, cb) {
     const farmerId = reward.getFarmer().getDid()
-    const sowId = this.sow.getId()
+    const sowId = reward.getSow().getId()
     const rewardValue = reward.getReward()
+    debug(`Sending reward to farmer ${farmerId} for ${rewardValue} tokens`)
+
     this.wallet
       .submitReward(sowId, farmerId, rewardValue)
       .then((result) => {
-        connection.sendReward(reward, (err, response) => {
-          if (err) {
-            console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
-          } else {
-            console.log(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
-          }
-        })
+        connection.sendReward(reward)
       })
       .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
+        debug(`Failed to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
+        cb(err)
       })
   }
 }
