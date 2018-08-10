@@ -69,7 +69,7 @@ class ExampleFarmer extends afpstream.Farmer {
   }
 
   async withdrawReward(reward) {
-    const sowId = reward.getAgreement().getQuote().getSow().getNonce()
+    const sowId = Buffer.from(reward.getAgreement().getQuote().getSow().getNonce()).toString('hex')
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
