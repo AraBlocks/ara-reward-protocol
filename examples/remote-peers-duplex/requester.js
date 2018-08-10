@@ -64,7 +64,8 @@ class ExampleRequester extends afpstream.Requester {
   async onHireConfirmed(agreement, connection) {
     debug(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
-    const port = agreement.getId() // HACK
+    const data =  Buffer.from(agreement.getData())
+    const port = data.readUInt32LE(0)
     const peerId = idify(peer.host, port)
     this.hiredFarmers.set(peerId, { connection, agreement })
 
