@@ -3,9 +3,10 @@ const { messages, afpstream } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
-const { idify } = require('../util')
+const debug = require('debug')('afp:duplex-example:main')
 const ip = require('ip')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[0])
@@ -21,7 +22,7 @@ for (let i = 0; i < dids.length; i++) {
 }
 
 async function broadcast(did, price) {
-  console.log('Broadcasting: ', did)
+  debug('Broadcasting: ', did)
 
   // The ARAid of the Farmer
   const farmerID = new messages.ARAid()
@@ -66,7 +67,7 @@ function createFarmingSwarm(did, farmer){
   }
 
   function handleConnection(connection, info) {
-    console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
+    debug(`SWARM: New peer: ${info.host} on port: ${info.port}`)
   }
 
   return swarm
@@ -88,7 +89,7 @@ async function startWork(port, afs) {
     stream.once('end', onend)
 
     function onend() {
-      console.log('Uploaded!')
+      debug('Uploaded!')
       swarm.destroy()
     }
 
@@ -96,6 +97,6 @@ async function startWork(port, afs) {
   }
 
   function handleConnection(connection, info) {
-    console.log(`Peer connected: ${info.host} on port: ${info.port}`)
+    debug(`Peer connected: ${info.host} on port: ${info.port}`)
   }
 }

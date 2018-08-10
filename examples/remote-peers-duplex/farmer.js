@@ -1,4 +1,5 @@
 const { messages, afpstream } = require('ara-farming-protocol')
+const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
@@ -47,7 +48,7 @@ class ExampleFarmer extends afpstream.Farmer {
   async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
     const port = await pify(fp)(Math.floor(30000 * Math.random()), ip.address())
-    console.log('Listening on port ', port)
+    debug('Listening on port ', port)
     const data = Buffer.alloc(4)
     data.writeInt32LE(port, 0)
     agreement.setData(data)
@@ -71,10 +72,10 @@ class ExampleFarmer extends afpstream.Farmer {
     this.wallet
       .claimReward(sowId, farmerDid)
       .then((result) => {
-        console.log(`Farmer ${farmerDid} has withdrawn reward`)
+        debug(`Farmer ${farmerDid} has withdrawn reward`)
       })
       .catch((err) => {
-        console.log(`Farmer ${farmerDid} fails to withdrawn reward`)
+        debug(`Farmer ${farmerDid} fails to withdrawn reward`)
       })
   }
 
