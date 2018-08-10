@@ -27,7 +27,7 @@ function simulateFarmerConnections(count) {
     farmerID.setDid(id)
 
     const farmerSig = new messages.Signature()
-    farmerSig.setId = farmerID
+    farmerSig.setAraId(farmerID)
     farmerSig.setData('avalidsignature')
 
     // Generate Server
@@ -59,12 +59,12 @@ const requesterID = new messages.ARAid()
 requesterID.setDid('ara:did:10056')
 
 const sow = new messages.SOW()
-sow.setId(2)
+sow.setNonce(2)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 
 const requesterSig = new messages.Signature()
-requesterSig.setId = requesterID
+requesterSig.setAraId(requesterID)
 requesterSig.setData('avalidsignature')
 
 const requesterWallet = wallets[4]

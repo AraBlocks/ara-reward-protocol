@@ -1,37 +1,37 @@
 pragma solidity ^0.4.24;
 
 contract Farming {
-    mapping(uint => Job) public jobs;
+    mapping(bytes32 => Job) public jobs;
 
     struct Job {
-      mapping(string => uint) rewards;
-      uint budget;
+        mapping(bytes32 => uint) rewards;
+        uint budget;
     }
 
     constructor () public {
     }
 
-    function submitJob(uint jobId) public payable{
+    function submitJob(bytes32 jobId) public payable{
         jobs[jobId].budget = msg.value;
     }
 
-    function getJobBudget(uint jobId) public view returns(uint) {
+    function getJobBudget(bytes32 jobId) public view returns(uint) {
         return jobs[jobId].budget;
     }
 
-    function submitReward(uint jobId, string farmerAddress, uint reward) public {
+    function submitReward(bytes32 jobId, bytes32 farmerId, uint reward) public {
         Job storage job = jobs[jobId];
-        job.rewards[farmerAddress] = reward;
+        job.rewards[farmerId] = reward;
     }
 
-    function getRewardBalance(uint jobId, string farmerAddress) public view returns(uint) {
-        return jobs[jobId].rewards[farmerAddress];
+    function getRewardBalance(bytes32 jobId, bytes32 farmerId) public view returns(uint) {
+        return jobs[jobId].rewards[farmerId];
     }
 
-    function claimReward(uint jobId, string farmerAddress) public payable{
+    function claimReward(bytes32 jobId, bytes32 farmerId) public payable{
         Job storage job = jobs[jobId];
-        uint reward = job.rewards[farmerAddress];
-        job.rewards[farmerAddress] = 0;
+        uint reward = job.rewards[farmerId];
+        job.rewards[farmerId] = 0;
         job.budget -= reward;
         msg.sender.transfer(reward);
     }

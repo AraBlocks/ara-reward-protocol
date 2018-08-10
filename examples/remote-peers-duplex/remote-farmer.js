@@ -3,13 +3,14 @@ const { messages, afpstream } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
-const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
+const idify = afpstream.util.idify
 const debug = require('debug')('afp:duplex-example:main')
+
 const ip = require('ip')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[0])
+const wallet = new ContractABI(contractAddress, walletAddresses[1])
 const price = 1
 
 const dids = [
@@ -25,7 +26,7 @@ async function broadcast(did, price) {
   debug('Broadcasting: ', did)
 
   // The ARAid of the Farmer
-  const farmerID = new messages.ARAid()
+  const farmerID = new messages.AraId()
   const farmerDID = 'did:ara:75'
   farmerID.setDid(farmerDID)
 
@@ -60,7 +61,7 @@ function createFarmingSwarm(did, farmer){
     if (us === them) {
       return through()
     }
-    const connection = new afpstream.FarmStream(peer, { wait: 100, timeout: 10000 })
+    const connection = new afpstream.FarmStream(peer, { timeout: 10000 })
     farmer.processRequester(connection)
 
     return connection.stream

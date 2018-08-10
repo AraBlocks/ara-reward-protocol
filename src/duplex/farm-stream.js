@@ -1,5 +1,5 @@
 const { StreamProtocol } = require('./stream-protocol')
-const debug = require('debug')('afp:stream')
+const debug = require('debug')('afp:duplex')
 
 class FarmStream extends StreamProtocol {
   constructor(peer, opts) {
@@ -7,8 +7,8 @@ class FarmStream extends StreamProtocol {
   }
 
   async onSow(sow, done){
-    const id = sow.getRequester().getDid()
-    this.stream.emit('handshake', id) // TODO: make this a nonce
+    const nonce = sow.getNonce()
+    this.stream.emit('handshake', nonce)
     super.onSow(sow, done)
   }
 

@@ -3,13 +3,12 @@ const { messages, matchers, afpstream } = require('ara-farming-protocol')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
-const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
+const idify = afpstream.util.idify
 const clip = require('cli-progress')
-const pify = require('pify')
 const ip = require('ip')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
@@ -23,7 +22,7 @@ async function download(did, reward) {
   const matcher = new matchers.MaxCostMatcher(reward, 5)
 
   // The ARAid of the Requester
-  const requesterID = new messages.ARAid()
+  const requesterID = new messages.AraId()
   const requesterDID = 'did:ara:1'
   requesterID.setDid(requesterDID)
 
@@ -34,7 +33,7 @@ async function download(did, reward) {
 
   // Create the statement of work
   const sow = new messages.SOW()
-  sow.setId(2)
+  sow.setNonce(crypto.randomBytes(32))
   sow.setWorkUnit('MB')
   sow.setRequester(requesterID)
 
@@ -59,10 +58,11 @@ async function download(did, reward) {
   // Submit the reward allocation and find farmers
   let farmerSwarm = null
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
+  const jobId = Buffer.from(sow.getNonce()).toString('hex')
   wallet
-    .submitJob(sow.getId(), rewardAllocation)
+    .submitJob(jobId, rewardAllocation)
     .then((result) => {
-      debug(`Job ${sow.getId()} has been submitted to the contract with ${rewardAllocation} tokens`)
+      debug(`Job ${jobId} has been submitted to the contract with ${rewardAllocation} tokens`)
       
       farmerSwarm = createFarmerSwarm(did, requester) // TODO: 
     })
@@ -85,7 +85,7 @@ async function download(did, reward) {
   // Handle when the swarms end
   async function onEnd(error) {
     if (error) {
-      console.log(error)
+      debug(error)
       destroySwarms()
     } 
   }

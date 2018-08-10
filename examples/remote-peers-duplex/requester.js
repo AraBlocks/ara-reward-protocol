@@ -1,14 +1,12 @@
-const debug = require('debug')('afp:duplex-example:requester')
 const { messages, afpstream } = require('ara-farming-protocol')
-const { idify } = require('../util')
-const pify = require('pify')
+const crypto = require('ara-crypto')
+const idify = afpstream.util.idify
+const debug = require('debug')('afp:duplex-example:requester')
 
 
 class ExampleRequester extends afpstream.Requester {
-  constructor(sow, matcher, requesterSig, startWork, wallet, onComplete) {
+  constructor(sow, matcher, requesterSig, startWork, wallet) {
     super(sow, matcher)
-    this.badFarmerId = 'ara:did:2'
-    this.agreementId = 101
     this.requesterSig = requesterSig
     this.startWork = startWork
     this.wallet = wallet
@@ -25,11 +23,6 @@ class ExampleRequester extends afpstream.Requester {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    const farmerId = peer.getDid()
-    if (farmerId == this.badFarmerId) {
-      debug(`Requester: Invalid farmer ${farmerId}`)
-      return false
-    }
     return true
   }
 
@@ -40,7 +33,7 @@ class ExampleRequester extends afpstream.Requester {
    */
   async generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setId(this.agreementId)
+    agreement.setNonce(crypto.randomBytes(32))
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement
@@ -62,10 +55,13 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection
    */
   async onHireConfirmed(agreement, connection) {
-    debug(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    debug(`Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
+
+    // Extract port
     const data =  Buffer.from(agreement.getData())
     const port = data.readUInt32LE(0)
+
     const peerId = idify(peer.host, port)
     this.hiredFarmers.set(peerId, { connection, agreement })
 
@@ -78,7 +74,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection 
    */
   async onReceipt(receipt, connection){
-    debug(`Receipt ${receipt.getId()} signed by farmer`)
+    debug(`Receipt ${receipt.getNonce()} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
     this.incrementOnComplete()
   }
 
@@ -141,7 +137,7 @@ class ExampleRequester extends afpstream.Requester {
     const quote = agreement.getQuote()
     const amount = quote.getPerUnitCost() * units
     const reward = new messages.Reward()
-    reward.setId(1)
+    reward.setNonce(crypto.randomBytes(32))
     reward.setAgreement(agreement)
     reward.setAmount(amount)
     return reward
@@ -152,7 +148,7 @@ class ExampleRequester extends afpstream.Requester {
    */
   sendReward(connection, reward) {
     const quote = reward.getAgreement().getQuote()
-    const sowId = quote.getSow().getId()
+    const sowId = quote.getSow().getNonce()
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
     debug(`Sending reward to farmer ${farmerId} for ${amount} tokens`)

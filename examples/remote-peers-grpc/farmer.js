@@ -19,7 +19,7 @@ class ExampleFarmer extends FarmerBase {
   async generateQuote(sow) {
     console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
-    quote.setId(this.quoteId)
+    quote.setNonce(this.quoteId)
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)

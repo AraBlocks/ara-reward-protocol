@@ -19,7 +19,7 @@ class ExampleFarmer extends FarmerBase {
    */
   generateQuote(sow) {
     const quote = new messages.Quote()
-    quote.setId(this.quoteId)
+    quote.setNonce(this.quoteId)
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)

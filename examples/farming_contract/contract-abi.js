@@ -10,9 +10,10 @@ class ContractABI {
   }
 
   convertToEther(number) {
-    return number * 100000000000000000
+    return number * 1000000000000000000
   }
 
+  // Budget in Ether
   submitJob(jobId, budget) {
     return this.contract.methods.submitJob(jobId).send({
       from: this.wallet,
@@ -20,6 +21,7 @@ class ContractABI {
     })
   }
 
+  // Reward in Ether
   submitReward(jobId, farmerId, reward) {
     return this.contract.methods
       .submitReward(jobId, farmerId, this.convertToEther(reward))

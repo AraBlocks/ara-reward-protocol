@@ -2,7 +2,8 @@ const duplexify = require('duplexify')
 const messages = require('../proto/messages_pb')
 const through2 = require('through2')
 const varint = require('varint')
-const debug = require('debug')('afp:stream')
+const debug = require('debug')('afp:duplex')
+const { idify } = require('./util')
 
 require('events').EventEmitter.defaultMaxListeners = 15
 
@@ -86,31 +87,31 @@ class StreamProtocol {
 
   async onSow(sow, done) {
     done(null)
-    debug('On Sow:', sow.getId(), this.peer.host, this.peer.port)
+    debug(`On Sow: ${Buffer.from(sow.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
   async onQuote(quote, done) {
     done(null)
-    debug('On Quote:', quote.getId(), this.peer.host, this.peer.port)
+    debug(`On Quote: ${Buffer.from(quote.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
   async onAgreement(agreement, done) {
     done(null)
-    debug('On Agreement:', agreement.getId(), this.peer.host, this.peer.port)
+    debug(`On Agreement: ${Buffer.from(agreement.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
   async onReward(reward, done) {
     done(null)
-    debug('On Reward:', reward.getId(), this.peer.host, this.peer.port)
+    debug(`On Reward: ${Buffer.from(reward.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
   async onReceipt(receipt, done) {
     done(null)
-    debug('On Receipt:', receipt.getId(), this.peer.host, this.peer.port)
+    debug(`On Receipt: ${Buffer.from(receipt.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
   }
 

@@ -1,5 +1,5 @@
 const { StreamProtocol } = require('./stream-protocol')
-const debug = require('debug')('afp:stream')
+const debug = require('debug')('afp:duplex')
 
 class RequestStream extends StreamProtocol {
   constructor(peer, opts) {
@@ -13,8 +13,8 @@ class RequestStream extends StreamProtocol {
   }
 
   async onQuote(quote, done) {
-  	const id = quote.getFarmer().getDid() // TODO: make this a nonce
-    this.stream.emit('handshake', id)
+  	const nonce = quote.getNonce()
+    this.stream.emit('handshake', nonce)
     super.onQuote(quote, done)
   }
 }
