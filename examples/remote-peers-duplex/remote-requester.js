@@ -6,6 +6,7 @@ const { create } = require('ara-filesystem')
 const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
+const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:remote')
 const clip = require('cli-progress')
 const pify = require('pify')
@@ -43,52 +44,56 @@ async function download(did, reward) {
   // Load the sparse afs
   const { afs } = await create({did})
   let downloaded = false
-  let destroyed = false
   const content = afs.partitions.resolve(afs.HOME).content
   if (content){
-      content.once('download', onupdate)
+      content.once('download', onUpdate)
   } else {
-      afs.once('content', onupdate)
+      afs.once('content', onUpdate)
   }
 
   // Create a swarm for downloading the content
   const contentSwarm = createContentSwarm(afs, requester)
-  contentSwarm.on('close', onend)
+  contentSwarm.on('close', onEnd)
+
+  // Submit the reward allocation and find farmers
   let farmerSwarm = null
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
-
   wallet
     .submitJob(sow.getId(), rewardAllocation)
     .then((result) => {
       debug(`Job ${sow.getId()} has been submitted to the contract with ${rewardAllocation} tokens`)
       
-      // Create a swarm for finding farmers
-      farmerSwarm = createFarmerSwarm(did, requester)
+      farmerSwarm = createFarmerSwarm(did, requester) // TODO: 
     })
     .catch((err) => {
       debug('Job submission failed')
-      onend(err)
+      onEnd(err)
     })
 
 
-  // Handle when the swarms end
-  async function onend(error) {
-    if (error) {
-      console.log(error)
-      destroySwarms()
-    } 
-    else if (!downloaded) {
+  // Handle when the content finishes downloading
+  async function onDownload(){
+    if (!downloaded) {
       downloaded = true
       debug(await afs.readdir('.'))
       debug('Downloaded!')
       requester.sendRewards(destroySwarms)
     }
+    onEnd()
   }
 
+  // Handle when the swarms end
+  async function onEnd(error) {
+    if (error) {
+      console.log(error)
+    } 
+    destroySwarms()
+  }
+
+  // Destroy the swarms
   function destroySwarms(){
-    if (!destroyed){
+    if (!afs.destroyed){
       debug('Swarm destroyed')
-      destroyed = true
       if (afs) afs.close()
       if (contentSwarm) contentSwarm.destroy()
       if (farmerSwarm) farmerSwarm.destroy()
@@ -96,7 +101,7 @@ async function download(did, reward) {
   }
 
   // Handle when the content needs updated
-  async function onupdate() {
+  async function onUpdate() {
     const feed = afs.partitions.resolve(afs.HOME).content
     if (feed) {
       const pBar = new clip.Bar({}, clip.Presets.shades_classic)
@@ -116,7 +121,7 @@ async function download(did, reward) {
       feed.once('sync', () => {
         pBar.stop()
       })
-      feed.once('sync', onend)
+      feed.once('sync', onDownload)
     }
   }
 

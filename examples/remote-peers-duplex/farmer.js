@@ -48,7 +48,9 @@ class ExampleFarmer extends afpstream.Farmer {
     agreement.setFarmerSignature(this.farmerSig)
     const port = await pify(fp)(Math.floor(30000 * Math.random()), ip.address())
     console.log('Listening on port ', port)
-    agreement.setId(port) // HACK
+    const data = Buffer.alloc(4)
+    data.writeInt32LE(port, 0)
+    agreement.setData(data)
     this.startWork(port)
     return agreement
   }
