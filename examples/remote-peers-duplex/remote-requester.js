@@ -7,7 +7,7 @@ const { idify } = require('../util')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:remote')
+const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
 const pify = require('pify')
 const ip = require('ip')
@@ -44,6 +44,7 @@ async function download(did, reward) {
   // Load the sparse afs
   const { afs } = await create({did})
   let downloaded = false
+  let destroyed = false
   const content = afs.partitions.resolve(afs.HOME).content
   if (content){
       content.once('download', onUpdate)
@@ -53,7 +54,7 @@ async function download(did, reward) {
 
   // Create a swarm for downloading the content
   const contentSwarm = createContentSwarm(afs, requester)
-  contentSwarm.on('close', onEnd)
+  contentSwarm.on('end', onEnd)
 
   // Submit the reward allocation and find farmers
   let farmerSwarm = null
@@ -79,20 +80,20 @@ async function download(did, reward) {
       debug('Downloaded!')
       requester.sendRewards(destroySwarms)
     }
-    onEnd()
   }
 
   // Handle when the swarms end
   async function onEnd(error) {
     if (error) {
       console.log(error)
+      destroySwarms()
     } 
-    destroySwarms()
   }
 
   // Destroy the swarms
   function destroySwarms(){
-    if (!afs.destroyed){
+    if (!destroyed){
+      destroyed = true
       debug('Swarm destroyed')
       if (afs) afs.close()
       if (contentSwarm) contentSwarm.destroy()
