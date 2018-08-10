@@ -15,7 +15,7 @@ class ContractABI {
 
   // Budget in Ether
   submitJob(jobId, budget) {
-    return this.contract.methods.submitJob(jobId).send({
+    return this.contract.methods.submitJob(this.maskHex(jobId)).send({
       from: this.wallet,
       value: `${this.convertToEther(budget)}`
     })
@@ -24,14 +24,18 @@ class ContractABI {
   // Reward in Ether
   submitReward(jobId, farmerId, reward) {
     return this.contract.methods
-      .submitReward(jobId, farmerId, this.convertToEther(reward))
+      .submitReward(this.maskHex(jobId), this.maskHex(farmerId), this.convertToEther(reward))
       .send({ from: this.wallet })
   }
 
   claimReward(jobId, farmerId) {
     return this.contract.methods
-      .claimReward(jobId, farmerId)
+      .claimReward(this.maskHex(jobId), this.maskHex(farmerId))
       .send({ from: this.wallet })
+  }
+
+  maskHex(hex){
+    return `0x${hex}`
   }
 }
 

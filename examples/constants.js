@@ -1,4 +1,4 @@
-const contractAddress = '0xb627772d472f6ee2e810b306307306a430851f4b'
+const contractAddress = '0x70d613d73c5c0e18634d6ff1953ee391aacdd110'
 const walletAddresses = [
   '0x2372c118FA9d0c5F2191896Bd87d0D725FF03C11',
   '0xB776bb623dd9134B38E5A458e166326B96e7C5d0',

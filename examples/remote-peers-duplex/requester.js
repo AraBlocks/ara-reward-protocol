@@ -55,7 +55,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection
    */
   async onHireConfirmed(agreement, connection) {
-    debug(`Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    debug(`Agreement ${agreement.getNonce().toString('hex')} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
 
     // Extract port
@@ -74,7 +74,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection 
    */
   async onReceipt(receipt, connection){
-    debug(`Receipt ${receipt.getNonce()} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
+    debug(`Receipt ${Buffer.from(receipt.getNonce()).toString('hex')} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
     this.incrementOnComplete()
   }
 
@@ -148,7 +148,7 @@ class ExampleRequester extends afpstream.Requester {
    */
   sendReward(connection, reward) {
     const quote = reward.getAgreement().getQuote()
-    const sowId = quote.getSow().getNonce()
+    const sowId = Buffer.from(quote.getSow().getNonce()).toString('hex')
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
     debug(`Sending reward to farmer ${farmerId} for ${amount} tokens`)

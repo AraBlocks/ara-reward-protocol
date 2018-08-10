@@ -13,8 +13,7 @@ const ip = require('ip')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 
-const did = 'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea' // 50 MB
-//const did = '556399cef520525d2733567eab2a3505d156fa2ca2a94c5aa9964e844a3dc1a8' // 2 GB
+const did = '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43' // 50 MB
 download(did, 1)
 
 async function download(did, reward) {
@@ -58,13 +57,13 @@ async function download(did, reward) {
   // Submit the reward allocation and find farmers
   let farmerSwarm = null
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
-  const jobId = Buffer.from(sow.getNonce()).toString('hex')
+  const jobId = sow.getNonce().toString('hex')
   wallet
     .submitJob(jobId, rewardAllocation)
     .then((result) => {
       debug(`Job ${jobId} has been submitted to the contract with ${rewardAllocation} tokens`)
       
-      farmerSwarm = createFarmerSwarm(did, requester) // TODO: 
+      farmerSwarm = createFarmerSwarm(did, requester)
     })
     .catch((err) => {
       debug('Job submission failed')
