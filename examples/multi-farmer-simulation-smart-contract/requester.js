@@ -1,11 +1,11 @@
 const { RequesterBase } = require('../../src/requester')
 const messages = require('../../src/proto/messages_pb')
+const debug = require('debug')('afp:contract-example:requester')
 
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet) {
     super(sow, matcher)
     this.requesterSig = requesterSig
-    this.contractId = 101
     this.wallet = wallet
     this.hiredFarmers = new Map()
   }
@@ -26,7 +26,7 @@ class ExampleRequester extends RequesterBase {
    */
   generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setId(this.contractId)
+    agreement.setNonce(`9575`)
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement
@@ -43,17 +43,14 @@ class ExampleRequester extends RequesterBase {
 
   /**
    * On receipt of a signed (and staked) contract from farmer, begins distribution of work
-   * @param {messages.Contract} contract
+   * @param {messages.Agreement} agreement
    * @param {grpc.Server} server
    */
-  onHireConfirmed(contract, server) {
-    const quote = contract.getQuote()
+  onHireConfirmed(agreement, server) {
+    const quote = agreement.getQuote()
     const farmerId = quote.getFarmer().getDid()
-    this.hiredFarmers.set(farmerId, [ server, quote ])
-    console.log(`Requester: Contract ${contract.getId()} signed by farmer ${contract
-      .getQuote()
-      .getFarmer()
-      .getDid()}`)
+    this.hiredFarmers.set(farmerId, [ server, agreement ])
+    debug(`Requester: Agreement ${Buffer.from(agreement.getNonce()).toString('hex')} signed by farmer ${farmerId}`)
   }
 
   /**
@@ -62,37 +59,35 @@ class ExampleRequester extends RequesterBase {
    */
   onJobFinished(report) {
     this.hiredFarmers.forEach((value, key) => {
-      this.awardFarmer(value[0], value[1], report)
+      this.awardFarmer(value[0], value[1], report.get(key).units)
     })
   }
 
   /**
    * Awards farmer for their work
    * @param {grpc.Server} server
-   * @param {grpc.Quote} quote
+   * @param {messages.Agreement} agreement
    * @param {Map} report
    */
-  awardFarmer(server, quote, report) {
-    const reward = this.generateReward(quote, report)
+  awardFarmer(server, agreement, units) {
+    const reward = this.generateReward(agreement, units)
     this.sendReward(server, reward)
   }
 
   /**
    * Calculates farmer reward
    * @param {messages.ARAid} farmer
-   * @param {Map} report
+   * @param {int} units
    * @param {messages.Quote} quote
    * @returns {messages.Reward}
    */
-  generateReward(quote, report) {
-    const farmer = quote.getFarmer()
-    const unitsDone = report.get(farmer.getDid())
-    const cost = quote.getPerUnitCost() * unitsDone
+  generateReward(agreement, units) {
+    const quote = agreement.getQuote()
+    const amount = quote.getPerUnitCost() * units
 
     const reward = new messages.Reward()
-    reward.setSow(this.sow)
-    reward.setFarmer(farmer)
-    reward.setReward(cost)
+    reward.setAgreement(agreement)
+    reward.setAmount(amount)
     return reward
   }
 
@@ -102,22 +97,24 @@ class ExampleRequester extends RequesterBase {
    * @param {messages.Reward} reward
    */
   sendReward(server, reward) {
-    const farmerId = reward.getFarmer().getDid()
-    const sowId = this.sow.getId()
-    const rewardValue = reward.getReward()
+    const quote = reward.getAgreement().getQuote()
+    const sowId = Buffer.from(quote.getSow().getNonce()).toString('hex')
+    const farmerId = quote.getFarmer().getDid()
+    const amount = reward.getAmount()
+
     this.wallet
-      .submitReward(sowId, farmerId, rewardValue)
+      .submitReward(sowId, farmerId, amount)
       .then((result) => {
         server.sendReward(reward, (err, response) => {
           if (err) {
-            console.log(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
+            debug(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
           } else {
-            console.log(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
+            debug(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
           }
         })
       })
       .catch((err) => {
-        console.log(`RequesterExample: Fail to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
+        debug(`RequesterExample: Fail to submit the reward ${amount} to farmer ${farmerId} for job ${sowId}`)
       })
   }
 }

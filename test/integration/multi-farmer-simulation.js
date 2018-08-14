@@ -8,14 +8,14 @@ const {
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig) {
     super(sow, matcher)
-    this.badFarmerId = 'ara:did:2'
-    this.agreementId = 101
+    this.badFarmerId = '2'
+    this.agreementId = '101'
     this.requesterSig = requesterSig
   }
 
   /**
    * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
+   * @param {messages.AraIid} peer
    * @returns {boolean}
    */
   async validatePeer(peer) {
@@ -64,8 +64,8 @@ class ExampleRequester extends RequesterBase {
 class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price) {
     super()
-    this.badRequesterId = 10057
-    this.quoteId = 1
+    this.badRequesterId = '10057'
+    this.quoteId = '1'
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
@@ -125,8 +125,8 @@ function simulateFarmerConnections(count) {
     const port = `localhost:${(sPort + i).toString()}`
     const price = 5 + Math.floor(Math.random() * 10)
 
-    const farmerID = new messages.ARAid()
-    farmerID.setDid(`ara:did:${i}`)
+    const farmerID = new messages.AraId()
+    farmerID.setDid(`${i}`)
 
     const farmerSig = new messages.Signature()
     farmerSig.setAraId(farmerID)
@@ -156,11 +156,11 @@ const farmerConnections = simulateFarmerConnections(10)
 // Requester
 const matcher = new matchers.MaxCostMatcher(10, 5)
 
-const requesterID = new messages.ARAid()
-requesterID.setDid('ara:did:10056')
+const requesterID = new messages.AraId()
+requesterID.setDid('10056')
 
 const sow = new messages.SOW()
-sow.setNonce(2)
+sow.setNonce('2')
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 

@@ -10,12 +10,13 @@ const debug = require('debug')('afp:duplex-example:main')
 
 const ip = require('ip')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[1])
+const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
 
 const dids = [
   '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43',
-  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363'
+  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363',
+  '0f77f680a036d0f04676902bcb6df4b399f885c366d09746b50a302fef2dea74'
 ]
 
 for (let i = 0; i < dids.length; i++) {
@@ -75,6 +76,12 @@ function createFarmingSwarm(did, farmer){
 }
 
 async function startWork(port, afs) {
+  let uploaded = 0
+  const content = afs.partitions.resolve(afs.HOME).content
+  content.on('upload', (index, data) => {
+    uploaded += 1 // TODO: is this a good way to measure data amount?
+  })
+
   const opts = {
     stream
   }
@@ -90,7 +97,7 @@ async function startWork(port, afs) {
     stream.once('end', onend)
 
     function onend() {
-      debug('Uploaded!')
+      debug(`Uploaded ${uploaded} blocks to peer ${peer.host}`)
       swarm.destroy()
     }
 

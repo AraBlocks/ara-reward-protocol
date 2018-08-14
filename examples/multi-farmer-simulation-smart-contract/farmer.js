@@ -1,15 +1,14 @@
 const { FarmerBase } = require('../../src/farmer')
 const messages = require('../../src/proto/messages_pb')
+const debug = require('debug')('afp:contract-example:farmer')
 
 class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price, wallet) {
     super()
-    this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
     this.wallet = wallet
-    this.reward = null
   }
 
   /**
@@ -19,7 +18,7 @@ class ExampleFarmer extends FarmerBase {
    */
   generateQuote(sow) {
     const quote = new messages.Quote()
-    quote.setNonce(this.quoteId)
+    quote.setNonce(`6345`)
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)
@@ -54,28 +53,35 @@ class ExampleFarmer extends FarmerBase {
     return true
   }
 
-  async withdrawReward() {
-    const sowId = this.reward.getSow().getId()
-    const farmerId = this.reward.getFarmer().getDid()
+  async validateReward(reward) {
+    return true
+  }
+
+  async withdrawReward(reward) {
+    const sowId = Buffer.from(reward.getAgreement().getQuote().getSow().getNonce()).toString('hex')
+    const farmerDid = this.farmerId.getDid()
     this.wallet
-      .claimReward(sowId, farmerId)
+      .claimReward(sowId, farmerDid)
       .then((result) => {
-        console.log(`ExampleFarmer: ${farmerId} has withdrawn reward`)
+        debug(`Farmer ${farmerDid} has withdrawn reward`)
       })
       .catch((err) => {
-        console.log(`ExampleFarmer: ${farmerId} fails to withdrawn reward`)
+        debug(`Farmer ${farmerDid} failed to withdraw reward`)
       })
   }
 
-  /**
-   * Handles a reward on noticed of delivery
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.ARAid)} callback Response callback
+    /**
+   * This should return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
    */
-  onReward(call, callback) {
-    this.reward = call.request
-    this.withdrawReward()
-    callback(null, this.farmerId)
+  async generateReceipt(reward) {
+    this.withdrawReward(reward)
+    const receipt = new messages.Receipt()
+    receipt.setNonce(`9052`)
+    receipt.setReward(reward)
+    receipt.setFarmerSignature(this.farmerSig)
+    return receipt
   }
 }
 

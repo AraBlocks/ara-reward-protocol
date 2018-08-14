@@ -3,6 +3,8 @@ const { ExampleRequester } = require('./requester')
 const { messages, matchers, afpgrpc } = require('ara-farming-protocol')
 const { contractAddress, walletAddresses } = require('../constants.js')
 const ContractABI = require('../farming_contract/contract-abi.js')
+const debug = require('debug')('afp:contract-example:main')
+
 
 const wallets =   [
   new ContractABI(contractAddress, walletAddresses[0]),
@@ -14,32 +16,27 @@ const wallets =   [
 
 
 // Simulates and connects to a number of Farmer Servers
-function simulateFarmerConnections(count) {
-  const sPort = 50051
-
+function simulateFarmerConnections(farmers) {
   const farmerConnections = []
-  const farmerIDs = []
-  for (let i = 0; i < count; i++) {
-    const port = `localhost:${(sPort + i).toString()}`
-    const price = Math.floor(Math.random() * 9)
-    const id = `ara:did:${i}`
-    const farmerID = new messages.ARAid()
-    farmerID.setDid(id)
+  for (let key of farmers.keys()){
+    let details = farmers.get(key)
+    const port = `localhost:${details.port}`
+    const farmerID = new messages.AraId()
+    farmerID.setDid(key)
 
     const farmerSig = new messages.Signature()
     farmerSig.setAraId(farmerID)
     farmerSig.setData('avalidsignature')
 
     // Generate Server
-    const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallets[i])
+    const farmer = new ExampleFarmer(farmerID, farmerSig, details.price, details.wallet)
     afpgrpc.util.broadcastFarmer(farmer, port)
 
     // Generate Client Connection
     const connection = afpgrpc.util.connectToFarmer(port)
     farmerConnections.push(connection)
-    farmerIDs.push(id)
   }
-  return { farmerConnections, farmerIDs }
+  return farmerConnections
 }
 
 /*
@@ -49,17 +46,25 @@ function simulateFarmerConnections(count) {
     these rewards through the contract, and on successful delivery, notify the famers
 */
 
+const farmerDetails = 
+  new Map([['aaaa', { port:50051, price: 2, units: 2, wallet: wallets[1] }], 
+           ['bbbb', { port:50052, price: 2, units: 1, wallet: wallets[2] }], 
+           ['cccc', { port:50053, price: 1, units: 2, wallet: wallets[3] }], 
+           ['dddd', { port:50054, price: 3, units: 1, wallet: wallets[4] }]])
+const budget = Array.from(farmerDetails.values()).reduce((a, b) => a + (b.units * b.price), 0)
+
 // Farmers
-const { farmerConnections, farmerIDs } = simulateFarmerConnections(4)
+const farmerConnections = simulateFarmerConnections(farmerDetails)
 
 // Requester
 const matcher = new matchers.MaxCostMatcher(10, 4)
 
-const requesterID = new messages.ARAid()
-requesterID.setDid('ara:did:10056')
+const requesterID = new messages.AraId()
+requesterID.setDid(`6002`)
 
 const sow = new messages.SOW()
-sow.setNonce(2)
+const jobId = '7002'
+sow.setNonce(jobId)
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 
@@ -67,7 +72,7 @@ const requesterSig = new messages.Signature()
 requesterSig.setAraId(requesterID)
 requesterSig.setData('avalidsignature')
 
-const requesterWallet = wallets[4]
+const requesterWallet = wallets[0]
 const requester = new ExampleRequester(
   sow,
   matcher,
@@ -75,25 +80,19 @@ const requester = new ExampleRequester(
   requesterWallet
 )
 
-const budget = 30
+debug(`Job ${jobId} has a budget of: ${budget}`)
 requesterWallet
-  .submitJob(sow.getId(), budget)
+  .submitJob(jobId, budget)
   .then((result) => {
-    console.log('Job has been submitted to the contract')
+    debug('Job has been submitted to the contract')
     requester.processFarmers(farmerConnections)
-
-    // generates a report when the job is finished
-    const report = new Map()
-    farmerIDs.forEach((farmerId) => {
-      report.set(farmerId, Math.floor(Math.random() * 10))
-    })
 
     // sends the report to the requester
     setTimeout(() => {
-      requester.onJobFinished(report)
+      requester.onJobFinished(farmerDetails)
     }, 1000)
   })
   .catch((err) => {
-    console.log(err)
-    console.log('Job submission failed')
+    debug(err)
+    debug('Job submission failed')
   })
