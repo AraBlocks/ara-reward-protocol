@@ -11,9 +11,9 @@ const idify = afpstream.util.idify
 const clip = require('cli-progress')
 const ip = require('ip')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[3])
+const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
-const did = '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43' // 50 MB
+const did = '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43'
 download(did, 1)
 
 async function download(did, reward) {
@@ -56,13 +56,13 @@ async function download(did, reward) {
 
   // Submit the reward allocation and find farmers
   let farmerSwarm = null
+
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
   const jobId = sow.getNonce().toString('hex')
   wallet
     .submitJob(jobId, rewardAllocation)
     .then((result) => {
       debug(`Job ${jobId} has been submitted to the contract with ${rewardAllocation} tokens`)
-      
       farmerSwarm = createFarmerSwarm(did, requester)
     })
     .catch((err) => {
@@ -109,7 +109,7 @@ async function download(did, reward) {
 
       feed.on('download', (index, data, from) => {
         const peerIdHex = from.remoteId.toString('hex')
-        requester.dataReceived(peerIdHex, 1)
+        requester.dataReceived(peerIdHex, 1) // TODO: Is this a good way to measure data amount?
 
         if (!feed.length) return
         if (!pStarted) {

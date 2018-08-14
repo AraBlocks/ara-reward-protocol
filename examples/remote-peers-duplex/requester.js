@@ -55,7 +55,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection
    */
   async onHireConfirmed(agreement, connection) {
-    debug(`Agreement ${agreement.getNonce().toString('hex')} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    debug(`Agreement ${Buffer.from(agreement.getNonce()).toString('hex')} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
 
     // Extract port
