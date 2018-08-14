@@ -39,8 +39,15 @@ class FarmerBase {
    * @param {EventEmitter} call Call object for the handler to process
    * @param {function(Error, messages.ARAid)} callback Response callback
    */
-  onReward(call, callback) {
-    throw new Error('Extended classes must implement onReward.')
+  async onReward(call, callback) {
+    const reward = call.request
+    const valid = await this.validateReward(reward)
+    if (valid) {
+      const receipt = await this.generateReceipt(reward)
+      callback(null, receipt)
+    } else {
+      callback('Error: Invalid Reward', null)
+    }  
   }
 
   /**
@@ -50,6 +57,24 @@ class FarmerBase {
    */
   async validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
+  }
+
+  /**
+   * This should returns whether a reward is valid.
+   * @param {messages.Reward} reward
+   * @returns {boolean}
+   */
+  async validateReward(reward) {
+    throw new Error('Extended classes must implement validateReward.')
+  }
+
+  /**
+   * This should return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
+   */
+  async generateReceipt(reward) {
+    throw new Error('Extended classes must implement generateQuote.')
   }
 
   /**

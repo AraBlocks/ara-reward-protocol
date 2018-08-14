@@ -30,7 +30,7 @@ class ExampleRequester extends RequesterBase {
    */
   async generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setId(this.agreementId)
+    agreement.setNonce(this.agreementId)
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement
@@ -42,7 +42,7 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validateAgreement(agreement) {
-    if (agreement.getId() == this.agreementId) return true
+    if (agreement.getNonce() == this.agreementId) return true
     return false
   }
 
@@ -53,7 +53,7 @@ class ExampleRequester extends RequesterBase {
    * @param {services.RFPClient} farmer
    */
   async onHireConfirmed(agreement, farmer) {
-    console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    console.log(`Requester: Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const host = agreement.getQuote().getFarmer().getDid() // HACK
     this.onStartWork(host)
   }

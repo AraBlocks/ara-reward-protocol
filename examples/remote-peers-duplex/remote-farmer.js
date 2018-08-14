@@ -1,26 +1,34 @@
+const { contractAddress, walletAddresses } = require('../constants.js')
 const { messages, afpstream } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const ContractABI = require('../farming_contract/contract-abi.js')
 const through = require('through')
-const util = require('../util')
+const idify = afpstream.util.idify
+const debug = require('debug')('afp:duplex-example:main')
+
 const ip = require('ip')
 
+const wallet = new ContractABI(contractAddress, walletAddresses[3])
+const price = 1
+
 const dids = [
-  'ab5867eeaeacebda573ae252331f4b1b298fd9a8ca883f2b28bad5764f10f99c',
-  '5a0ca463a488b4d3d85ea243087043e1b87b35eae8e15c86c99c4b4d9c14179b'
+  '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43',
+  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363',
+  '0f77f680a036d0f04676902bcb6df4b399f885c366d09746b50a302fef2dea74'
 ]
 
 for (let i = 0; i < dids.length; i++) {
-  broadcast(dids[i])
+  broadcast(dids[i], price)
 }
 
-async function broadcast(did) {
-  console.log('Broadcasting: ', did)
+async function broadcast(did, price) {
+  debug('Broadcasting: ', did)
 
   // The ARAid of the Farmer
-  const farmerID = new messages.ARAid()
-  const farmerDID = 'did:ara:75'
+  const farmerID = new messages.AraId()
+  const farmerDID = '2d5e0ad3040be242471b08013daa47876035bb565384936024a77eadd32fe4c9'
   farmerID.setDid(farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
@@ -32,8 +40,7 @@ async function broadcast(did) {
   const { afs } = await create({ did })
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const price = 6
-  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs))
+  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs), wallet)
 
   // Join the discovery swarm for the requested content
   const swarm = createFarmingSwarm(did, farmer)
@@ -49,26 +56,32 @@ function createFarmingSwarm(did, farmer){
   swarm.join(did)
 
   function stream(peer) {
-    const us = util.idify(ip.address(), this.address().port)
-    const them = util.idify(peer.host, peer.port)
+    const us = idify(ip.address(), this.address().port)
+    const them = idify(peer.host, peer.port)
 
     if (us === them) {
       return through()
     }
-    const connection = new afpstream.FarmStream(peer, { wait: 100, timeout: 10000 })
+    const connection = new afpstream.FarmStream(peer, { timeout: 10000 })
     farmer.processRequester(connection)
 
     return connection.stream
   }
 
   function handleConnection(connection, info) {
-    console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
+    debug(`SWARM: New peer: ${info.host} on port: ${info.port}`)
   }
 
   return swarm
 }
 
 async function startWork(port, afs) {
+  let uploaded = 0
+  const content = afs.partitions.resolve(afs.HOME).content
+  content.on('upload', (index, data) => {
+    uploaded += 1 // TODO: is this a good way to measure data amount?
+  })
+
   const opts = {
     stream
   }
@@ -84,7 +97,7 @@ async function startWork(port, afs) {
     stream.once('end', onend)
 
     function onend() {
-      console.log('Uploaded!')
+      debug(`Uploaded ${uploaded} blocks to peer ${peer.host}`)
       swarm.destroy()
     }
 
@@ -92,6 +105,6 @@ async function startWork(port, afs) {
   }
 
   function handleConnection(connection, info) {
-    console.log(`Peer connected: ${info.host} on port: ${info.port}`)
+    debug(`Peer connected: ${info.host} on port: ${info.port}`)
   }
 }

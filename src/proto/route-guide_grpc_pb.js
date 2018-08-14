@@ -4,17 +4,6 @@
 var grpc = require('grpc');
 var messages_pb = require('./messages_pb.js');
 
-function serialize_messages_ARAid(arg) {
-  if (!(arg instanceof messages_pb.ARAid)) {
-    throw new Error('Expected argument of type messages.ARAid');
-  }
-  return new Buffer(arg.serializeBinary());
-}
-
-function deserialize_messages_ARAid(buffer_arg) {
-  return messages_pb.ARAid.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_messages_Agreement(arg) {
   if (!(arg instanceof messages_pb.Agreement)) {
     throw new Error('Expected argument of type messages.Agreement');
@@ -35,6 +24,17 @@ function serialize_messages_Quote(arg) {
 
 function deserialize_messages_Quote(buffer_arg) {
   return messages_pb.Quote.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_messages_Receipt(arg) {
+  if (!(arg instanceof messages_pb.Receipt)) {
+    throw new Error('Expected argument of type messages.Receipt');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_messages_Receipt(buffer_arg) {
+  return messages_pb.Receipt.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_messages_Reward(arg) {
@@ -88,11 +88,11 @@ var RFPService = exports.RFPService = {
     requestStream: false,
     responseStream: false,
     requestType: messages_pb.Reward,
-    responseType: messages_pb.ARAid,
+    responseType: messages_pb.Receipt,
     requestSerialize: serialize_messages_Reward,
     requestDeserialize: deserialize_messages_Reward,
-    responseSerialize: serialize_messages_ARAid,
-    responseDeserialize: deserialize_messages_ARAid,
+    responseSerialize: serialize_messages_Receipt,
+    responseDeserialize: deserialize_messages_Receipt,
   },
 };
 

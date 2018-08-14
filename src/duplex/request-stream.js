@@ -1,5 +1,5 @@
 const { StreamProtocol } = require('./stream-protocol')
-const debug = require('debug')('ara-farming-protocol:stream')
+const debug = require('debug')('afp:duplex')
 
 class RequestStream extends StreamProtocol {
   constructor(peer, opts) {
@@ -10,6 +10,12 @@ class RequestStream extends StreamProtocol {
     super.onSow(sow, done)
     debug('Request Stream received SOW. Destroying Stream.')
     this.stream.destroy()
+  }
+
+  async onQuote(quote, done) {
+  	const nonce = quote.getNonce()
+    this.stream.emit('handshake', nonce)
+    super.onQuote(quote, done)
   }
 }
 

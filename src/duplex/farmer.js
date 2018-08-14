@@ -23,8 +23,8 @@ class Farmer extends FarmerBase {
   }
 
   async onReward(reward, connection) {
-    const callback = (error, reward) => {
-      // TODO
+    const callback = (error, receipt) => {
+      connection.sendReceipt(receipt)
     }
     super.onReward({ request: reward }, callback)
   }

@@ -8,14 +8,14 @@ const {
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig) {
     super(sow, matcher)
-    this.badFarmerId = 'ara:did:2'
-    this.agreementId = 101
+    this.badFarmerId = '2'
+    this.agreementId = '101'
     this.requesterSig = requesterSig
   }
 
   /**
    * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
+   * @param {messages.AraIid} peer
    * @returns {boolean}
    */
   async validatePeer(peer) {
@@ -34,7 +34,7 @@ class ExampleRequester extends RequesterBase {
    */
   async generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setId(this.agreementId)
+    agreement.setNonce(this.agreementId)
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement
@@ -46,7 +46,7 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validateAgreement(agreement) {
-    if (agreement.getId() == this.agreementId) return true
+    if (agreement.getNonce() == this.agreementId) return true
     return false
   }
 
@@ -57,15 +57,15 @@ class ExampleRequester extends RequesterBase {
    * @param {services.RFPClient} farmer
    */
   async onHireConfirmed(agreement, farmer) {
-    console.log(`Requester: Agreement ${agreement.getId()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    console.log(`Requester: Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
   }
 }
 
 class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price) {
     super()
-    this.badRequesterId = 10057
-    this.quoteId = 1
+    this.badRequesterId = '10057'
+    this.quoteId = '1'
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
@@ -78,7 +78,7 @@ class ExampleFarmer extends FarmerBase {
    */
   async generateQuote(sow) {
     const quote = new messages.Quote()
-    quote.setId(this.quoteId)
+    quote.setNonce(this.quoteId)
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)
@@ -125,11 +125,11 @@ function simulateFarmerConnections(count) {
     const port = `localhost:${(sPort + i).toString()}`
     const price = 5 + Math.floor(Math.random() * 10)
 
-    const farmerID = new messages.ARAid()
-    farmerID.setDid(`ara:did:${i}`)
+    const farmerID = new messages.AraId()
+    farmerID.setDid(`${i}`)
 
     const farmerSig = new messages.Signature()
-    farmerSig.setId = farmerID
+    farmerSig.setAraId(farmerID)
     farmerSig.setData('avalidsignature')
 
     // Generate Server
@@ -156,16 +156,16 @@ const farmerConnections = simulateFarmerConnections(10)
 // Requester
 const matcher = new matchers.MaxCostMatcher(10, 5)
 
-const requesterID = new messages.ARAid()
-requesterID.setDid('ara:did:10056')
+const requesterID = new messages.AraId()
+requesterID.setDid('10056')
 
 const sow = new messages.SOW()
-sow.setId(2)
+sow.setNonce('2')
 sow.setWorkUnit('MB')
 sow.setRequester(requesterID)
 
 const requesterSig = new messages.Signature()
-requesterSig.setId = requesterID
+requesterSig.setAraId(requesterID)
 requesterSig.setData('avalidsignature')
 
 const requester = new ExampleRequester(sow, matcher, requesterSig)

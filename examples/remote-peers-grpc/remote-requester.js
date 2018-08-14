@@ -28,7 +28,7 @@ async function main() {
 
   // Create the statement of work
   const sow = new messages.SOW()
-  sow.setId(2)
+  sow.setNonce(2)
   sow.setWorkUnit('MB')
   sow.setRequester(requesterID)
 

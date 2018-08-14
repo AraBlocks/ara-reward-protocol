@@ -4,11 +4,11 @@ const sinon = require('sinon')
 const test = require('ava')
 
 test('farmer.onSow.ValidPeer', async (t) => {
-  const quoteId = 1234
+  const quoteId = '1234'
   const sow = new messages.SOW()
 
   const quote = new messages.Quote()
-  quote.setId(quoteId)
+  quote.setNonce(quoteId)
 
   const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
@@ -21,7 +21,7 @@ test('farmer.onSow.ValidPeer', async (t) => {
   farmer.onSow(stubCall, (error, response) => {
     t.true(null === error)
     t.true(quote === response)
-    t.true(quoteId === response.getId())
+    t.true(quoteId === response.getNonce())
   })
 })
 
@@ -44,10 +44,10 @@ test('farmer.onSow.InvalidPeer', async (t) => {
 })
 
 test('farmer.onAgreement.ValidAgreement', async (t) => {
-  const agreementId = 1234
+  const agreementId = '1234'
 
   const agreement = new messages.Agreement()
-  agreement.setId(agreementId)
+  agreement.setNonce(agreementId)
 
   const farmer = new FarmerBase()
   sinon.stub(farmer, 'validateAgreement').resolves(true)
@@ -60,7 +60,7 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
   farmer.onAgreement(stubCall, (error, response) => {
     t.true(null === error)
     t.true(agreement === response)
-    t.true(agreementId === response.getId())
+    t.true(agreementId === response.getNonce())
   })
 })
 

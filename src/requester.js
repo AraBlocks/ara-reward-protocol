@@ -1,6 +1,6 @@
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
-const debug = require('debug')('ara-farming-protocol:requester')
+const debug = require('debug')('afp:requester-base')
 
 class RequesterBase {
   /**
@@ -124,6 +124,15 @@ class RequesterBase {
    */
   async onHireConfirmed(agreement, connection) {
     throw new Error('Extended classes must implement onHireConfirmed')
+  }
+
+  /**
+   * 
+   * @param {messages.Receipt} receipt 
+   * @param {services.RFPClient} connection 
+   */
+  async onReceipt(receipt, connection){
+    throw new Error('Extended classes must implement onReceipt')
   }
 }
 

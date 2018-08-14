@@ -1,17 +1,18 @@
 const { messages, afpstream } = require('ara-farming-protocol')
+const crypto = require('ara-crypto')
+const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
 
 class ExampleFarmer extends afpstream.Farmer {
-  constructor(farmerId, farmerSig, price, startWork) {
+  constructor(farmerId, farmerSig, price, startWork, wallet) {
     super()
-    this.badRequesterId = 10057
-    this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
     this.startWork = startWork
+    this.wallet = wallet
   }
 
   /**
@@ -20,9 +21,8 @@ class ExampleFarmer extends afpstream.Farmer {
    * @returns {messages.Quote}
    */
   async generateQuote(sow) {
-    console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
-    quote.setId(this.quoteId)
+    quote.setNonce(crypto.randomBytes(32))
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)
@@ -46,9 +46,15 @@ class ExampleFarmer extends afpstream.Farmer {
    */
   async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
+
+    // Get free port and pass it as the agreement data
     const port = await pify(fp)(Math.floor(30000 * Math.random()), ip.address())
-    console.log('Listening on port ', port)
-    agreement.setId(port) // HACK
+    const data = Buffer.alloc(4)
+    data.writeInt32LE(port, 0)
+    agreement.setData(data)
+
+    // Start work on port
+    debug(`Listening for requester ${agreement.getQuote().getSow().getRequester().getDid()} on port ${port}`)
     this.startWork(port)
     return agreement
   }
@@ -59,9 +65,45 @@ class ExampleFarmer extends afpstream.Farmer {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    const requesterId = peer.getDid()
-    return requesterId != this.badRequesterId
+    return true
   }
+
+  async withdrawReward(reward) {
+    const sowId = Buffer.from(reward.getAgreement().getQuote().getSow().getNonce()).toString('hex')
+    const farmerDid = this.farmerId.getDid()
+    this.wallet
+      .claimReward(sowId, farmerDid)
+      .then((result) => {
+        debug(`Reward amount ${reward.getAmount()} withdrawn for SOW ${sowId}`)
+      })
+      .catch((err) => {
+        debug(`Failed to withdraw reward for SOW ${sowId}`)
+      })
+  }
+
+  /**
+   * This should returns whether a reward is valid.
+   * @param {messages.Reward} reward
+   * @returns {boolean}
+   */
+  async validateReward(reward) {
+    return true
+  }
+
+  /**
+   * This should return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
+   */
+  async generateReceipt(reward) {
+    this.withdrawReward(reward)
+    const receipt = new messages.Receipt()
+    receipt.setNonce(crypto.randomBytes(32))
+    receipt.setReward(reward)
+    receipt.setFarmerSignature(this.farmerSig)
+    return receipt
+  }
+  
 }
 
 module.exports = { ExampleFarmer }

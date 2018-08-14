@@ -11,9 +11,10 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-goog.exportSymbol('proto.messages.ARAid', null, global);
 goog.exportSymbol('proto.messages.Agreement', null, global);
+goog.exportSymbol('proto.messages.AraId', null, global);
 goog.exportSymbol('proto.messages.Quote', null, global);
+goog.exportSymbol('proto.messages.Receipt', null, global);
 goog.exportSymbol('proto.messages.Reward', null, global);
 goog.exportSymbol('proto.messages.SOW', null, global);
 goog.exportSymbol('proto.messages.Signature', null, global);
@@ -64,9 +65,9 @@ proto.messages.SOW.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.SOW.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    nonce: msg.getNonce_asB64(),
     workUnit: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    requester: (f = msg.getRequester()) && proto.messages.ARAid.toObject(includeInstance, f),
+    requester: (f = msg.getRequester()) && proto.messages.AraId.toObject(includeInstance, f),
     data: msg.getData_asB64()
   };
 
@@ -105,16 +106,16 @@ proto.messages.SOW.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setId(value);
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setNonce(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setWorkUnit(value);
       break;
     case 3:
-      var value = new proto.messages.ARAid;
-      reader.readMessage(value,proto.messages.ARAid.deserializeBinaryFromReader);
+      var value = new proto.messages.AraId;
+      reader.readMessage(value,proto.messages.AraId.deserializeBinaryFromReader);
       msg.setRequester(value);
       break;
     case 4:
@@ -150,9 +151,9 @@ proto.messages.SOW.prototype.serializeBinary = function() {
  */
 proto.messages.SOW.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  f = message.getNonce_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
       1,
       f
     );
@@ -169,7 +170,7 @@ proto.messages.SOW.serializeBinaryToWriter = function(message, writer) {
     writer.writeMessage(
       3,
       f,
-      proto.messages.ARAid.serializeBinaryToWriter
+      proto.messages.AraId.serializeBinaryToWriter
     );
   }
   f = message.getData_asU8();
@@ -183,16 +184,40 @@ proto.messages.SOW.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 id = 1;
- * @return {number}
+ * optional bytes nonce = 1;
+ * @return {!(string|Uint8Array)}
  */
-proto.messages.SOW.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.messages.SOW.prototype.getNonce = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
-proto.messages.SOW.prototype.setId = function(value) {
+/**
+ * optional bytes nonce = 1;
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {string}
+ */
+proto.messages.SOW.prototype.getNonce_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getNonce()));
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {!Uint8Array}
+ */
+proto.messages.SOW.prototype.getNonce_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getNonce()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.SOW.prototype.setNonce = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
@@ -213,16 +238,16 @@ proto.messages.SOW.prototype.setWorkUnit = function(value) {
 
 
 /**
- * optional ARAid requester = 3;
- * @return {?proto.messages.ARAid}
+ * optional AraId requester = 3;
+ * @return {?proto.messages.AraId}
  */
 proto.messages.SOW.prototype.getRequester = function() {
-  return /** @type{?proto.messages.ARAid} */ (
-    jspb.Message.getWrapperField(this, proto.messages.ARAid, 3));
+  return /** @type{?proto.messages.AraId} */ (
+    jspb.Message.getWrapperField(this, proto.messages.AraId, 3));
 };
 
 
-/** @param {?proto.messages.ARAid|undefined} value */
+/** @param {?proto.messages.AraId|undefined} value */
 proto.messages.SOW.prototype.setRequester = function(value) {
   jspb.Message.setWrapperField(this, 3, value);
 };
@@ -328,10 +353,10 @@ proto.messages.Quote.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.Quote.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    nonce: msg.getNonce_asB64(),
     perUnitCost: jspb.Message.getFieldWithDefault(msg, 2, 0),
     sow: (f = msg.getSow()) && proto.messages.SOW.toObject(includeInstance, f),
-    farmer: (f = msg.getFarmer()) && proto.messages.ARAid.toObject(includeInstance, f)
+    farmer: (f = msg.getFarmer()) && proto.messages.AraId.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -369,11 +394,11 @@ proto.messages.Quote.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt64());
-      msg.setId(value);
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setNonce(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readInt64());
       msg.setPerUnitCost(value);
       break;
     case 3:
@@ -382,8 +407,8 @@ proto.messages.Quote.deserializeBinaryFromReader = function(msg, reader) {
       msg.setSow(value);
       break;
     case 4:
-      var value = new proto.messages.ARAid;
-      reader.readMessage(value,proto.messages.ARAid.deserializeBinaryFromReader);
+      var value = new proto.messages.AraId;
+      reader.readMessage(value,proto.messages.AraId.deserializeBinaryFromReader);
       msg.setFarmer(value);
       break;
     default:
@@ -415,16 +440,16 @@ proto.messages.Quote.prototype.serializeBinary = function() {
  */
 proto.messages.Quote.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (f !== 0) {
-    writer.writeInt64(
+  f = message.getNonce_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
       1,
       f
     );
   }
   f = message.getPerUnitCost();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeInt64(
       2,
       f
     );
@@ -442,29 +467,53 @@ proto.messages.Quote.serializeBinaryToWriter = function(message, writer) {
     writer.writeMessage(
       4,
       f,
-      proto.messages.ARAid.serializeBinaryToWriter
+      proto.messages.AraId.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional int64 id = 1;
- * @return {number}
+ * optional bytes nonce = 1;
+ * @return {!(string|Uint8Array)}
  */
-proto.messages.Quote.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.messages.Quote.prototype.getNonce = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
-proto.messages.Quote.prototype.setId = function(value) {
+/**
+ * optional bytes nonce = 1;
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {string}
+ */
+proto.messages.Quote.prototype.getNonce_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getNonce()));
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {!Uint8Array}
+ */
+proto.messages.Quote.prototype.getNonce_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getNonce()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Quote.prototype.setNonce = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
 
 /**
- * optional int32 per_unit_cost = 2;
+ * optional int64 per_unit_cost = 2;
  * @return {number}
  */
 proto.messages.Quote.prototype.getPerUnitCost = function() {
@@ -509,16 +558,16 @@ proto.messages.Quote.prototype.hasSow = function() {
 
 
 /**
- * optional ARAid farmer = 4;
- * @return {?proto.messages.ARAid}
+ * optional AraId farmer = 4;
+ * @return {?proto.messages.AraId}
  */
 proto.messages.Quote.prototype.getFarmer = function() {
-  return /** @type{?proto.messages.ARAid} */ (
-    jspb.Message.getWrapperField(this, proto.messages.ARAid, 4));
+  return /** @type{?proto.messages.AraId} */ (
+    jspb.Message.getWrapperField(this, proto.messages.AraId, 4));
 };
 
 
-/** @param {?proto.messages.ARAid|undefined} value */
+/** @param {?proto.messages.AraId|undefined} value */
 proto.messages.Quote.prototype.setFarmer = function(value) {
   jspb.Message.setWrapperField(this, 4, value);
 };
@@ -585,7 +634,7 @@ proto.messages.Agreement.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.Agreement.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    nonce: msg.getNonce_asB64(),
     quote: (f = msg.getQuote()) && proto.messages.Quote.toObject(includeInstance, f),
     requesterSignature: (f = msg.getRequesterSignature()) && proto.messages.Signature.toObject(includeInstance, f),
     farmerSignature: (f = msg.getFarmerSignature()) && proto.messages.Signature.toObject(includeInstance, f),
@@ -627,8 +676,8 @@ proto.messages.Agreement.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt64());
-      msg.setId(value);
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setNonce(value);
       break;
     case 2:
       var value = new proto.messages.Quote;
@@ -678,9 +727,9 @@ proto.messages.Agreement.prototype.serializeBinary = function() {
  */
 proto.messages.Agreement.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (f !== 0) {
-    writer.writeInt64(
+  f = message.getNonce_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
       1,
       f
     );
@@ -720,16 +769,40 @@ proto.messages.Agreement.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int64 id = 1;
- * @return {number}
+ * optional bytes nonce = 1;
+ * @return {!(string|Uint8Array)}
  */
-proto.messages.Agreement.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.messages.Agreement.prototype.getNonce = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
-proto.messages.Agreement.prototype.setId = function(value) {
+/**
+ * optional bytes nonce = 1;
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {string}
+ */
+proto.messages.Agreement.prototype.getNonce_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getNonce()));
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {!Uint8Array}
+ */
+proto.messages.Agreement.prototype.getNonce_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getNonce()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Agreement.prototype.setNonce = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
@@ -910,9 +983,11 @@ proto.messages.Reward.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.Reward.toObject = function(includeInstance, msg) {
   var f, obj = {
-    sow: (f = msg.getSow()) && proto.messages.SOW.toObject(includeInstance, f),
-    farmer: (f = msg.getFarmer()) && proto.messages.ARAid.toObject(includeInstance, f),
-    reward: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    nonce: msg.getNonce_asB64(),
+    agreement: (f = msg.getAgreement()) && proto.messages.Agreement.toObject(includeInstance, f),
+    amount: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    requesterSignature: (f = msg.getRequesterSignature()) && proto.messages.Signature.toObject(includeInstance, f),
+    data: msg.getData_asB64()
   };
 
   if (includeInstance) {
@@ -950,18 +1025,26 @@ proto.messages.Reward.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.messages.SOW;
-      reader.readMessage(value,proto.messages.SOW.deserializeBinaryFromReader);
-      msg.setSow(value);
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setNonce(value);
       break;
     case 2:
-      var value = new proto.messages.ARAid;
-      reader.readMessage(value,proto.messages.ARAid.deserializeBinaryFromReader);
-      msg.setFarmer(value);
+      var value = new proto.messages.Agreement;
+      reader.readMessage(value,proto.messages.Agreement.deserializeBinaryFromReader);
+      msg.setAgreement(value);
       break;
     case 3:
       var value = /** @type {number} */ (reader.readInt64());
-      msg.setReward(value);
+      msg.setAmount(value);
+      break;
+    case 4:
+      var value = new proto.messages.Signature;
+      reader.readMessage(value,proto.messages.Signature.deserializeBinaryFromReader);
+      msg.setRequesterSignature(value);
+      break;
+    case 5:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setData(value);
       break;
     default:
       reader.skipField();
@@ -992,26 +1075,40 @@ proto.messages.Reward.prototype.serializeBinary = function() {
  */
 proto.messages.Reward.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getSow();
-  if (f != null) {
-    writer.writeMessage(
+  f = message.getNonce_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
       1,
-      f,
-      proto.messages.SOW.serializeBinaryToWriter
+      f
     );
   }
-  f = message.getFarmer();
+  f = message.getAgreement();
   if (f != null) {
     writer.writeMessage(
       2,
       f,
-      proto.messages.ARAid.serializeBinaryToWriter
+      proto.messages.Agreement.serializeBinaryToWriter
     );
   }
-  f = message.getReward();
+  f = message.getAmount();
   if (f !== 0) {
     writer.writeInt64(
       3,
+      f
+    );
+  }
+  f = message.getRequesterSignature();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      proto.messages.Signature.serializeBinaryToWriter
+    );
+  }
+  f = message.getData_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      5,
       f
     );
   }
@@ -1019,53 +1116,62 @@ proto.messages.Reward.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional SOW sow = 1;
- * @return {?proto.messages.SOW}
+ * optional bytes nonce = 1;
+ * @return {!(string|Uint8Array)}
  */
-proto.messages.Reward.prototype.getSow = function() {
-  return /** @type{?proto.messages.SOW} */ (
-    jspb.Message.getWrapperField(this, proto.messages.SOW, 1));
-};
-
-
-/** @param {?proto.messages.SOW|undefined} value */
-proto.messages.Reward.prototype.setSow = function(value) {
-  jspb.Message.setWrapperField(this, 1, value);
-};
-
-
-proto.messages.Reward.prototype.clearSow = function() {
-  this.setSow(undefined);
+proto.messages.Reward.prototype.getNonce = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * Returns whether this field is set.
- * @return {!boolean}
+ * optional bytes nonce = 1;
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {string}
  */
-proto.messages.Reward.prototype.hasSow = function() {
-  return jspb.Message.getField(this, 1) != null;
+proto.messages.Reward.prototype.getNonce_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getNonce()));
 };
 
 
 /**
- * optional ARAid farmer = 2;
- * @return {?proto.messages.ARAid}
+ * optional bytes nonce = 1;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {!Uint8Array}
  */
-proto.messages.Reward.prototype.getFarmer = function() {
-  return /** @type{?proto.messages.ARAid} */ (
-    jspb.Message.getWrapperField(this, proto.messages.ARAid, 2));
+proto.messages.Reward.prototype.getNonce_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getNonce()));
 };
 
 
-/** @param {?proto.messages.ARAid|undefined} value */
-proto.messages.Reward.prototype.setFarmer = function(value) {
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Reward.prototype.setNonce = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional Agreement agreement = 2;
+ * @return {?proto.messages.Agreement}
+ */
+proto.messages.Reward.prototype.getAgreement = function() {
+  return /** @type{?proto.messages.Agreement} */ (
+    jspb.Message.getWrapperField(this, proto.messages.Agreement, 2));
+};
+
+
+/** @param {?proto.messages.Agreement|undefined} value */
+proto.messages.Reward.prototype.setAgreement = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
 
 
-proto.messages.Reward.prototype.clearFarmer = function() {
-  this.setFarmer(undefined);
+proto.messages.Reward.prototype.clearAgreement = function() {
+  this.setAgreement(undefined);
 };
 
 
@@ -1073,23 +1179,346 @@ proto.messages.Reward.prototype.clearFarmer = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.messages.Reward.prototype.hasFarmer = function() {
+proto.messages.Reward.prototype.hasAgreement = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
 
 /**
- * optional int64 reward = 3;
+ * optional int64 amount = 3;
  * @return {number}
  */
-proto.messages.Reward.prototype.getReward = function() {
+proto.messages.Reward.prototype.getAmount = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
 /** @param {number} value */
-proto.messages.Reward.prototype.setReward = function(value) {
+proto.messages.Reward.prototype.setAmount = function(value) {
   jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional Signature requester_signature = 4;
+ * @return {?proto.messages.Signature}
+ */
+proto.messages.Reward.prototype.getRequesterSignature = function() {
+  return /** @type{?proto.messages.Signature} */ (
+    jspb.Message.getWrapperField(this, proto.messages.Signature, 4));
+};
+
+
+/** @param {?proto.messages.Signature|undefined} value */
+proto.messages.Reward.prototype.setRequesterSignature = function(value) {
+  jspb.Message.setWrapperField(this, 4, value);
+};
+
+
+proto.messages.Reward.prototype.clearRequesterSignature = function() {
+  this.setRequesterSignature(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.messages.Reward.prototype.hasRequesterSignature = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional bytes data = 5;
+ * @return {!(string|Uint8Array)}
+ */
+proto.messages.Reward.prototype.getData = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * optional bytes data = 5;
+ * This is a type-conversion wrapper around `getData()`
+ * @return {string}
+ */
+proto.messages.Reward.prototype.getData_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getData()));
+};
+
+
+/**
+ * optional bytes data = 5;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getData()`
+ * @return {!Uint8Array}
+ */
+proto.messages.Reward.prototype.getData_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getData()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Reward.prototype.setData = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.messages.Receipt = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.messages.Receipt, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.messages.Receipt.displayName = 'proto.messages.Receipt';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.messages.Receipt.prototype.toObject = function(opt_includeInstance) {
+  return proto.messages.Receipt.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.messages.Receipt} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.messages.Receipt.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    nonce: msg.getNonce_asB64(),
+    reward: (f = msg.getReward()) && proto.messages.Reward.toObject(includeInstance, f),
+    farmerSignature: (f = msg.getFarmerSignature()) && proto.messages.Signature.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.messages.Receipt}
+ */
+proto.messages.Receipt.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.messages.Receipt;
+  return proto.messages.Receipt.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.messages.Receipt} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.messages.Receipt}
+ */
+proto.messages.Receipt.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setNonce(value);
+      break;
+    case 2:
+      var value = new proto.messages.Reward;
+      reader.readMessage(value,proto.messages.Reward.deserializeBinaryFromReader);
+      msg.setReward(value);
+      break;
+    case 3:
+      var value = new proto.messages.Signature;
+      reader.readMessage(value,proto.messages.Signature.deserializeBinaryFromReader);
+      msg.setFarmerSignature(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.messages.Receipt.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.messages.Receipt.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.messages.Receipt} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.messages.Receipt.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getNonce_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      1,
+      f
+    );
+  }
+  f = message.getReward();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      proto.messages.Reward.serializeBinaryToWriter
+    );
+  }
+  f = message.getFarmerSignature();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.messages.Signature.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * @return {!(string|Uint8Array)}
+ */
+proto.messages.Receipt.prototype.getNonce = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {string}
+ */
+proto.messages.Receipt.prototype.getNonce_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getNonce()));
+};
+
+
+/**
+ * optional bytes nonce = 1;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getNonce()`
+ * @return {!Uint8Array}
+ */
+proto.messages.Receipt.prototype.getNonce_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getNonce()));
+};
+
+
+/** @param {!(string|Uint8Array)} value */
+proto.messages.Receipt.prototype.setNonce = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional Reward reward = 2;
+ * @return {?proto.messages.Reward}
+ */
+proto.messages.Receipt.prototype.getReward = function() {
+  return /** @type{?proto.messages.Reward} */ (
+    jspb.Message.getWrapperField(this, proto.messages.Reward, 2));
+};
+
+
+/** @param {?proto.messages.Reward|undefined} value */
+proto.messages.Receipt.prototype.setReward = function(value) {
+  jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+proto.messages.Receipt.prototype.clearReward = function() {
+  this.setReward(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.messages.Receipt.prototype.hasReward = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional Signature farmer_signature = 3;
+ * @return {?proto.messages.Signature}
+ */
+proto.messages.Receipt.prototype.getFarmerSignature = function() {
+  return /** @type{?proto.messages.Signature} */ (
+    jspb.Message.getWrapperField(this, proto.messages.Signature, 3));
+};
+
+
+/** @param {?proto.messages.Signature|undefined} value */
+proto.messages.Receipt.prototype.setFarmerSignature = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.messages.Receipt.prototype.clearFarmerSignature = function() {
+  this.setFarmerSignature(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.messages.Receipt.prototype.hasFarmerSignature = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -1140,7 +1569,7 @@ proto.messages.Signature.prototype.toObject = function(opt_includeInstance) {
  */
 proto.messages.Signature.toObject = function(includeInstance, msg) {
   var f, obj = {
-    araId: (f = msg.getAraId()) && proto.messages.ARAid.toObject(includeInstance, f),
+    araId: (f = msg.getAraId()) && proto.messages.AraId.toObject(includeInstance, f),
     data: msg.getData_asB64()
   };
 
@@ -1179,8 +1608,8 @@ proto.messages.Signature.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.messages.ARAid;
-      reader.readMessage(value,proto.messages.ARAid.deserializeBinaryFromReader);
+      var value = new proto.messages.AraId;
+      reader.readMessage(value,proto.messages.AraId.deserializeBinaryFromReader);
       msg.setAraId(value);
       break;
     case 2:
@@ -1221,7 +1650,7 @@ proto.messages.Signature.serializeBinaryToWriter = function(message, writer) {
     writer.writeMessage(
       1,
       f,
-      proto.messages.ARAid.serializeBinaryToWriter
+      proto.messages.AraId.serializeBinaryToWriter
     );
   }
   f = message.getData_asU8();
@@ -1235,16 +1664,16 @@ proto.messages.Signature.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional ARAid ara_id = 1;
- * @return {?proto.messages.ARAid}
+ * optional AraId ara_id = 1;
+ * @return {?proto.messages.AraId}
  */
 proto.messages.Signature.prototype.getAraId = function() {
-  return /** @type{?proto.messages.ARAid} */ (
-    jspb.Message.getWrapperField(this, proto.messages.ARAid, 1));
+  return /** @type{?proto.messages.AraId} */ (
+    jspb.Message.getWrapperField(this, proto.messages.AraId, 1));
 };
 
 
-/** @param {?proto.messages.ARAid|undefined} value */
+/** @param {?proto.messages.AraId|undefined} value */
 proto.messages.Signature.prototype.setAraId = function(value) {
   jspb.Message.setWrapperField(this, 1, value);
 };
@@ -1314,12 +1743,12 @@ proto.messages.Signature.prototype.setData = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.messages.ARAid = function(opt_data) {
+proto.messages.AraId = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.messages.ARAid, jspb.Message);
+goog.inherits(proto.messages.AraId, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.messages.ARAid.displayName = 'proto.messages.ARAid';
+  proto.messages.AraId.displayName = 'proto.messages.AraId';
 }
 
 
@@ -1334,8 +1763,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.messages.ARAid.prototype.toObject = function(opt_includeInstance) {
-  return proto.messages.ARAid.toObject(opt_includeInstance, this);
+proto.messages.AraId.prototype.toObject = function(opt_includeInstance) {
+  return proto.messages.AraId.toObject(opt_includeInstance, this);
 };
 
 
@@ -1344,11 +1773,11 @@ proto.messages.ARAid.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.messages.ARAid} msg The msg instance to transform.
+ * @param {!proto.messages.AraId} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.messages.ARAid.toObject = function(includeInstance, msg) {
+proto.messages.AraId.toObject = function(includeInstance, msg) {
   var f, obj = {
     did: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
@@ -1364,23 +1793,23 @@ proto.messages.ARAid.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.messages.ARAid}
+ * @return {!proto.messages.AraId}
  */
-proto.messages.ARAid.deserializeBinary = function(bytes) {
+proto.messages.AraId.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.messages.ARAid;
-  return proto.messages.ARAid.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.messages.AraId;
+  return proto.messages.AraId.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.messages.ARAid} msg The message object to deserialize into.
+ * @param {!proto.messages.AraId} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.messages.ARAid}
+ * @return {!proto.messages.AraId}
  */
-proto.messages.ARAid.deserializeBinaryFromReader = function(msg, reader) {
+proto.messages.AraId.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1404,9 +1833,9 @@ proto.messages.ARAid.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.messages.ARAid.prototype.serializeBinary = function() {
+proto.messages.AraId.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.messages.ARAid.serializeBinaryToWriter(this, writer);
+  proto.messages.AraId.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1414,11 +1843,11 @@ proto.messages.ARAid.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.messages.ARAid} message
+ * @param {!proto.messages.AraId} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.messages.ARAid.serializeBinaryToWriter = function(message, writer) {
+proto.messages.AraId.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getDid();
   if (f.length > 0) {
@@ -1434,13 +1863,13 @@ proto.messages.ARAid.serializeBinaryToWriter = function(message, writer) {
  * optional string did = 1;
  * @return {string}
  */
-proto.messages.ARAid.prototype.getDid = function() {
+proto.messages.AraId.prototype.getDid = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /** @param {string} value */
-proto.messages.ARAid.prototype.setDid = function(value) {
+proto.messages.AraId.prototype.setDid = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
