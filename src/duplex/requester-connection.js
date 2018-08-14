@@ -1,19 +1,13 @@
 const { StreamProtocol } = require('./stream-protocol')
 const debug = require('debug')('afp:duplex')
 
-class FarmStream extends StreamProtocol {
-  constructor(peer, opts) {
-    super(peer, opts)
+class RequesterConnection extends StreamProtocol {
+  constructor(peer, socket, opts) {
+    super(peer, socket, opts)
   }
-
-  async onSow(sow, done){
-    const nonce = sow.getNonce()
-    this.stream.emit('handshake', nonce)
-    super.onSow(sow, done)
-  }
-
-  async onQuote(quote, done) {
-    super.onQuote(quote, done)
+  
+  async onQuote(quote) {
+    super.onQuote(quote)
     debug('Farm Stream received Quote. Destroying Stream.')
     this.stream.destroy()
   }
@@ -25,5 +19,5 @@ class FarmStream extends StreamProtocol {
 }
 
 module.exports = {
-  FarmStream
+  RequesterConnection
 }
