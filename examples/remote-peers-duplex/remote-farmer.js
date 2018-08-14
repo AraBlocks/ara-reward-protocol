@@ -14,8 +14,8 @@ const wallet = new ContractABI(contractAddress, walletAddresses[1])
 const price = 1
 
 const dids = [
-  'c0e80c9943b5c99c626b8888f0526c43eeadc22087ef68532c309d565c35afea',
-  '556399cef520525d2733567eab2a3505d156fa2ca2a94c5aa9964e844a3dc1a8'
+  '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43',
+  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363'
 ]
 
 for (let i = 0; i < dids.length; i++) {
@@ -27,7 +27,7 @@ async function broadcast(did, price) {
 
   // The ARAid of the Farmer
   const farmerID = new messages.AraId()
-  const farmerDID = 'did:ara:75'
+  const farmerDID = '2d5e0ad3040be242471b08013daa47876035bb565384936024a77eadd32fe4c9'
   farmerID.setDid(farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
