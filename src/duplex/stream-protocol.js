@@ -4,6 +4,7 @@ const through2 = require('through2')
 const varint = require('varint')
 const debug = require('debug')('afp:duplex')
 const { idify } = require('./util')
+const pumpify = require('pumpify')
 
 require('events').EventEmitter.defaultMaxListeners = 15
 
@@ -29,43 +30,51 @@ const MSG = {
 
 // Class that mimics RPC Client functionality with duplex streams for afp
 class StreamProtocol {
-  constructor(peer, opts) {
+  constructor(peer, socket, opts) {
     this.peer = peer
     this.opts = opts
 
-    this.receiver = through2({ autoDestroy: false }, this.onReceive.bind(this))
-    this.sender = through2({ autoDestroy: false })
-    this.stream = duplexify(this.receiver, this.sender, { autoDestroy: false })
-    this.stream.once('end', this.onEnd.bind(this))
-    this.stream.once('close', this.onClose.bind(this))
+    const reader = opts.reader || through2()
+    reader.on('data', this.onData.bind(this))
+
+    const writer = opts.writer || through2()
 
     this.timeout = null
     this.ended = false
+
+    this.stream = pumpify(writer, socket, reader)
+    this.stream.once('end', this.onEnd.bind(this))
+    this.stream.once('close', this.onClose.bind(this))
   }
 
   async sendSow(sow) {
+    debug(`Sending Sow`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.push(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
+    this.stream.write(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
   }
 
   async sendQuote(quote) {
+    debug(`Sending Quote`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.push(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
+    this.stream.write(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
   }
 
   async sendAgreement(agreement) {
+    debug(`Sending Agreement`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.push(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
+    this.stream.write(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
   }
 
   async sendReward(reward) {
+    debug(`Sending Reward`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.push(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
+    this.stream.write(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
   }
 
   async sendReceipt(receipt) {
+    debug(`Sending Receipt`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.push(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
+    this.stream.write(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
   }
 
   async onTimeout() {
@@ -85,47 +94,42 @@ class StreamProtocol {
     if (this.stream) this.stream.destroy()
   }
 
-  async onSow(sow, done) {
-    done(null)
+  async onSow(sow) {
     debug(`On Sow: ${Buffer.from(sow.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
-  async onQuote(quote, done) {
-    done(null)
+  async onQuote(quote) {
     debug(`On Quote: ${Buffer.from(quote.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
-  async onAgreement(agreement, done) {
-    done(null)
+  async onAgreement(agreement) {
     debug(`On Agreement: ${Buffer.from(agreement.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
-  async onReward(reward, done) {
-    done(null)
+  async onReward(reward) {
     debug(`On Reward: ${Buffer.from(reward.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
-  async onReceipt(receipt, done) {
-    done(null)
+  async onReceipt(receipt) {
     debug(`On Receipt: ${Buffer.from(receipt.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
     this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
   }
 
-  onReceive(chunk, enc, done) {
+  onData(chunk) {
     try {
       const { head, data } = MSG.decode(chunk)
       clearTimeout(this.timeout)
       switch (head) {
-      case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data), done); break
-      case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data), done); break
-      case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data), done); break
-      case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data), done); break
-      case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data), done); break
-      default: throw new TypeError(`Unknown message type: ${head}`)
+        case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
+        case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break
+        case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data)); break
+        case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data)); break
+        case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data)); break
+        default: throw new TypeError(`Unknown message type: ${head}`)
       }
     } catch (e) {
       debug('On Receive Error:', e)

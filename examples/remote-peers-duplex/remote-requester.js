@@ -4,12 +4,10 @@ const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const ContractABI = require('../farming_contract/contract-abi.js')
-const through = require('through')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const idify = afpstream.util.idify
 const clip = require('cli-progress')
-const ip = require('ip')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
@@ -135,30 +133,14 @@ async function download(did, reward) {
 
 // Creates a swarm to find farmers
 function createFarmerSwarm(did, requester) {
-  const opts = {
-    stream,
-  }
-  const swarm = createSwarm(opts)
+  const swarm = createSwarm()
   swarm.on('connection', handleConnection)
-
   swarm.join(did)
-
-  function stream(peer) {
-    const us = idify(ip.address(), this.address().port)
-    const them = idify(peer.host, peer.port)
-
-    if (us === them || 'utp' === peer.type) {
-      return through()
-    }
-
-    const connection = new afpstream.RequestStream(peer, { wait: 100, timeout: 10000 })
-    requester.processFarmer(connection)
-
-    return connection.stream
-  }
 
   function handleConnection(connection, info) {
     debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
+    const farmerConnection = new afpstream.FarmerConnection(info, connection, {timeout: 10000})
+    process.nextTick(() => requester.processFarmer(farmerConnection))
   }
 
   return swarm

@@ -82,3 +82,45 @@ test('farmer.onAgreement.InvalidAgreement', async (t) => {
     t.true(signAgreementFake.notCalled)
   })
 })
+
+test('farmer.onReward.ValidReward', async (t) => {
+  const rewardId = '1234'
+
+  const reward = new messages.Reward()
+  reward.setNonce(rewardId)
+  const receipt = new messages.Receipt()
+  receipt.setReward(reward)
+
+  const farmer = new FarmerBase()
+  sinon.stub(farmer, 'validateReward').resolves(true)
+  sinon.stub(farmer, 'generateReceipt').resolves(receipt)
+
+  const stubCall = {
+    request: reward
+  }
+
+  farmer.onReward(stubCall, (error, response) => {
+    t.true(null === error)
+    t.true(receipt === response)
+    t.true(rewardId === response.getReward().getNonce())
+  })
+})
+
+test('farmer.onReward.InvalidReward', async (t) => {
+  const reward = new messages.Reward()
+
+  const farmer = new FarmerBase()
+  const generateReceiptFake = sinon.fake()
+  sinon.stub(farmer, 'validateReward').resolves(false)
+  sinon.stub(farmer, 'generateReceipt').callsFake(generateReceiptFake)
+
+  const stubCall = {
+    request: reward
+  }
+
+  farmer.onReward(stubCall, (error, response) => {
+    t.true(null != error)
+    t.true(null === response)
+    t.true(generateReceiptFake.notCalled)
+  })
+})
