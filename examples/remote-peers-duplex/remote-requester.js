@@ -1,12 +1,12 @@
 const { contractAddress, walletAddresses } = require('../constants.js')
-const { messages, matchers, afpstream } = require('ara-farming-protocol')
+const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
+const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
-const idify = afpstream.util.idify
 const clip = require('cli-progress')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
@@ -56,7 +56,7 @@ async function download(did, reward) {
   let farmerSwarm = null
 
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
-  const jobId = sow.getNonce().toString('hex')
+  const jobId = nonceString(sow)
   wallet
     .submitJob(jobId, rewardAllocation)
     .then((result) => {

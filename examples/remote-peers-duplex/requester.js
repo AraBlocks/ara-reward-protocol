@@ -1,6 +1,6 @@
-const { messages, afpstream } = require('ara-farming-protocol')
+const { messages, afpstream, util } = require('ara-farming-protocol')
+const { idify, nonceString } = util
 const crypto = require('ara-crypto')
-const idify = afpstream.util.idify
 const debug = require('debug')('afp:duplex-example:requester')
 
 
@@ -55,7 +55,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection
    */
   async onHireConfirmed(agreement, connection) {
-    debug(`Agreement ${Buffer.from(agreement.getNonce()).toString('hex')} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    debug(`Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
 
     // Extract port
@@ -74,7 +74,7 @@ class ExampleRequester extends afpstream.Requester {
    * @param {services.RFPClient} connection 
    */
   async onReceipt(receipt, connection){
-    debug(`Receipt ${Buffer.from(receipt.getNonce()).toString('hex')} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
+    debug(`Receipt ${nonceString(receipt)} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
     this.incrementOnComplete()
   }
 
@@ -148,7 +148,7 @@ class ExampleRequester extends afpstream.Requester {
    */
   sendReward(connection, reward) {
     const quote = reward.getAgreement().getQuote()
-    const sowId = Buffer.from(quote.getSow().getNonce()).toString('hex')
+    const sowId = nonceString(quote.getSow())
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
     debug(`Sending reward to farmer ${farmerId} for ${amount} tokens`)

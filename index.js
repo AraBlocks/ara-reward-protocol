@@ -6,6 +6,7 @@ const services = require('./src/proto/route-guide_grpc_pb')
 const matchers = require('./src/matchers/index')
 const afpstream = require('./src/duplex/index')
 const afpgrpc = require('./src/grpc/index')
+const util = require('./src/util')
 
 module.exports = {
   RequesterBase,
@@ -16,4 +17,5 @@ module.exports = {
   matchers,
   afpstream,
   afpgrpc,
+  util,
 }

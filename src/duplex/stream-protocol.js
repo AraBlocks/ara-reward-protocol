@@ -1,12 +1,9 @@
-const duplexify = require('duplexify')
+const { idify, nonceString } = require('../util')
 const messages = require('../proto/messages_pb')
 const through2 = require('through2')
+const pumpify = require('pumpify')
 const varint = require('varint')
 const debug = require('debug')('afp:duplex')
-const { idify, nonceString } = require('./util')
-const pumpify = require('pumpify')
-
-require('events').EventEmitter.defaultMaxListeners = 15
 
 // Helper object for determining message types
 const MSG = {
@@ -28,7 +25,10 @@ const MSG = {
   }
 }
 
-// Class that mimics RPC Client functionality with duplex streams for afp
+/**
+ * Class for managing a duplex stream connection to a peer. 
+ * This mimics RPC Client functionality with duplex streams for afp
+ */
 class StreamProtocol {
   constructor(peer, socket, opts) {
     this.peer = peer

@@ -1,5 +1,4 @@
 const { StreamProtocol, MSG } = require('../../src/duplex/stream-protocol')
-const ByteBuffer = require("bytebuffer");
 const messages = require('../../src/proto/messages_pb')
 const sinon = require('sinon')
 const test = require('ava')
