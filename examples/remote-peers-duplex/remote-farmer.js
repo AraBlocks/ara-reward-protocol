@@ -1,11 +1,11 @@
 const { contractAddress, walletAddresses } = require('../constants.js')
-const { messages, afpstream } = require('ara-farming-protocol')
+const { messages, afpstream, util } = require('ara-farming-protocol')
+const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const debug = require('debug')('afp:duplex-example:main')
-
 
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
@@ -46,12 +46,11 @@ async function broadcast(did, price) {
 function createFarmingSwarm(did, farmer){
   const swarm = createSwarm()
   swarm.on('connection', handleConnection)
-  swarm.listen()
   swarm.join(did)
 
   function handleConnection(connection, info) {
-    debug(`SWARM: New peer: ${info.host} on port: ${info.port}`)
-    const requesterConnection = new afpstream.RequesterConnection(info, connection, {timeout: 10000 })
+    debug(`SWARM: New peer: ${idify(info.host, info.port)}`)
+    const requesterConnection = new afpstream.RequesterConnection(info, connection, {timeout: 6000 })
     farmer.processRequester(requesterConnection)
   }
 

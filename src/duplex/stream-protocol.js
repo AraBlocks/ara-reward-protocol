@@ -1,7 +1,5 @@
 const { idify, nonceString } = require('../util')
 const messages = require('../proto/messages_pb')
-const through2 = require('through2')
-const pumpify = require('pumpify')
 const varint = require('varint')
 const debug = require('debug')('afp:duplex')
 
@@ -30,22 +28,19 @@ const MSG = {
  * This mimics RPC Client functionality with duplex streams for afp
  */
 class StreamProtocol {
-  constructor(peer, socket, opts) {
+  constructor(peer, connection, opts) {
     this.peer = peer
     this.opts = opts
+    this.opts.timeout = this.opts.timeout || 10000
     this.peerId = idify(this.peer.host, this.peer.port)
 
-    const reader = opts.reader || through2()
-    reader.on('data', this.onData.bind(this))
-
-    const writer = opts.writer || through2()
-
-    this.timeout = null
-    this.ended = false
-
-    this.stream = pumpify(writer, socket, reader)
+    this.stream = connection
+    this.stream.on('data', this.onData.bind(this))
     this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
+
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
+    this.ended = false
   }
 
   async sendSow(sow) {
@@ -80,7 +75,8 @@ class StreamProtocol {
 
   async onTimeout() {
     debug(`Stream timed out with peer: ${this.peerId}`)
-    if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
+    this.stream.emit('timeout', this.peer)
+    if (this.stream) this.stream.destroy()
   }
 
   async onClose() {
@@ -96,26 +92,31 @@ class StreamProtocol {
   }
 
   async onSow(sow) {
+    clearTimeout(this.timeout)
     debug(`On Sow: ${nonceString(sow)} from ${this.peerId}`)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
   async onQuote(quote) {
+    clearTimeout(this.timeout)
     debug(`On Quote: ${nonceString(quote)} from ${this.peerId}`)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
   async onAgreement(agreement) {
+    clearTimeout(this.timeout)
     debug(`On Agreement: ${nonceString(agreement)} from ${this.peerId}`)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
   async onReward(reward) {
+    clearTimeout(this.timeout)
     debug(`On Reward: ${nonceString(reward)} from ${this.peerId}`)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
   async onReceipt(receipt) {
+    clearTimeout(this.timeout)
     debug(`On Receipt: ${nonceString(receipt)} from ${this.peerId}`)
     this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
   }
@@ -123,7 +124,6 @@ class StreamProtocol {
   onData(chunk) {
     try {
       const { head, data } = MSG.decode(chunk)
-      clearTimeout(this.timeout)
       switch (head) {
         case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
         case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break
