@@ -2,8 +2,14 @@ const sinon = require('sinon')
 const test = require('ava')
 
 const {
-  messages, matchers, afpgrpc, RequesterBase, FarmerBase
+  messages, 
+  matchers, 
+  afpgrpc, 
+  RequesterBase, 
+  FarmerBase, 
+  util
 } = require('../../index')
+const { idify, nonceString } = util
 
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig) {
@@ -57,7 +63,7 @@ class ExampleRequester extends RequesterBase {
    * @param {services.RFPClient} farmer
    */
   async onHireConfirmed(agreement, farmer) {
-    console.log(`Requester: Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    console.log(`Requester: Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
   }
 }
 

@@ -1,12 +1,7 @@
-const duplexify = require('duplexify')
+const { idify, nonceString } = require('../util')
 const messages = require('../proto/messages_pb')
-const through2 = require('through2')
 const varint = require('varint')
 const debug = require('debug')('afp:duplex')
-const { idify } = require('./util')
-const pumpify = require('pumpify')
-
-require('events').EventEmitter.defaultMaxListeners = 15
 
 // Helper object for determining message types
 const MSG = {
@@ -28,101 +23,107 @@ const MSG = {
   }
 }
 
-// Class that mimics RPC Client functionality with duplex streams for afp
+/**
+ * Class for managing a duplex stream connection to a peer. 
+ * This mimics RPC Client functionality with duplex streams for afp
+ */
 class StreamProtocol {
-  constructor(peer, socket, opts) {
+  constructor(peer, connection, opts) {
     this.peer = peer
     this.opts = opts
+    this.opts.timeout = this.opts.timeout || 10000
+    this.peerId = idify(this.peer.host, this.peer.port)
 
-    const reader = opts.reader || through2()
-    reader.on('data', this.onData.bind(this))
-
-    const writer = opts.writer || through2()
-
-    this.timeout = null
-    this.ended = false
-
-    this.stream = pumpify(writer, socket, reader)
+    this.stream = connection
+    this.stream.on('data', this.onData.bind(this))
     this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
+
+    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
+    this.ended = false
   }
 
   async sendSow(sow) {
-    debug(`Sending Sow`)
+    debug(`Sending Sow: ${nonceString(sow)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
   }
 
   async sendQuote(quote) {
-    debug(`Sending Quote`)
+    debug(`Sending Quote: ${nonceString(quote)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
   }
 
   async sendAgreement(agreement) {
-    debug(`Sending Agreement`)
+    debug(`Sending Agreement: ${nonceString(agreement)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
   }
 
   async sendReward(reward) {
-    debug(`Sending Reward`)
+    debug(`Sending Reward: ${nonceString(reward)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
   }
 
   async sendReceipt(receipt) {
-    debug(`Sending Receipt`)
+    debug(`Sending Receipt: ${nonceString(receipt)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
   }
 
   async onTimeout() {
-    debug('Stream timed out with peer:', this.peer.host, this.peer.port)
-    if (this.stream) this.stream.destroy(new Error('Protocol stream did timeout.'))
+    debug(`Stream timed out with peer: ${this.peerId}`)
+    this.stream.emit('timeout', this.peer)
+    if (this.stream) this.stream.destroy()
   }
 
   async onClose() {
-    debug('Stream closed with peer:', this.peer.host, this.peer.port)
+    debug(`Stream closed with peer: ${this.peerId}`)
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
 
   async onEnd() {
-    debug('Stream ended with peer:', this.peer.host, this.peer.port)
+    debug(`Stream ended with peer: ${this.peerId}`)
     clearTimeout(this.timeout)
     if (this.stream) this.stream.destroy()
   }
 
   async onSow(sow) {
-    debug(`On Sow: ${Buffer.from(sow.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
+    clearTimeout(this.timeout)
+    debug(`On Sow: ${nonceString(sow)} from ${this.peerId}`)
     this.stream.emit(MSG.SOW.str, sow, this.peer)
   }
 
   async onQuote(quote) {
-    debug(`On Quote: ${Buffer.from(quote.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
+    clearTimeout(this.timeout)
+    debug(`On Quote: ${nonceString(quote)} from ${this.peerId}`)
     this.stream.emit(MSG.QUOTE.str, quote, this.peer)
   }
 
   async onAgreement(agreement) {
-    debug(`On Agreement: ${Buffer.from(agreement.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
+    clearTimeout(this.timeout)
+    debug(`On Agreement: ${nonceString(agreement)} from ${this.peerId}`)
     this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
   }
 
   async onReward(reward) {
-    debug(`On Reward: ${Buffer.from(reward.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
+    clearTimeout(this.timeout)
+    debug(`On Reward: ${nonceString(reward)} from ${this.peerId}`)
     this.stream.emit(MSG.REWARD.str, reward, this.peer)
   }
 
   async onReceipt(receipt) {
-    debug(`On Receipt: ${Buffer.from(receipt.getNonce()).toString('hex')} from ${idify(this.peer.host, this.peer.port)}`)
+    clearTimeout(this.timeout)
+    debug(`On Receipt: ${nonceString(receipt)} from ${this.peerId}`)
     this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
   }
 
   onData(chunk) {
     try {
       const { head, data } = MSG.decode(chunk)
-      clearTimeout(this.timeout)
       switch (head) {
         case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
         case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break

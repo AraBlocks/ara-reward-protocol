@@ -1,4 +1,5 @@
-const { messages, afpstream } = require('ara-farming-protocol')
+const { messages, afpstream, util } = require('ara-farming-protocol')
+const { idify, nonceString } = util
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
@@ -69,7 +70,7 @@ class ExampleFarmer extends afpstream.Farmer {
   }
 
   async withdrawReward(reward) {
-    const sowId = Buffer.from(reward.getAgreement().getQuote().getSow().getNonce()).toString('hex')
+    const sowId = nonceString(reward.getAgreement().getQuote().getSow())
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
