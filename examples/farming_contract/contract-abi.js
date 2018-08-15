@@ -10,7 +10,7 @@ class ContractABI {
   }
 
   convertToEther(number) {
-    return number * 1000000000000000000
+    return number * 10000000000000000
   }
 
   // Budget in Ether

@@ -1,23 +1,20 @@
-const { contractAddress, walletAddresses } = require('../constants.js')
+const { contractAddress, walletAddresses, farmerDID, networkDIDs, networkPublicKeypath } = require('../constants.js')
+const {unpackKeys, configHandshake} = require('./handshake-utils.js')
 const { messages, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const through = require('through')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const debug = require('debug')('afp:duplex-example:main')
+const duplexify = require('duplexify')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
 
-const dids = [
-  '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43',
-  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363',
-  '0f77f680a036d0f04676902bcb6df4b399f885c366d09746b50a302fef2dea74'
-]
-
-for (let i = 0; i < dids.length; i++) {
-  broadcast(dids[i], price)
+for (let i = 0; i < networkDIDs.length; i++) {
+  broadcast(networkDIDs[i], price)
 }
 
 async function broadcast(did, price) {
@@ -25,7 +22,6 @@ async function broadcast(did, price) {
 
   // The ARAid of the Farmer
   const farmerID = new messages.AraId()
-  const farmerDID = '2d5e0ad3040be242471b08013daa47876035bb565384936024a77eadd32fe4c9'
   farmerID.setDid(farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
@@ -40,22 +36,37 @@ async function broadcast(did, price) {
   const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs), wallet)
 
   // Join the discovery swarm for the requested content
-  const swarm = createFarmingSwarm(did, farmer)
+  const handshakeConf = await unpackKeys(farmerDID, networkPublicKeypath)
+  const swarm = createFarmingSwarm(did, farmer, handshakeConf)
 }
 
-function createFarmingSwarm(did, farmer){
-  const swarm = createSwarm()
+function createFarmingSwarm(did, farmer, conf){
+  const opts = {
+      stream
+    }
+
+  const swarm = createSwarm(opts)
   swarm.on('connection', handleConnection)
   swarm.join(did)
+  function stream(peer) {
+    if (peer.host.indexOf('::') !== 0 || peer.type === "utp") {
+      return through()
+    }
+    return configHandshake(farmerDID, conf)
+  }
 
   function handleConnection(connection, info) {
     debug(`SWARM: New peer: ${idify(info.host, info.port)}`)
-    const requesterConnection = new afpstream.RequesterConnection(info, connection, {timeout: 6000 })
+    const writer = connection.createWriteStream()
+    const reader = connection.createReadStream()
+    const stream = duplexify(writer, reader)
+    const requesterConnection = new afpstream.RequesterConnection(info, stream, {timeout: 22220000})
     farmer.processRequester(requesterConnection)
+    }
+
+    return swarm
   }
 
-  return swarm
-}
 
 async function startWork(port, afs) {
   let uploaded = 0
