@@ -39,7 +39,7 @@ class StreamProtocol {
     this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
 
-    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
+    this.timeout = null
     this.ended = false
   }
 

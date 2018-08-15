@@ -46,11 +46,11 @@ async function broadcast(did, price) {
 function createFarmingSwarm(did, farmer){
   const swarm = createSwarm()
   swarm.on('connection', handleConnection)
-  swarm.join(did)
+  swarm.join(did, { announce: false })
 
   function handleConnection(connection, info) {
     debug(`SWARM: New peer: ${idify(info.host, info.port)}`)
-    const requesterConnection = new afpstream.RequesterConnection(info, connection, {timeout: 6000 })
+    const requesterConnection = new afpstream.RequesterConnection(info, connection, {timeout: 6000 })    
     farmer.processRequester(requesterConnection)
   }
 
