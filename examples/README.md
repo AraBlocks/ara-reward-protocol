@@ -78,11 +78,11 @@ $ ank -i <DID> -s <SECRET> -o <PATH> -n <NAME>
 On the farmer's computer/terminal:
 
 ```
-$ node examples/remote-peers-duplex/remote-farmer.js
+$ node examples/remote-peers-handshake/remote-farmer.js
 ```
 
 On the requester's computer/terminal:
 
 ```
-$ node examples/remote-peers-duplex/remote-requester.js
+$ node examples/remote-peers-handshake/remote-requester.js
 ```
