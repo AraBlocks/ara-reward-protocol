@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 const { abi } = require('./build/contracts/Farming.json')
-const { provider } = require('../constants')
+const { provider } = (require('ara-identity/rc')()).web3
 
 class ContractABI {
   constructor(contractAdd, walletAdd) {
@@ -34,7 +34,7 @@ class ContractABI {
       .send({ from: this.wallet })
   }
 
-  maskHex(hex){
+  maskHex(hex) {
     return `0x${hex}`
   }
 }
