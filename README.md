@@ -26,7 +26,7 @@ An agreed upon statement of work for a specific job between a farmer and a reque
 
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a streaming implementation using duplexify.
+AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a duplex streaming implementation.
 
 A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use the default gRPC implementation to broadbast their availability to complete a task.
 
@@ -125,7 +125,7 @@ A requester would extend the AFP Requester class to define the requester's speci
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
   }
 
@@ -134,7 +134,7 @@ A requester would extend the AFP Requester class to define the requester's speci
    * @param {messages.Quote} quote
    * @returns {messages.Agreement}
    */
-  generateAgreement(quote) {
+  async generateAgreement(quote) {
     throw new Error('Extended classes must implement generateAgreement.')
   }
 
@@ -143,7 +143,7 @@ A requester would extend the AFP Requester class to define the requester's speci
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateAgreement(agreement) {
+  async validateAgreement(agreement) {
     throw new Error('Extended classes must implement validateAgreement.')
   }
 
@@ -151,16 +151,25 @@ A requester would extend the AFP Requester class to define the requester's speci
    * This is called when an agreement has been marked as valid and a farmer
    * is ready to start work
    * @param {messages.Agreement} agreement
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  onHireConfirmed(agreement, farmer) {
-    throw new Error('Extended classes must implement onHireConfirmed.')
+  async onHireConfirmed(agreement, connection) {
+    throw new Error('Extended classes must implement onHireConfirmed')
+  }
+
+  /**
+   * 
+   * @param {messages.Receipt} receipt 
+   * @param {services.RFPClient} connection 
+   */
+  async onReceipt(receipt, connection){
+    throw new Error('Extended classes must implement onReceipt')
   }
 ```
 
 #### Farmer
 
-A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task.
+A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. If rewards are expected, then a farmer would also handle validating the reward and generating a receipt.
 
 ```js
   /**
@@ -168,7 +177,7 @@ A farmer would extend the AFP Farmer class to define that farmer’s specificati
    * @param {messages.ARAid} peer
    * @returns {boolean}
    */
-  validatePeer(peer) {
+  async validatePeer(peer) {
     throw new Error('Extended classes must implement validatePeer.')
   }
 
@@ -177,17 +186,17 @@ A farmer would extend the AFP Farmer class to define that farmer’s specificati
    * @param {messages.SOW} sow
    * @returns {messages.Quote}
    */
-  generateQuote(sow) {
+  async generateQuote(sow) {
     throw new Error('Extended classes must implement generateQuote.')
   }
 
   /**
-   * This should return whether an agreement is valid.
+   * This should returns whether or not an agreement is valid.
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
-  validateAgreement(agreement) {
-    throw new Error('Extended classes must implement validateContract.')
+  async validateAgreement(agreement) {
+    throw new Error('Extended classes must implement validateAgreement.')
   }
 
   /**
@@ -195,8 +204,26 @@ A farmer would extend the AFP Farmer class to define that farmer’s specificati
    * @param {messages.Agreement} agreement
    * @returns {messages.Agreement}
    */
-  signAgreement(agreement) {
+  async signAgreement(agreement) {
     throw new Error('Extended classes must implement signAgreement.')
+  }
+
+    /**
+   * This should returns whether a reward is valid.
+   * @param {messages.Reward} reward
+   * @returns {boolean}
+   */
+  async validateReward(reward) {
+    throw new Error('Extended classes must implement validateReward.')
+  }
+
+  /**
+   * This should return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
+   */
+  async generateReceipt(reward) {
+    throw new Error('Extended classes must implement generateQuote.')
   }
 ```
 

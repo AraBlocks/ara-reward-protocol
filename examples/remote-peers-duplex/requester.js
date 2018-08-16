@@ -17,20 +17,10 @@ class ExampleRequester extends afpstream.Requester {
     this.onComplete = null
   }
 
-  /**
-   * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
-   * @returns {boolean}
-   */
   async validatePeer(peer) {
     return true
   }
 
-  /**
-   * Generates a agreement for quote
-   * @param {messages.Quote} quote
-   * @returns {messages.Agreement}
-   */
   async generateAgreement(quote) {
     const agreement = new messages.Agreement()
     agreement.setNonce(crypto.randomBytes(32))
@@ -39,21 +29,10 @@ class ExampleRequester extends afpstream.Requester {
     return agreement
   }
 
-  /**
-   * Returns whether a agreement is valid.
-   * @param {messages.Agreement} agreement
-   * @returns {boolean}
-   */
   async validateAgreement(agreement) {
     return true
   }
 
-  /**
-   * This is called when a agreement has been marked as valid and a farmer
-   * is ready to start work
-   * @param {messages.Agreement} agreement
-   * @param {services.RFPClient} connection
-   */
   async onHireConfirmed(agreement, connection) {
     debug(`Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
@@ -62,19 +41,18 @@ class ExampleRequester extends afpstream.Requester {
     const data =  Buffer.from(agreement.getData())
     const port = data.readUInt32LE(0)
 
+    // Store hired farmer
     const peerId = idify(peer.host, port)
     this.hiredFarmers.set(peerId, { connection, agreement })
 
+    // Start work
     this.startWork(peer, port)
   }
 
-    /**
-   * 
-   * @param {messages.Receipt} receipt 
-   * @param {services.RFPClient} connection 
-   */
   async onReceipt(receipt, connection){
     debug(`Receipt ${nonceString(receipt)} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
+
+    // Expects receipt from all rewarded farmers
     this.incrementOnComplete()
   }
 

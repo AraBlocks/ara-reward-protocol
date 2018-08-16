@@ -1,4 +1,4 @@
-const contractAddress = '0xb627772d472f6ee2e810b306307306a430851f4b'
+const contractAddress = 'FarmingPlaceholder'
 const walletAddresses = [
   '0x2372c118FA9d0c5F2191896Bd87d0D725FF03C11',
   '0xB776bb623dd9134B38E5A458e166326B96e7C5d0',
@@ -13,9 +13,9 @@ const walletAddresses = [
 ]
 
 const afsDIDs = [
-  '90fdab168e67a3334dace5a0ca742de92952831ddc53d6549b85f21a04abf343',
-  'dae531e374cccd8a994aaf6ae3fe414eeb00dc5d67df2a96cace59bb64ce3184',
-  'aec66e8caec10b51787a9305fda65bf9bb7e1e61a30e2718e10449c178cfd1aa'
+  'AFS1Placeholder',
+  'AFS2Placeholder',
+  'AFS3Placeholder'
 ]
 
 const provider = 'http://192.168.128.250:8545'

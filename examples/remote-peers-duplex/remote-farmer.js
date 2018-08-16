@@ -1,4 +1,4 @@
-const { contractAddress, walletAddresses } = require('../constants.js')
+const { contractAddress, walletAddresses, afsDIDs } = require('../constants.js')
 const { messages, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')
@@ -10,14 +10,8 @@ const debug = require('debug')('afp:duplex-example:main')
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
 
-const dids = [
-  '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43',
-  '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363',
-  '0f77f680a036d0f04676902bcb6df4b399f885c366d09746b50a302fef2dea74'
-]
-
-for (let i = 0; i < dids.length; i++) {
-  broadcast(dids[i], price)
+for (let i = 0; i < afsDIDs.length; i++) {
+  broadcast(afsDIDs[i], price)
 }
 
 async function broadcast(did, price) {
