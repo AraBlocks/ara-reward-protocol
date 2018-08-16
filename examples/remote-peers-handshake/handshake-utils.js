@@ -1,5 +1,5 @@
 const {
-  farmerDID, requesterDID, passphrase, networkSecret, networkKeyName,
+  passphrase, networkSecret, networkKeyName,
   networkPublicKeypath, networkSecretKeypath
 } = require('../constants.js')
 const { DID } = require('did-uri')
@@ -12,7 +12,31 @@ const { unpack, keyRing } = require('../../../ara-network/keys.js')
 const { Handshake } = require('../../../ara-network/handshake.js')
 const { info, warn } = require('ara-console')
 
-function configHandshake(identity, conf) {
+function configFarmerHandshake(conf) {
+  const handshake = getHandshake(conf)
+  handshake.hello()
+  handshake.on('hello', onhello)
+
+  function onhello() {
+    info('got HELLO')
+    handshake.auth()
+  }
+
+  return handshake
+}
+
+function configRequesterHandshake(conf) {
+  const handshake = getHandshake(conf)
+
+  function onhello() {
+    info('got HELLO')
+    handshake.hello()
+  }
+
+  return handshake
+}
+
+function getHandshake(conf) {
   const {
     publicKey, secretKey, secret, unpacked
   } = conf
@@ -24,16 +48,8 @@ function configHandshake(identity, conf) {
     domain: { publicKey: unpacked.domain.publicKey }
   })
 
-  identity === farmerDID && handshake.hello()
-  handshake.on('hello', onhello)
   handshake.on('auth', onauth)
   handshake.on('okay', onokay)
-
-  function onhello() {
-    info('got HELLO')
-    identity === requesterDID && handshake.hello()
-    identity === farmerDID && handshake.auth()
-  }
 
   function onauth() {
     info('got AUTH')
@@ -69,5 +85,6 @@ async function unpackKeys(identity, keypath) {
 
 module.exports = {
   unpackKeys,
-  configHandshake
+  configFarmerHandshake,
+  configRequesterHandshake
 }

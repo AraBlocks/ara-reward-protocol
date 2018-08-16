@@ -11,7 +11,7 @@ const walletAddresses = [
   '0xA34e166905615729840460EaB137CfBef24C6218',
   '0x782ED5676EA59769EfD950fEcC686eA591701318'
 ]
-const provider = 'http://127.0.0.1:7545'
+
 const farmerDID = 'b58701cb61e1a4f489c2be770e8d869c86b4da7a6c6d9b1ded2850ca0b8674a8'
 const requesterDID = 'a6c5f110a09adfd99065a56f59af0db905bb120ab3fbff456b824c7490e47df1'
 const passphrase = 't'
@@ -26,7 +26,6 @@ const networkDIDs = [
 ]
 
 module.exports = {
-  provider,
   contractAddress,
   walletAddresses,
   farmerDID,

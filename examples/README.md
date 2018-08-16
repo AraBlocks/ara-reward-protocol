@@ -62,3 +62,27 @@ On the requester's computer/terminal:
 ```
 $ node examples/remote-peers-duplex/remote-requester.js
 ```
+
+## Remote Peers with Handshake and Duplexify
+
+The requester example finds peers on the discovery channel. When connected, the requester will attempt a handshake with the farmers, and communicate via an encrypted duplex stream to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example then broadcasts on a randomly selected port and replicates an AFS.
+
+The requester machine needs to generate a keypair and saves them in example/remote-peers-handshake. Both requester and farmer machines also have to update example/constant.js file before running this example.
+
+```
+
+$ ank -i <DID> -s <SECRET> -o <PATH> -n <NAME>
+
+```
+
+On the farmer's computer/terminal:
+
+```
+$ node examples/remote-peers-duplex/remote-farmer.js
+```
+
+On the requester's computer/terminal:
+
+```
+$ node examples/remote-peers-duplex/remote-requester.js
+```

@@ -1,18 +1,16 @@
 const {
   contractAddress, walletAddresses, farmerDID, networkDIDs, networkPublicKeypath
 } = require('../constants.js')
-const { unpackKeys, configHandshake } = require('./handshake-utils.js')
+const { unpackKeys, configFarmerHandshake } = require('./handshake-utils.js')
 const { messages, afpstream, util } = require('ara-farming-protocol')
-
 const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const through = require('through')
 const ContractABI = require('../farming_contract/contract-abi.js')
-const debug = require('debug')('afp:duplex-example:main')
+const debug = require('debug')('afp:handshake-example:main')
 const duplexify = require('duplexify')
-
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
 
@@ -57,7 +55,7 @@ function createFarmingSwarm(did, farmer, conf) {
     if (peer.host.indexOf('::') !== 0 || 'utp' === peer.type) {
       return through()
     }
-    return configHandshake(farmerDID, conf)
+    return configFarmerHandshake(conf)
   }
 
   function handleConnection(connection, info) {

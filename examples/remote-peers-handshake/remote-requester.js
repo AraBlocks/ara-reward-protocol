@@ -1,18 +1,17 @@
 const {
   contractAddress, walletAddresses, requesterDID, networkDIDs, networkSecretKeypath
 } = require('../constants.js')
-const { unpackKeys, configHandshake } = require('./handshake-utils.js')
+const { unpackKeys, configRequesterHandshake } = require('./handshake-utils.js')
 const {
   messages, matchers, afpstream, util
 } = require('ara-farming-protocol')
-
 const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:main')
+const debug = require('debug')('afp:handshake-example:main')
 const clip = require('cli-progress')
 
 const wallet = new ContractABI(contractAddress, walletAddresses[4])
@@ -155,7 +154,7 @@ function createFarmerSwarm(did, requester, conf) {
     if (null === peer.channel) {
       return through()
     }
-    return configHandshake(requesterDID, conf)
+    return configRequesterHandshake(conf)
   }
 
   function handleConnection(connection, info) {

@@ -1,6 +1,5 @@
 const url = require('url')
-const { provider } = require('../constants.js')
-
+const { provider } = (require('ara-identity/rc')()).web3
 const providerURL = url.parse(provider)
 
 module.exports = {
