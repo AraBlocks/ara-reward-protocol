@@ -1,8 +1,13 @@
+const url = require('url')
+const { provider } = require('../constants.js')
+
+const providerURL = url.parse(provider)
+
 module.exports = {
   networks: {
     development: {
-      host: '192.168.128.250',
-      port: 8545,
+      host: `${providerURL.hostname}`,
+      port: `${providerURL.port}`,
       network_id: '*'
     }
   }

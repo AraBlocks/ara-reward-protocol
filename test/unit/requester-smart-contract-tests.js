@@ -11,7 +11,6 @@ const requester = new ExampleRequester(
   null
 )
 
-
 const sow = new messages.SOW()
 sow.setNonce('5678')
 const farmer = new messages.AraId()

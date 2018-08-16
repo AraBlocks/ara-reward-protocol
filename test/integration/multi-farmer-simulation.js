@@ -2,13 +2,14 @@ const sinon = require('sinon')
 const test = require('ava')
 
 const {
-  messages, 
-  matchers, 
-  afpgrpc, 
-  RequesterBase, 
-  FarmerBase, 
+  messages,
+  matchers,
+  afpgrpc,
+  RequesterBase,
+  FarmerBase,
   util
 } = require('../../index')
+
 const { idify, nonceString } = util
 
 class ExampleRequester extends RequesterBase {

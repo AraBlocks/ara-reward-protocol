@@ -1,5 +1,7 @@
-const {farmerDID, requesterDID, passphrase, networkSecret, networkKeyName,
-  networkPublicKeypath, networkSecretKeypath} = require('../constants.js')
+const {
+  farmerDID, requesterDID, passphrase, networkSecret, networkKeyName,
+  networkPublicKeypath, networkSecretKeypath
+} = require('../constants.js')
 const { DID } = require('did-uri')
 const crypto = require('ara-crypto')
 const rc = require('../../../ara-network/rc.js')(require('ara-identity/rc')())
@@ -11,13 +13,15 @@ const { Handshake } = require('../../../ara-network/handshake.js')
 const { info, warn } = require('ara-console')
 
 function configHandshake(identity, conf) {
-  const {publicKey, secretKey, secret, unpacked} = conf
+  const {
+    publicKey, secretKey, secret, unpacked
+  } = conf
   const handshake = new Handshake({
-        publicKey,
-        secretKey,
-        secret,
-        remote: { publicKey: unpacked.publicKey },
-        domain: { publicKey: unpacked.domain.publicKey }
+    publicKey,
+    secretKey,
+    secret,
+    remote: { publicKey: unpacked.publicKey },
+    domain: { publicKey: unpacked.domain.publicKey }
   })
 
   identity === farmerDID && handshake.hello()
@@ -55,10 +59,12 @@ async function unpackKeys(identity, keypath) {
   const secret = Buffer.from(networkSecret)
   const keystore = JSON.parse(await pify(readFile)(path, 'utf8'))
   const secretKey = crypto.decrypt(keystore, { key: password.slice(0, 16) })
-  const keyring = keypath.indexOf("pub") < 0 ? keyRing(keypath, { secret: secretKey }) : keyRing(keypath, { secret: secret })
+  const keyring = keypath.indexOf('pub') < 0 ? keyRing(keypath, { secret: secretKey }) : keyRing(keypath, { secret })
   const buffer = await keyring.get(networkKeyName)
   const unpacked = unpack({ buffer })
-  return {publicKey, secretKey, secret, unpacked}
+  return {
+    publicKey, secretKey, secret, unpacked
+  }
 }
 
 module.exports = {

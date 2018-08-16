@@ -47,7 +47,7 @@ class FarmerBase {
       callback(null, receipt)
     } else {
       callback('Error: Invalid Reward', null)
-    }  
+    }
   }
 
   /**

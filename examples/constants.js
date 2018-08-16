@@ -14,11 +14,11 @@ const walletAddresses = [
 const provider = 'http://127.0.0.1:7545'
 const farmerDID = 'b58701cb61e1a4f489c2be770e8d869c86b4da7a6c6d9b1ded2850ca0b8674a8'
 const requesterDID = 'a6c5f110a09adfd99065a56f59af0db905bb120ab3fbff456b824c7490e47df1'
-const passphrase = "t"
+const passphrase = 't'
 const networkPublicKeypath = 'keys.pub'
 const networkSecretKeypath = 'keys'
 const networkSecret = 'hello'
-const networkKeyName = "testing"
+const networkKeyName = 'testing'
 const networkDIDs = [
   '41c0f575f5b661216373ee4627caa82f8633a51354c4fc84925f91828bb17916',
   '45dc2b50b53a31f5fd602e47290596fdee377ba0c5fb2a1019fdf96bc32b1363',

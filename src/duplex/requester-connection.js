@@ -6,7 +6,7 @@ class RequesterConnection extends StreamProtocol {
   constructor(peer, connection, opts) {
     super(peer, connection, opts)
   }
-  
+
   // If quote, peer is not a requester, then destroy
   async onQuote(quote) {
     super.onQuote(quote)

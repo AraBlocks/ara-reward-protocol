@@ -26,7 +26,7 @@ class ExampleRequester extends RequesterBase {
    */
   generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setNonce(`9575`)
+    agreement.setNonce('9575')
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement

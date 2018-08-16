@@ -18,7 +18,7 @@ class ExampleFarmer extends FarmerBase {
    */
   generateQuote(sow) {
     const quote = new messages.Quote()
-    quote.setNonce(`6345`)
+    quote.setNonce('6345')
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)
@@ -70,7 +70,7 @@ class ExampleFarmer extends FarmerBase {
       })
   }
 
-    /**
+  /**
    * This should return a receipt given a reward.
    * @param {messages.Reward} reward
    * @returns {messages.Receipt}
@@ -78,7 +78,7 @@ class ExampleFarmer extends FarmerBase {
   async generateReceipt(reward) {
     this.withdrawReward(reward)
     const receipt = new messages.Receipt()
-    receipt.setNonce(`9052`)
+    receipt.setNonce('9052')
     receipt.setReward(reward)
     receipt.setFarmerSignature(this.farmerSig)
     return receipt
