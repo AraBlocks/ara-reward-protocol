@@ -1,17 +1,25 @@
-const { contractAddress, walletAddresses, afsDIDs } = require('../constants.js')
-const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
+const {
+  contractAddress, walletAddresses, requesterDID, networkDIDs, networkSecretKeypath
+} = require('../constants.js')
+const { unpackKeys, configRequesterHandshake } = require('./handshake-utils.js')
+const {
+  messages, matchers, afpstream, util
+} = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:main')
+const debug = require('debug')('afp:handshake-example:main')
 const clip = require('cli-progress')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[1])
+const wallet = new ContractABI(contractAddress, walletAddresses[4])
+const did = networkDIDs[0]
+const through = require('through')
+const duplexify = require('duplexify')
 
-download(afsDIDs[0], 1)
+download(did, 1)
 
 async function download(did, reward) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
@@ -19,7 +27,6 @@ async function download(did, reward) {
 
   // The ARAid of the Requester
   const requesterID = new messages.AraId()
-  const requesterDID = 'did:ara:1'
   requesterID.setDid(requesterDID)
 
   // A signature that a farmer can use to verify that the requester has signed an agreement
@@ -56,11 +63,15 @@ async function download(did, reward) {
 
   const rewardAllocation = reward * 10 // TODO: determine this based on download size
   const jobId = nonceString(sow)
+
+  let handshakeConf
+  try { handshakeConf = await unpackKeys(requesterDID, networkSecretKeypath) } catch (e) { debug({ e }) }
+
   wallet
     .submitJob(jobId, rewardAllocation)
     .then((result) => {
       debug(`Job ${jobId} has been submitted to the contract with ${rewardAllocation} tokens`)
-      farmerSwarm = createFarmerSwarm(did, requester)
+      farmerSwarm = createFarmerSwarm(did, requester, handshakeConf)
     })
     .catch((err) => {
       debug('Job submission failed')
@@ -130,14 +141,28 @@ async function download(did, reward) {
 }
 
 // Creates a swarm to find farmers
-function createFarmerSwarm(did, requester) {
-  const swarm = createSwarm()
+function createFarmerSwarm(did, requester, conf) {
+  const opts = {
+    stream
+  }
+
+  const swarm = createSwarm(opts)
   swarm.on('connection', handleConnection)
   swarm.join(did)
 
+  function stream(peer) {
+    if (null === peer.channel) {
+      return through()
+    }
+    return configRequesterHandshake(conf)
+  }
+
   function handleConnection(connection, info) {
     debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
-    const farmerConnection = new afpstream.FarmerConnection(info, connection, { timeout: 10000 })
+    const writer = connection.createWriteStream()
+    const reader = connection.createReadStream()
+    const stream = duplexify(writer, reader)
+    const farmerConnection = new afpstream.FarmerConnection(info, stream, { timeout: 6000 })
     process.nextTick(() => requester.processFarmer(farmerConnection))
   }
 
@@ -177,4 +202,3 @@ function createContentSwarm(afs, requester) {
 
   return swarm
 }
-

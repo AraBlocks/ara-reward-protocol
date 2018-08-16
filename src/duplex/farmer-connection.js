@@ -7,7 +7,7 @@ class FarmerConnection extends StreamProtocol {
     super(peer, connection, opts)
   }
 
-    // If sow, peer is not a farmer, then destroy
+  // If sow, peer is not a farmer, then destroy
   async onSow(sow) {
     super.onSow(sow)
     debug('Request Stream received SOW. Destroying Stream.')

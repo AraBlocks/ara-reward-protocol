@@ -1,6 +1,6 @@
 const { messages, afpstream, util } = require('ara-farming-protocol')
+
 const { idify, nonceString } = util
-const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
@@ -8,14 +8,13 @@ const fp = require('find-free-port')
 const ip = require('ip')
 
 class ExampleFarmer extends afpstream.Farmer {
-  constructor(farmerId, farmerSig, price, wallet, afs) {
+  constructor(farmerId, farmerSig, price, startWork, wallet) {
     super()
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
+    this.startWork = startWork
     this.wallet = wallet
-    this.afs = afs
-    this.deliveryMap = new Map()
   }
 
   /**
@@ -57,7 +56,8 @@ class ExampleFarmer extends afpstream.Farmer {
     agreement.setData(data)
 
     // Start work on port
-    this.startWork(agreement, port)
+    debug(`Listening for requester ${agreement.getQuote().getSow().getRequester().getDid()} on port ${port}`)
+    this.startWork(port)
     return agreement
   }
 
@@ -70,21 +70,8 @@ class ExampleFarmer extends afpstream.Farmer {
     return true
   }
 
-  dataTransmitted(sowId, units){
-    if (this.deliveryMap.has(sowId)){
-      const total = this.deliveryMap.get(sowId) + units
-      this.deliveryMap.set(sowId, total)
-    } 
-    else
-    {
-      this.deliveryMap.set(sowId, units)
-    }
-  }
-
   async withdrawReward(reward) {
     const sowId = nonceString(reward.getAgreement().getQuote().getSow())
-    debug(`Uploaded ${this.deliveryMap.get(sowId)} blocks for job ${sowId}`)
-
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
@@ -117,42 +104,6 @@ class ExampleFarmer extends afpstream.Farmer {
     receipt.setReward(reward)
     receipt.setFarmerSignature(this.farmerSig)
     return receipt
-  }
-
-  async startWork(agreement, port) {
-    const sow = agreement.getQuote().getSow()
-    debug(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
-    const sowId = nonceString(sow)
-    const content = this.afs.partitions.resolve(this.afs.HOME).content
-
-    content.on('upload', (index, data) => {
-      this.dataTransmitted(sowId, 1) // TODO: is this a good way to measure data amount?
-    })
-  
-    const opts = {
-      stream
-    }
-    const swarm = createSwarm(opts)
-    swarm.on('connection', handleConnection)
-    swarm.listen(port)
-
-    function stream(peer) {
-      const stream = this.afs.replicate({
-        upload: true,
-        download: false
-      })
-      stream.once('end', onend)
-  
-      function onend() {
-        swarm.destroy()
-      }
-  
-      return stream
-    }
-  
-    function handleConnection(connection, info) {
-      debug(`Peer connected: ${info.host} on port: ${info.port}`)
-    }
   }
 }
 

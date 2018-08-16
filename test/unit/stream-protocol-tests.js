@@ -5,7 +5,7 @@ const test = require('ava')
 
 test('duplex.encode-decode.validData', (t) => {
   const id = 'abcd'
-  let bb = Buffer.from(id, 'hex')
+  const bb = Buffer.from(id, 'hex')
 
   const sow = new messages.SOW()
   sow.setNonce(bb)

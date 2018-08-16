@@ -5,8 +5,7 @@ const { contractAddress, walletAddresses } = require('../constants.js')
 const ContractABI = require('../farming_contract/contract-abi.js')
 const debug = require('debug')('afp:contract-example:main')
 
-
-const wallets =   [
+const wallets = [
   new ContractABI(contractAddress, walletAddresses[0]),
   new ContractABI(contractAddress, walletAddresses[1]),
   new ContractABI(contractAddress, walletAddresses[2]),
@@ -14,12 +13,11 @@ const wallets =   [
   new ContractABI(contractAddress, walletAddresses[4])
 ]
 
-
 // Simulates and connects to a number of Farmer Servers
 function simulateFarmerConnections(farmers) {
   const farmerConnections = []
-  for (let key of farmers.keys()){
-    let details = farmers.get(key)
+  for (const key of farmers.keys()) {
+    const details = farmers.get(key)
     const port = `localhost:${details.port}`
     const farmerID = new messages.AraId()
     farmerID.setDid(key)
@@ -46,11 +44,19 @@ function simulateFarmerConnections(farmers) {
     these rewards through the contract, and on successful delivery, notify the famers
 */
 
-const farmerDetails = 
-  new Map([['aaaa', { port:50051, price: 2, units: 2, wallet: wallets[1] }], 
-           ['bbbb', { port:50052, price: 2, units: 1, wallet: wallets[2] }], 
-           ['cccc', { port:50053, price: 1, units: 2, wallet: wallets[3] }], 
-           ['dddd', { port:50054, price: 3, units: 1, wallet: wallets[4] }]])
+const farmerDetails =
+  new Map([ [ 'aaaa', {
+    port: 50051, price: 2, units: 2, wallet: wallets[1]
+  } ],
+  [ 'bbbb', {
+    port: 50052, price: 2, units: 1, wallet: wallets[2]
+  } ],
+  [ 'cccc', {
+    port: 50053, price: 1, units: 2, wallet: wallets[3]
+  } ],
+  [ 'dddd', {
+    port: 50054, price: 3, units: 1, wallet: wallets[4]
+  } ] ])
 const budget = Array.from(farmerDetails.values()).reduce((a, b) => a + (b.units * b.price), 0)
 
 // Farmers
@@ -60,7 +66,7 @@ const farmerConnections = simulateFarmerConnections(farmerDetails)
 const matcher = new matchers.MaxCostMatcher(10, 4)
 
 const requesterID = new messages.AraId()
-requesterID.setDid(`6002`)
+requesterID.setDid('6002')
 
 const sow = new messages.SOW()
 const jobId = '7002'

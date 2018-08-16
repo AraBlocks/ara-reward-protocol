@@ -37,7 +37,7 @@ async function broadcast(did, price) {
   const swarm = createFarmingSwarm(did, farmer)
 }
 
-function createFarmingSwarm(did, farmer){
+function createFarmingSwarm(did, farmer) {
   const swarm = createSwarm()
   swarm.on('connection', handleConnection)
   swarm.join(did, { announce: false })

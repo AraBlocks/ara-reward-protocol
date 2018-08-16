@@ -31,7 +31,7 @@ Replace wallet addresses in multi-farmer-simulation-smart-contract/constant.js w
 $ node examples/multi-farmer-simulation-smart-contract/multi-farmer-simulation.js
 ```
 
-### Remote Peers with gRPC
+### AFS Replication with gRPC
 
 The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
 
@@ -47,7 +47,7 @@ On the requester's computer/terminal:
 $ node examples/remote-peers-grpc/remote-requester.js
 ```
 
-## Remote Peers with Duplexify
+## AFS Replication with Streams
 
 The requester example finds peers on the discovery channel and communicates via duplex stream to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example then broadcasts on a randomly selected port and replicates an AFS.
 
@@ -61,4 +61,28 @@ On the requester's computer/terminal:
 
 ```
 $ node examples/remote-peers-duplex/remote-requester.js
+```
+
+## AFS Replication with Encrypted Streams
+
+The requester example finds peers on the discovery channel. When connected, the requester will attempt a handshake with the farmers, and communicate via an encrypted duplex stream to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example then broadcasts on a randomly selected port and replicates an AFS.
+
+The requester needs to generate a keypair and save them in example/remote-peers-handshake. Both requester and farmer machines also have to update example/constant.js file before running this example.
+
+```
+
+$ ank -i <DID> -s <SECRET> -o <PATH> -n <NAME>
+
+```
+
+On the farmer's computer/terminal:
+
+```
+$ node examples/remote-peers-handshake/remote-farmer.js
+```
+
+On the requester's computer/terminal:
+
+```
+$ node examples/remote-peers-handshake/remote-requester.js
 ```
