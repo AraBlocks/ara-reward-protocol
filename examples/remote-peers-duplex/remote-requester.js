@@ -1,4 +1,4 @@
-const { contractAddress, walletAddresses } = require('../constants.js')
+const { contractAddress, walletAddresses, afsDIDs } = require('../constants.js')
 const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
@@ -9,10 +9,9 @@ const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
 
-const wallet = new ContractABI(contractAddress, walletAddresses[3])
+const wallet = new ContractABI(contractAddress, walletAddresses[1])
 
-const did = '70a89141135ca935d532bcb85893be9dff45b68d217288f346e9c0f86fdb7c43'
-download(did, 1)
+download(afsDIDs[0], 1)
 
 async function download(did, reward) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers

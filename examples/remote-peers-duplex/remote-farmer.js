@@ -31,7 +31,7 @@ async function broadcast(did, price) {
   const { afs } = await create({ did })
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const farmer = new ExampleFarmer(farmerID, farmerSig, price, (port) => startWork(port, afs), wallet)
+  const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallet, afs)
 
   // Join the discovery swarm for the requested content
   const swarm = createFarmingSwarm(did, farmer)
@@ -49,38 +49,4 @@ function createFarmingSwarm(did, farmer){
   }
 
   return swarm
-}
-
-async function startWork(port, afs) {
-  let uploaded = 0
-  const content = afs.partitions.resolve(afs.HOME).content
-  content.on('upload', (index, data) => {
-    uploaded += 1 // TODO: is this a good way to measure data amount?
-  })
-
-  const opts = {
-    stream
-  }
-  const swarm = createSwarm(opts)
-  swarm.on('connection', handleConnection)
-  swarm.listen(port)
-
-  function stream(peer) {
-    const stream = afs.replicate({
-      upload: true,
-      download: false
-    })
-    stream.once('end', onend)
-
-    function onend() {
-      debug(`Uploaded ${uploaded} blocks to peer ${peer.host}`)
-      swarm.destroy()
-    }
-
-    return stream
-  }
-
-  function handleConnection(connection, info) {
-    debug(`Peer connected: ${info.host} on port: ${info.port}`)
-  }
 }

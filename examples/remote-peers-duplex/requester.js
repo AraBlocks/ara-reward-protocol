@@ -76,6 +76,7 @@ class ExampleRequester extends afpstream.Requester {
     const blocksPerUnit = 400 // TODO: adjust this measurement
     this.onComplete = callback
 
+    debug("delivery map:", this.deliveryMap)
     this.deliveryMap.forEach((value, key, map) => {
       const peerId = this.swarmIdMap.get(key)
       const units = Math.floor(value / blocksPerUnit) // TODO: no rounding?
