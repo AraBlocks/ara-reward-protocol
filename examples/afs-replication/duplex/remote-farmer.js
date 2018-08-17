@@ -1,5 +1,5 @@
 const { contractAddress, walletAddresses, afsDIDs, farmerDID, networkPublicKeypath } = require('../../constants.js')
-const { unpackKeys, configFarmerHandshake } = require('./handshake-utils.js')
+const { unpackKeys, configFarmerHandshake } = require('../../handshake-utils.js')
 const { messages, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')

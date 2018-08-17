@@ -74,6 +74,7 @@ class ExampleRequester extends afpstream.Requester {
         debug(`old size: ${currSize}, new size: ${feed.length}`)
         const sizeDelta = feed.length - currSize
         const amount = Math.ceil(self.matcher.maxCost * sizeDelta / blocksPerUnit)  
+        self.emit('downloading', feed.length)
         debug(`Staking ${amount} for a size delta of ${sizeDelta} blocks`)
         self.submitStake(amount, (err) => {
           if (err) onComplete(err)
@@ -85,10 +86,12 @@ class ExampleRequester extends afpstream.Requester {
       feed.on('download', (index, data, from) => {
         const peerIdHex = from.remoteId.toString('hex')
         self.dataReceived(peerIdHex, 1) // TODO: Is this a good way to measure data amount?
+        self.emit('progress', feed.downloaded())
       })
 
       // Handle when the content finishes downloading
       feed.once('sync', async () => {
+        self.emit('complete')
         debug(await afs.readdir('.'))
         debug('Downloaded!')
         self.sendRewards(onComplete)
@@ -101,7 +104,6 @@ class ExampleRequester extends afpstream.Requester {
   // Submit the stake to the blockchain
   async submitStake(amount, onComplete){
     const jobId = nonceString(this.sow)
-    this.emit('stake')
     this.wallet
       .submitJob(jobId, amount)
       .then((result) => {

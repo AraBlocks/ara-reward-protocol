@@ -1,5 +1,5 @@
 const { contractAddress, walletAddresses, afsDIDs, requesterDID, networkSecretKeypath } = require('../../constants.js')
-const { unpackKeys, configRequesterHandshake } = require('./handshake-utils.js')
+const { unpackKeys, configRequesterHandshake } = require('../../handshake-utils.js')
 const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
@@ -43,7 +43,7 @@ async function download(did, reward, keypath) {
   const requester = new ExampleRequester(sow, matcher, requesterSig, wallet, afs, onComplete)
 
   // Visualize the download progress
-  requester.on('stake', () => setupDownloadVisualizer(afs))
+  setupDownloadVisualizer(requester)
 
   // Load network keys if applicable
   let handshakeConf
@@ -67,6 +67,8 @@ async function download(did, reward, keypath) {
 
 // Creates a swarm to find farmers
 function createFarmerSwarm(did, requester, conf) {
+
+  // Override the stream if encryption handshake required
   const stream = conf ? () => configRequesterHandshake(conf) : null
   const swarm = createSwarm({
     stream 
@@ -90,30 +92,9 @@ function createFarmerSwarm(did, requester, conf) {
 }
 
 // Creates a progress visualizer bar in cli
-function setupDownloadVisualizer(afs){
-  let content = afs.partitions.resolve(afs.HOME).content
-  if (content) {
-    attachDownloadListener(content)
-  } else {
-    afs.once('content', () => {
-      content = afs.partitions.resolve(afs.HOME).content
-      attachDownloadListener(content)
-    })
-  }
-
-  // Handle when the content needs updated
-  async function attachDownloadListener(feed) {
-    const pBar = new clip.Bar({}, clip.Presets.shades_classic)
-    let pStarted = false
-    feed.on('download', (index, data, from) => {
-      if (!pStarted) {
-        pStarted = true
-        pBar.start(feed.length, 0)
-      }
-      pBar.update(feed.downloaded())
-    })
-    feed.once('sync', () => {
-      pBar.stop()
-    })
-  }
+function setupDownloadVisualizer(requester){
+  const pBar = new clip.Bar({}, clip.Presets.shades_classic)
+  requester.once('downloading', (total) => pBar.start(total, 0))
+  requester.on('progress', (value) => pBar.update(value))
+  requester.once('complete', () => pBar.stop())
 }

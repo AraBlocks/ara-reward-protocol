@@ -22,34 +22,38 @@
     "url": "https://github.com/littlstar/farming-protocol/issues"
   },
   "homepage": "https://github.com/littlstar/farming-protocol#readme",
+  "peerDependencies": {
+    "ara-filesystem": "github:arablocks/ara-filesystem",
+    "ara-identity": "github:arablocks/ara-identity"
+  },
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0",
     "eslint-config-ara": "github:arablocks/eslint-config-ara",
+    "find-free-port": "^2.0.0",
+    "cli-progress": "^2.0.0",
     "eslint": "^4.19.1",
     "sinon": "^6.0.1",
-    "ava": "^0.25.0"
+    "ava": "^0.25.0",
+    "did-uri": "^0.2.5"
   },
   "dependencies": {
-    "ara-crypto": "github:arablocks/ara-crypto",
-    "ara-filesystem": "github:arablocks/ara-filesystem",
-    "ara-network": "github:arablocks/ara-network",
     "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
-    "cli-progress": "^2.0.0",
-    "debug": "^3.1.0",
-    "duplexify": "^3.6.0",
-    "find-free-port": "^2.0.0",
     "google-protobuf": "^3.6.0",
-    "grpc": "^1.13.0-pre1",
+    "ara-console": "github:arablocks/ara-console",
+    "ara-network": "github:arablocks/ara-network",
+    "ara-crypto": "github:arablocks/ara-crypto",
     "grpc-tools": "^1.6.6",
-    "ip": "^1.1.5",
-    "mirror-folder": "^3.0.0",
-    "pify": "^3.0.0",
-    "pump": "^3.0.0",
-    "pumpify": "^1.5.1",
-    "through": "^2.3.8",
+    "duplexify": "^3.6.0",
     "through2": "^2.0.3",
+    "through": "^2.3.8",
+    "pumpify": "^1.5.1",
     "unixify": "^1.0.0",
     "varint": "^5.0.0",
-    "web3": "^1.0.0-beta.34"
+    "debug": "^3.1.0",
+    "web3": "^1.0.0-beta.34",
+    "grpc": "^1.13.0-pre1",
+    "pify": "^3.0.0",
+    "pump": "^3.0.0",
+    "ip": "^1.1.5"
   }
 }
