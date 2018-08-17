@@ -1,19 +1,115 @@
 const { messages, afpstream, util } = require('ara-farming-protocol')
 const { idify, nonceString } = util
+const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
 
+const blocksPerUnit = 400 // TODO: adjust this measurement
+
 class ExampleRequester extends afpstream.Requester {
-  constructor(sow, matcher, requesterSig, startWork, wallet) {
+  constructor(sow, matcher, requesterSig, wallet, afs, onComplete) {
     super(sow, matcher)
     this.requesterSig = requesterSig
-    this.startWork = startWork
     this.wallet = wallet
     this.hiredFarmers = new Map()
     this.swarmIdMap = new Map()
     this.deliveryMap = new Map()
     this.receipts = 0
-    this.onComplete = null
+    this.contentSwarm = this.createContentSwarm(afs, onComplete)
+  }
+
+  // Creates a private swarm for downloading a piece of content
+  createContentSwarm(afs, onComplete) {
+    const self = this
+    let currSize = 0
+    let content = afs.partitions.resolve(afs.HOME).content
+    let stakeSubmitted = false
+
+    if (content) {
+      currSize = content.downloaded()
+      attachDownloadListener(content)
+    } else {
+      afs.once('content', () => {
+        content = afs.partitions.resolve(afs.HOME).content
+        attachDownloadListener(content)
+      })
+    }
+
+    const opts = {
+      stream,
+    }
+
+    const swarm = createSwarm(opts)
+    swarm.on('connection', handleConnection)
+
+    function stream(peer) {
+      const stream = afs.replicate({
+        upload: false,
+        download: true,
+        live: false
+      })
+
+      stream.once('end', () => {
+        debug('Replicate stream ended')
+        if (!stakeSubmitted) onComplete()
+        swarm.destroy()
+      })
+
+      return stream
+    }
+
+    async function handleConnection(connection, info) {
+      const contentSwarmId = connection.remoteId.toString('hex')
+      const connectionId = idify(info.host, info.port)
+      self.swarmIdMap.set(contentSwarmId, connectionId)
+      debug(`Content Swarm: Peer connected: ${connectionId}`)
+    }
+
+    // Handle when the content needs updated
+    async function attachDownloadListener(feed) {
+
+      // Calculate and submit stake
+      // NOTE: this is a hack to get content size and should be done prior to download
+      feed.once('download', () => {
+        debug(`old size: ${currSize}, new size: ${feed.length}`)
+        const sizeDelta = feed.length - currSize
+        const amount = Math.ceil(self.matcher.maxCost * sizeDelta / blocksPerUnit)  
+        debug(`Staking ${amount} for a size delta of ${sizeDelta} blocks`)
+        self.submitStake(amount, (err) => {
+          if (err) onComplete(err)
+          else stakeSubmitted = true
+        })
+      })
+      
+      // Record download data
+      feed.on('download', (index, data, from) => {
+        const peerIdHex = from.remoteId.toString('hex')
+        self.dataReceived(peerIdHex, 1) // TODO: Is this a good way to measure data amount?
+      })
+
+      // Handle when the content finishes downloading
+      feed.once('sync', async () => {
+        debug(await afs.readdir('.'))
+        debug('Downloaded!')
+        self.sendRewards(onComplete)
+      })
+    }
+
+    return swarm
+  }
+
+  // Submit the stake to the blockchain
+  async submitStake(amount, onComplete){
+    const jobId = nonceString(this.sow)
+    this.emit('stake')
+    this.wallet
+      .submitJob(jobId, amount)
+      .then((result) => {
+        onComplete()
+      })
+      .catch((err) => {
+        onComplete(err)
+      })
   }
 
   async validatePeer(peer) {
@@ -33,7 +129,6 @@ class ExampleRequester extends afpstream.Requester {
   }
 
   async onHireConfirmed(agreement, connection) {
-    debug(`Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
     const peer = connection.peer
 
     // Extract port
@@ -48,16 +143,16 @@ class ExampleRequester extends afpstream.Requester {
     this.startWork(peer, port)
   }
 
-  async onReceipt(receipt, connection){
-    debug(`Receipt ${nonceString(receipt)} signed by farmer ${receipt.getFarmerSignature().getAraId().getDid()}`)
-
-    // Expects receipt from all rewarded farmers
-    this.incrementOnComplete()
+  // Handle when ready to start work
+  async startWork(peer, port) {
+    const connectionId = idify(peer.host, port)
+    debug(`Starting AFS Connection with ${connectionId}`)
+    this.contentSwarm.addPeer(connectionId, { host: peer.host, port })
   }
 
-  addSwarmId(peerId, swarmId) {
-    this.swarmIdMap.set(swarmId, peerId)
-    this.deliveryMap.set(swarmId, 0)
+  async onReceipt(receipt, connection){
+    // Expects receipt from all rewarded farmers
+    this.incrementOnComplete()
   }
 
   dataReceived(peerSwarmId, units) {
@@ -70,10 +165,10 @@ class ExampleRequester extends afpstream.Requester {
   }
 
   sendRewards(callback) {
-    const blocksPerUnit = 400 // TODO: adjust this measurement
     this.onComplete = callback
 
-    debug("delivery map:", this.deliveryMap)
+    debug("delivery map")
+    debug(this.deliveryMap)
     this.deliveryMap.forEach((value, key, map) => {
       const peerId = this.swarmIdMap.get(key)
       const units = Math.floor(value / blocksPerUnit) // TODO: no rounding?

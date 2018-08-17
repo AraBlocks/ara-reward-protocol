@@ -120,6 +120,7 @@ class ExampleFarmer extends afpstream.Farmer {
   }
 
   async startWork(agreement, port) {
+    const self = this
     const sow = agreement.getQuote().getSow()
     debug(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
@@ -137,7 +138,7 @@ class ExampleFarmer extends afpstream.Farmer {
     swarm.listen(port)
 
     function stream(peer) {
-      const stream = this.afs.replicate({
+      const stream = self.afs.replicate({
         upload: true,
         download: false
       })

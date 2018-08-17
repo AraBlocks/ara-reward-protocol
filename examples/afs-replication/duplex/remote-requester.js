@@ -1,0 +1,119 @@
+const { contractAddress, walletAddresses, afsDIDs, requesterDID, networkSecretKeypath } = require('../../constants.js')
+const { unpackKeys, configRequesterHandshake } = require('./handshake-utils.js')
+const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
+const { idify, nonceString } = util
+const { ExampleRequester } = require('./requester')
+const { createSwarm } = require('ara-network/discovery')
+const { create } = require('ara-filesystem')
+const ContractABI = require('../../farming_contract/contract-abi.js')
+const crypto = require('ara-crypto')
+const debug = require('debug')('afp:duplex-example:main')
+const clip = require('cli-progress')
+
+const wallet = new ContractABI(contractAddress, walletAddresses[2])
+
+const keypath = null
+//const keypath = networkSecretKeypath
+
+download(afsDIDs[0], 1, keypath)
+
+async function download(did, reward, keypath) {
+  // A default matcher which will match for a max cost of 10 to a max of 5 farmers
+  const matcher = new matchers.MaxCostMatcher(reward, 5)
+
+  // The ARAid of the Requester
+  const requesterID = new messages.AraId()
+  requesterID.setDid(requesterDID)
+
+  // A signature that a farmer can use to verify that the requester has signed an agreement
+  const requesterSig = new messages.Signature()
+  requesterSig.setAraId(requesterID)
+  requesterSig.setData('avalidsignature')
+
+  // Create the statement of work
+  const sow = new messages.SOW()
+  sow.setNonce(crypto.randomBytes(32))
+  sow.setWorkUnit('MB')
+  sow.setRequester(requesterID)
+
+  // Load the sparse afs
+  const { afs } = await create({ did })
+
+  // Create the requester object
+  const requester = new ExampleRequester(sow, matcher, requesterSig, wallet, afs, onComplete)
+
+  // Visualize the download progress
+  requester.on('stake', () => setupDownloadVisualizer(afs))
+
+  // Load network keys if applicable
+  let handshakeConf
+  if (keypath) {
+    try { handshakeConf = await unpackKeys(requesterDID, networkSecretKeypath) } catch (e) { debug({ e }) }
+  }
+
+  // Find farmers  
+  let farmerSwarm = createFarmerSwarm(did, requester, handshakeConf)
+
+  // Handle when the swarms end
+  async function onComplete(error) {
+    if (error) {
+      debug(error)
+    }
+    debug('Swarm destroyed')
+    if (afs) afs.close()
+    if (farmerSwarm) farmerSwarm.destroy()
+  }
+}
+
+// Creates a swarm to find farmers
+function createFarmerSwarm(did, requester, conf) {
+  const stream = conf ? () => configRequesterHandshake(conf) : null
+  const swarm = createSwarm({
+    stream 
+  })
+  swarm.on('connection', handleConnection)
+  swarm.join(did)
+
+  function handleConnection(connection, info) {
+    debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
+    let stream = connection
+    if (conf) {
+      const writer = connection.createWriteStream()
+      const reader = connection.createReadStream()
+      stream = duplexify(writer, reader)
+    }
+    const farmerConnection = new afpstream.FarmerConnection(info, stream, { timeout: 6000 })
+    process.nextTick(() => requester.processFarmer(farmerConnection))
+  }
+
+  return swarm
+}
+
+// Creates a progress visualizer bar in cli
+function setupDownloadVisualizer(afs){
+  let content = afs.partitions.resolve(afs.HOME).content
+  if (content) {
+    attachDownloadListener(content)
+  } else {
+    afs.once('content', () => {
+      content = afs.partitions.resolve(afs.HOME).content
+      attachDownloadListener(content)
+    })
+  }
+
+  // Handle when the content needs updated
+  async function attachDownloadListener(feed) {
+    const pBar = new clip.Bar({}, clip.Presets.shades_classic)
+    let pStarted = false
+    feed.on('download', (index, data, from) => {
+      if (!pStarted) {
+        pStarted = true
+        pBar.start(feed.length, 0)
+      }
+      pBar.update(feed.downloaded())
+    })
+    feed.once('sync', () => {
+      pBar.stop()
+    })
+  }
+}

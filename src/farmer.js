@@ -1,7 +1,8 @@
+const EventEmitter = require( 'events' );
 const messages = require('./proto/messages_pb')
 
 // Class defining the required working conditions demanded by (and RPC methods of) a Farmer
-class FarmerBase {
+class FarmerBase extends EventEmitter {
   /**
    * Proto RPC method for getting a quote for an SOW
    * @param {EventEmitter} call Call object for the handler to process

@@ -1,15 +1,15 @@
 const {
   passphrase, networkSecret, networkKeyName,
   networkPublicKeypath, networkSecretKeypath
-} = require('../constants.js')
+} = require('../../constants.js')
 const { DID } = require('did-uri')
 const crypto = require('ara-crypto')
-const rc = require('../../../ara-network/rc.js')(require('ara-identity/rc')())
+const rc = require('ara-network/rc.js')(require('ara-identity/rc')())
 const { resolve } = require('path')
 const pify = require('pify')
 const { readFile } = require('fs')
-const { unpack, keyRing } = require('../../../ara-network/keys.js')
-const { Handshake } = require('../../../ara-network/handshake.js')
+const { unpack, keyRing } = require('ara-network/keys')
+const { Handshake } = require('ara-network/handshake')
 const { info, warn } = require('ara-console')
 
 function configFarmerHandshake(conf) {

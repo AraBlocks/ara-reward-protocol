@@ -9,7 +9,6 @@ const {
   FarmerBase,
   util
 } = require('../../index')
-const { idify, nonceString } = util
 
 const { idify, nonceString } = util
 

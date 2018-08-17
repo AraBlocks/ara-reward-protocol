@@ -1,8 +1,9 @@
+const EventEmitter = require( 'events' );
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
 const debug = require('debug')('afp:requester-base')
 
-class RequesterBase {
+class RequesterBase extends EventEmitter {
   /**
    * Class that handles the communication for requesting a specific SOW
    * for a single task.
@@ -10,6 +11,7 @@ class RequesterBase {
    * @param {Matcher} matcher
    */
   constructor(sow, matcher) {
+    super()
     this.sow = sow
     this.matcher = matcher
   }
