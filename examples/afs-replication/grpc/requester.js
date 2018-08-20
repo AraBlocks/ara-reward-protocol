@@ -1,10 +1,10 @@
 const { messages, RequesterBase } = require('ara-farming-protocol')
+const debug = require('debug')('afp:grpc-example:requester')
+const crypto = require('ara-crypto')
 
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, onStartWork) {
     super(sow, matcher)
-    this.badFarmerId = 'ara:did:2'
-    this.agreementId = 101
     this.requesterSig = requesterSig
     this.onStartWork = onStartWork
   }
@@ -15,11 +15,6 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    const farmerId = peer.getDid()
-    if (farmerId == this.badFarmerId) {
-      console.log(`Requester: Invalid farmer ${farmerId}`)
-      return false
-    }
     return true
   }
 
@@ -30,7 +25,7 @@ class ExampleRequester extends RequesterBase {
    */
   async generateAgreement(quote) {
     const agreement = new messages.Agreement()
-    agreement.setNonce(this.agreementId)
+    agreement.setNonce(crypto.randomBytes(32))
     agreement.setQuote(quote)
     agreement.setRequesterSignature(this.requesterSig)
     return agreement
@@ -42,8 +37,7 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validateAgreement(agreement) {
-    if (agreement.getNonce() == this.agreementId) return true
-    return false
+    return true
   }
 
   /**
@@ -53,9 +47,12 @@ class ExampleRequester extends RequesterBase {
    * @param {services.RFPClient} farmer
    */
   async onHireConfirmed(agreement, farmer) {
-    console.log(`Requester: Agreement ${agreement.getNonce()} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
-    const host = agreement.getQuote().getFarmer().getDid() // HACK
-    this.onStartWork(host)
+
+    // Extract port
+    const data = Buffer.from(agreement.getData())
+    const port = data.readUInt32LE(0)
+    
+    this.onStartWork(peer, port)
   }
 }
 

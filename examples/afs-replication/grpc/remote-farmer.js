@@ -1,3 +1,4 @@
+const { afsDIDs, farmerDID } = require('../../constants.js')
 const { createChannel, createSwarm } = require('ara-network/discovery')
 const { messages, afpgrpc } = require('ara-farming-protocol')
 const { ExampleFarmer } = require('./farmer')
@@ -9,15 +10,13 @@ const ip = require('ip')
  * and runs farmer server on example port 50051.
  */
 
-main()
+broadcast(afsDIDs[0])
 
-async function main() {
+async function broadcast(did) {
   const farmPort = '50051'
-  const jobPort = '50052'
 
   // The ARAid of the Farmer
   const farmerID = new messages.ARAid()
-  const farmerDID = ip.address() // HACK
   farmerID.setDid(farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
@@ -26,7 +25,6 @@ async function main() {
   farmerSig.setData('avalidsignature')
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const discoveryAID = 'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
   const price = 6
   const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
 
@@ -37,25 +35,24 @@ async function main() {
 
   // Broadcast on the discovery channel for what the farmer can produce
   const channel = createChannel()
-  channel.join(discoveryAID, 19000)
+  channel.join(did, 19000)
 
-  async function startWork(agreement) {
+  async function startWork(agreement, port) {
     const requester = agreement.getRequesterSignature().getAraId()
     const reqMap = new Map()
 
     console.log(`Agreement Data: ${requester}`)
 
-    const uploadAFS = await loadAFS(discoveryAID)
+    const uploadAFS = await loadAFS(did)
 
     // Create a swarm for uploading the content
     const opts = {
       id: farmerDID,
-      whitelist: [ requester ],
       stream,
     }
 
     const swarm = createSwarm(opts)
-    swarm.listen(jobPort)
+    swarm.listen(port)
 
     swarm.on('connection', handleConnection)
 

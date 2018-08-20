@@ -1,4 +1,7 @@
-# farming-protocol
+<img src="https://github.com/arablocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
+========
+[![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
+
 
 ARA Farming Protocol (AFP) provides methods for distributed decentralized services, or decents, in the ARA Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details).
 
@@ -10,7 +13,7 @@ Performing a service for another peer in the network, potentially for a reward.
 
 #### Farmer
 
-A peer in the network who participates in farming.
+A peer in the network who provides a service.
 
 #### Requester
 
@@ -18,11 +21,11 @@ A peer in the network who intends to distribute work amoungst farmers.
 
 ### Job
 
-A task whose scope is defined by a statement of work.
+A task whose scope is defined by a statement of work, or SOW.
 
 #### Agreement
 
-An agreed upon statement of work for a specific job between a farmer and a requester. This may reference a specific smart contract, or some other verifiable source, which can verify the details of an agreement.
+An agreed upon statement of work and quote between a farmer and a requester. This may reference a specific smart contract, or some other verifiable source, which can validate the details of an agreement.
 
 ### Introduction
 
@@ -65,7 +68,7 @@ $ npm i
 
 ## Usage
 
-The expected usage is for an application to implement some combination of its own extensions to the following classes:
+The expected usage is for an application to extend the following classes:
 
 * Farmer
 * Matcher
@@ -75,7 +78,13 @@ For an application that enables a user to request distributed work to be done on
 
 For an application that enables a user to participate in distributed work requests and receive rewards, that application would create an implementation of the Farmer (which handles communicating with requesters).
 
-### Farming
+Base classes are provided that enable communication through gRPC and through duplex streams. 
+
+### gRPC
+
+To communicate via gRPC, you can extend the base classes `FarmerBase` in `src/farmer` and `RequesterBase` in `src/requester`.
+
+#### Farming
 
 For broadcasting the ability to farm using gRPC.
 
@@ -91,7 +100,7 @@ const port = `localhost:50051`
 afpgrpc.util.broadcastFarmer(farmer, port)
 ```
 
-### Requesting
+#### Requesting
 
 For requesting a farming job via gRPC.
 
@@ -110,6 +119,10 @@ const requester = new ExampleRequester(sow, matcher)
 const connection = afpgrpc.util.connectToFarmer(port)
 requester.processFarmers([connection])
 ```
+
+### Duplex Streams
+
+To communicate via duplex streams, you can extend the classes `Farmer` in `src/duplex/farmer` and `Requester` in `src/duplex/requester`.
 
 ### Implementation
 

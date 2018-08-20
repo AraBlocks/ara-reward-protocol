@@ -1,14 +1,15 @@
 const { messages, FarmerBase } = require('ara-farming-protocol')
+const crypto = require('ara-crypto')
+const fp = require('find-free-port')
+const ip = require('ip')
 
 class ExampleFarmer extends FarmerBase {
-  constructor(farmerId, farmerSig, price, onStartWork) {
+  constructor(farmerId, farmerSig, price, startWork) {
     super()
-    this.badRequesterId = 10057
-    this.quoteId = 1
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
-    this.onStartWork = onStartWork
+    this.startWork = startWork
   }
 
   /**
@@ -17,9 +18,8 @@ class ExampleFarmer extends FarmerBase {
    * @returns {messages.Quote}
    */
   async generateQuote(sow) {
-    console.log(`Received SOW from: ${sow.getRequester().getDid()}`)
     const quote = new messages.Quote()
-    quote.setNonce(this.quoteId)
+    quote.setNonce(crypto.randomBytes(32))
     quote.setFarmer(this.farmerId)
     quote.setPerUnitCost(this.price)
     quote.setSow(sow)
@@ -43,7 +43,15 @@ class ExampleFarmer extends FarmerBase {
    */
   async signAgreement(agreement) {
     agreement.setFarmerSignature(this.farmerSig)
-    this.onStartWork(agreement)
+
+    // Get free port and pass it as the agreement data
+    const port = await pify(fp)(Math.floor(30000 * Math.random()), ip.address())
+    const data = Buffer.alloc(4)
+    data.writeInt32LE(port, 0)
+    agreement.setData(data)
+
+    // Start work on port
+    this.startWork(agreement, port)
 
     return agreement
   }
@@ -54,8 +62,7 @@ class ExampleFarmer extends FarmerBase {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    const requesterId = peer.getDid()
-    return requesterId != this.badRequesterId
+    return true
   }
 }
 

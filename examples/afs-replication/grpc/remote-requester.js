@@ -1,3 +1,4 @@
+const { afsDIDs, requesterDID } = require('../../constants.js')
 const { messages, afpgrpc, matchers } = require('ara-farming-protocol')
 const { createChannel, createSwarm } = require('ara-network/discovery')
 const { ExampleRequester } = require('./requester')
@@ -10,15 +11,14 @@ const ip = require('ip')
  * Uses the MaxCostMatcher to determine peers.
  */
 
-main()
+download(afsDIDs[0])
 
-async function main() {
+async function download(did) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
   const matcher = new matchers.MaxCostMatcher(10, 5)
 
   // The ARAid of the Requester
   const requesterID = new messages.ARAid()
-  const requesterDID = ip.address() // HACK
   requesterID.setDid(requesterDID)
 
   // A signature that a farmer can use to verify that the requester has signed an agreement
@@ -35,12 +35,9 @@ async function main() {
   // The RPC Connections to the farmers
   const farmerConnections = new Map()
 
-  // Create a swarm for downloading the content
-  const discoveryAID = 'did:ara:38d781b7a58b07bd9246be264d571ef46ced2504db679ef556416cf200c43116'
-
   // Join the discovery channel for the requested content
   const channel = createChannel()
-  channel.join(discoveryAID)
+  channel.join(did)
   const requester = new ExampleRequester(sow, matcher, requesterSig, startWork)
   channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
 
@@ -51,19 +48,17 @@ async function main() {
     return createResp.afs
   }
 
-  async function startWork(ip) {
-    const jobPort = '50052'
-    const downloadAFS = await loadAFS(discoveryAID)
+  async function startWork(ip, port) {
+    const downloadAFS = await loadAFS(did)
 
     const opts = {
       id: requesterDID,
       stream,
-      whitelist: [ ip ],
     }
 
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
-    swarm.addPeer(ip, { host: ip, port: jobPort })
+    swarm.addPeer(ip, { host: ip, port: port })
 
     function stream(peer) {
       const partition = downloadAFS.partitions.resolve(downloadAFS.HOME)

@@ -22,6 +22,12 @@ const keypath = null
 
 download(afsDIDs[0], 1, keypath)
 
+/**
+ * Download a specific AFS
+ * @param {string} did DID of the AFS
+ * @param {float} reward Reward per unit of work
+ * @param {string} keypath Path to Ara Network Key 
+ */
 async function download(did, reward, keypath) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
   const matcher = new matchers.MaxCostMatcher(reward, 5)

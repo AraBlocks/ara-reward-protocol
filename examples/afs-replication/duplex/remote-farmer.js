@@ -22,6 +22,12 @@ for (let i = 0; i < afsDIDs.length; i++) {
   broadcast(afsDIDs[i], price, keypath)
 }
 
+/**
+ * Broadcast the ability to farm for an AFS
+ * @param {string} did DID of the AFS
+ * @param {int} price Desired cost per unit
+ * @param {string} keypath Keypath to Ara Network Key
+ */
 async function broadcast(did, price, keypath) {
   debug('Broadcasting: ', did)
 
