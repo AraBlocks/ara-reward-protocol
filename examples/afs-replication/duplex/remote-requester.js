@@ -1,6 +1,11 @@
-const { contractAddress, walletAddresses, afsDIDs, requesterDID, networkSecretKeypath } = require('../../constants.js')
+const {
+  contractAddress, walletAddresses, afsDIDs, requesterDID, networkSecretKeypath
+} = require('../../constants.js')
 const { unpackKeys, configRequesterHandshake } = require('../../handshake-utils.js')
-const { messages, matchers, afpstream, util } = require('ara-farming-protocol')
+const {
+  messages, matchers, afpstream, util
+} = require('ara-farming-protocol')
+
 const { idify, nonceString } = util
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
@@ -13,7 +18,7 @@ const clip = require('cli-progress')
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
 const keypath = null
-//const keypath = networkSecretKeypath
+// const keypath = networkSecretKeypath
 
 download(afsDIDs[0], 1, keypath)
 
@@ -51,8 +56,8 @@ async function download(did, reward, keypath) {
     try { handshakeConf = await unpackKeys(requesterDID, networkSecretKeypath) } catch (e) { debug({ e }) }
   }
 
-  // Find farmers  
-  let farmerSwarm = createFarmerSwarm(did, requester, handshakeConf)
+  // Find farmers
+  const farmerSwarm = createFarmerSwarm(did, requester, handshakeConf)
 
   // Handle when the swarms end
   async function onComplete(error) {
@@ -67,11 +72,10 @@ async function download(did, reward, keypath) {
 
 // Creates a swarm to find farmers
 function createFarmerSwarm(did, requester, conf) {
-
   // Override the stream if encryption handshake required
   const stream = conf ? () => configRequesterHandshake(conf) : null
   const swarm = createSwarm({
-    stream 
+    stream
   })
   swarm.on('connection', handleConnection)
   swarm.join(did)
@@ -92,9 +96,9 @@ function createFarmerSwarm(did, requester, conf) {
 }
 
 // Creates a progress visualizer bar in cli
-function setupDownloadVisualizer(requester){
+function setupDownloadVisualizer(requester) {
   const pBar = new clip.Bar({}, clip.Presets.shades_classic)
-  requester.once('downloading', (total) => pBar.start(total, 0))
-  requester.on('progress', (value) => pBar.update(value))
+  requester.once('downloading', total => pBar.start(total, 0))
+  requester.on('progress', value => pBar.update(value))
   requester.once('complete', () => pBar.stop())
 }

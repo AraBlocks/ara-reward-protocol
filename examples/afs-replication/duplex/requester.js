@@ -1,4 +1,5 @@
 const { messages, afpstream, util } = require('ara-farming-protocol')
+
 const { idify, nonceString } = util
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
@@ -67,13 +68,12 @@ class ExampleRequester extends afpstream.Requester {
 
     // Handle when the content needs updated
     async function attachDownloadListener(feed) {
-
       // Calculate and submit stake
       // NOTE: this is a hack to get content size and should be done prior to download
       feed.once('download', () => {
         debug(`old size: ${currSize}, new size: ${feed.length}`)
         const sizeDelta = feed.length - currSize
-        const amount = Math.ceil(self.matcher.maxCost * sizeDelta / blocksPerUnit)  
+        const amount = Math.ceil(self.matcher.maxCost * sizeDelta / blocksPerUnit)
         self.emit('downloading', feed.length)
         debug(`Staking ${amount} for a size delta of ${sizeDelta} blocks`)
         self.submitStake(amount, (err) => {
@@ -81,7 +81,7 @@ class ExampleRequester extends afpstream.Requester {
           else stakeSubmitted = true
         })
       })
-      
+
       // Record download data
       feed.on('download', (index, data, from) => {
         const peerIdHex = from.remoteId.toString('hex')
@@ -102,7 +102,7 @@ class ExampleRequester extends afpstream.Requester {
   }
 
   // Submit the stake to the blockchain
-  async submitStake(amount, onComplete){
+  async submitStake(amount, onComplete) {
     const jobId = nonceString(this.sow)
     this.wallet
       .submitJob(jobId, amount)
@@ -152,7 +152,7 @@ class ExampleRequester extends afpstream.Requester {
     this.contentSwarm.addPeer(connectionId, { host: peer.host, port })
   }
 
-  async onReceipt(receipt, connection){
+  async onReceipt(receipt, connection) {
     // Expects receipt from all rewarded farmers
     this.incrementOnComplete()
   }
@@ -169,7 +169,7 @@ class ExampleRequester extends afpstream.Requester {
   sendRewards(callback) {
     this.onComplete = callback
 
-    debug("delivery map")
+    debug('delivery map')
     debug(this.deliveryMap)
     this.deliveryMap.forEach((value, key, map) => {
       const peerId = this.swarmIdMap.get(key)

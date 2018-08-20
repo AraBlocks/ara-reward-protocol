@@ -1,4 +1,5 @@
 const { messages, afpstream, util } = require('ara-farming-protocol')
+
 const { idify, nonceString } = util
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
@@ -70,13 +71,11 @@ class ExampleFarmer extends afpstream.Farmer {
     return true
   }
 
-  dataTransmitted(sowId, units){
-    if (this.deliveryMap.has(sowId)){
+  dataTransmitted(sowId, units) {
+    if (this.deliveryMap.has(sowId)) {
       const total = this.deliveryMap.get(sowId) + units
       this.deliveryMap.set(sowId, total)
-    } 
-    else
-    {
+    } else {
       this.deliveryMap.set(sowId, units)
     }
   }
@@ -129,7 +128,7 @@ class ExampleFarmer extends afpstream.Farmer {
     content.on('upload', (index, data) => {
       this.dataTransmitted(sowId, 1) // TODO: is this a good way to measure data amount?
     })
-  
+
     const opts = {
       stream
     }
@@ -143,14 +142,14 @@ class ExampleFarmer extends afpstream.Farmer {
         download: false
       })
       stream.once('end', onend)
-  
+
       function onend() {
         swarm.destroy()
       }
-  
+
       return stream
     }
-  
+
     function handleConnection(connection, info) {
       debug(`Peer connected: ${info.host} on port: ${info.port}`)
     }

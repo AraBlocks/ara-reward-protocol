@@ -1,6 +1,9 @@
-const { contractAddress, walletAddresses, afsDIDs, farmerDID, networkPublicKeypath } = require('../../constants.js')
+const {
+  contractAddress, walletAddresses, afsDIDs, farmerDID, networkPublicKeypath
+} = require('../../constants.js')
 const { unpackKeys, configFarmerHandshake } = require('../../handshake-utils.js')
 const { messages, afpstream, util } = require('ara-farming-protocol')
+
 const { idify, nonceString } = util
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
@@ -13,7 +16,7 @@ const wallet = new ContractABI(contractAddress, walletAddresses[3])
 const price = 1
 
 const keypath = null
-//const keypath = networkPublicKeypath
+// const keypath = networkPublicKeypath
 
 for (let i = 0; i < afsDIDs.length; i++) {
   broadcast(afsDIDs[i], price, keypath)
@@ -37,16 +40,17 @@ async function broadcast(did, price, keypath) {
   // The Farmer instance which sets a specific price, an ID, and a signature
   const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallet, afs)
 
-  // Load network keys if applicable
+  // Load network keys for encryption if applicable
   let handshakeConf
   if (keypath) {
     try { handshakeConf = await unpackKeys(farmerDID, keypath) } catch (e) { debug({ e }) }
   }
 
   // Join the discovery swarm for the requested content
-  const swarm = createFarmingSwarm(did, farmer, handshakeConf)
+  createFarmingSwarm(did, farmer, handshakeConf)
 }
 
+// Creates a swarm to find requesters
 function createFarmingSwarm(did, farmer, conf) {
   const stream = conf ? () => configFarmerHandshake(conf) : null
   const swarm = createSwarm({
@@ -63,7 +67,7 @@ function createFarmingSwarm(did, farmer, conf) {
       const reader = connection.createReadStream()
       stream = duplexify(writer, reader)
     }
-    const requesterConnection = new afpstream.RequesterConnection(info, stream, {timeout: 6000 })    
+    const requesterConnection = new afpstream.RequesterConnection(info, stream, { timeout: 6000 })
     farmer.processRequester(requesterConnection)
   }
 

@@ -77,7 +77,7 @@ For an application that enables a user to participate in distributed work reques
 
 ### Farming
 
-For broadcasting the ability to farm.
+For broadcasting the ability to farm using gRPC.
 
 ```js
 const { ExampleFarmer } = require('./farmer')
@@ -93,7 +93,7 @@ afpgrpc.util.broadcastFarmer(farmer, port)
 
 ### Requesting
 
-For requesting a farming job.
+For requesting a farming job via gRPC.
 
 ```js
 const { ExampleRequester } = require('./requester')
@@ -158,7 +158,7 @@ A requester would extend the AFP Requester class to define the requester's speci
   }
 
   /**
-   * 
+   * This is called when a receipt for the reward has been return by the farmer
    * @param {messages.Receipt} receipt 
    * @param {services.RFPClient} connection 
    */

@@ -1,4 +1,4 @@
-const EventEmitter = require( 'events' );
+const EventEmitter = require('events')
 const messages = require('./proto/messages_pb')
 
 // Class defining the required working conditions demanded by (and RPC methods of) a Farmer

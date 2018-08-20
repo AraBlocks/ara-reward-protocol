@@ -1,4 +1,4 @@
-const EventEmitter = require( 'events' );
+const EventEmitter = require('events')
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
 const debug = require('debug')('afp:requester-base')
@@ -129,7 +129,7 @@ class RequesterBase extends EventEmitter {
   }
 
   /**
-   *
+   * This is called when a receipt for the reward has been return by the farmer
    * @param {messages.Receipt} receipt
    * @param {services.RFPClient} connection
    */
