@@ -15,7 +15,9 @@ const { idify, etherToWei, gbsToBytes } = util
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 
 const networkkeypath = null
-// const networkkeypath = constants.networkPublicKeypath
+
+// Uncomment next line to enable sub-network encryption
+// networkkeypath = constants.networkPublicKeypath
 
 for (let i = 0; i < afsDIDs.length; i++) {
   broadcast(afsDIDs[i], 1, networkkeypath)

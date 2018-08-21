@@ -1,7 +1,7 @@
 const url = require('url')
-const { provider } = (require('ara-identity/rc')()).web3
+const rc = require('ara-runtime-configuration')()
 
-const providerURL = url.parse(provider)
+const providerURL = url.parse(rc.web3.provider)
 
 module.exports = {
   networks: {

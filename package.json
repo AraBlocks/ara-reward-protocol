@@ -6,7 +6,8 @@
   "scripts": {
     "test": "ava test",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "lint-fix": "eslint . --fix",
+    "nyc": "nyc npm test"
   },
   "repository": {
     "type": "git",
@@ -22,18 +23,17 @@
     "url": "https://github.com/littlstar/farming-protocol/issues"
   },
   "homepage": "https://github.com/littlstar/farming-protocol#readme",
-  "peerDependencies": {
-    "ara-filesystem": "github:arablocks/ara-filesystem",
-    "ara-identity": "github:arablocks/ara-identity"
-  },
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0",
     "eslint-config-ara": "github:arablocks/eslint-config-ara",
     "eslint": "^4.19.1",
     "sinon": "^6.0.1",
-    "ava": "^0.25.0"
+    "ava": "^0.25.0",
+    "nyc": "^12.0.2"
   },
   "dependencies": {
+    "ara-filesystem": "github:arablocks/ara-filesystem",
+    "ara-identity": "github:arablocks/ara-identity",
     "ara-console": "github:arablocks/ara-console",
     "ara-crypto": "github:arablocks/ara-crypto",
     "ara-network": "github:arablocks/ara-network",

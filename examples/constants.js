@@ -12,8 +12,8 @@ const walletAddresses = [
   '0x6812Fd56a91aC229792937f635d335Ad6e90472B'
 ]
 
-const farmerDID = 'd178758d4b736924d7a12072e4cb5a84d553d2fc8c0aafe0417e95bf6093b932'
-const requesterDID = '46900b8b53a37bab32f247f58a6d0c092516c08df2474dd386f054d386aeeca0'
+const farmerDID = '617e5e325147ee167b710eb75a6b09181ea103157422c0567a18b001757025a6'
+const requesterDID = 'cb6b47f48cee53d052075296a814b7189974a8d49535f14d8af6e40b02fe4dc9'
 const passphrase = 'supersecurepassword'
 const networkPublicKeypath = 'keys.pub'
 const networkSecretKeypath = 'keys'

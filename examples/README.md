@@ -16,7 +16,7 @@ The examples require you to have:
 
  Prior to running any examples, run the setup bash script:
 
-```
+```sh
 $ cd examples/setup
 $ ./setup.sh
 ```
@@ -28,15 +28,15 @@ This script will do the following:
 4. Create an ANK for encryption
 4. Populate the `/examples/constants.js` with the corresponding information
 
-You will need to replace the wallet addresses in `examples/constants.js` with those in your blockchain.
+**Important**: Replace the wallet addresses in `examples/constants.js` with those in your blockchain.
 
 ## Examples
 
-### AFS Replication with Streams
+### AFS Replication with Duplex Streams
 
 This example shows AFS replication with AFP via communication over duplex streams. This example can optionally using sub-networks with encryption via [Ara Network Keys](https://github.com/AraBlocks/ara-network).
 
-The farmer example broadcasts the ability to replicate an AFS for a certain price per GB. The requester example finds these farmers that have the specific AFS and communicates via duplex stream to determine the cost of replication. It uses the MaxCostMatcher to select a subset of peers. 
+The farmer example broadcasts the ability to replicate an AFS for a certain price per GB. The requester example finds these farmers that have the specific AFS and communicates via duplex stream to determine the cost of replication. It uses the `MaxCostMatcher` to select a subset of peers.
 
 #### Enabling Encryption / Farmer sub-networks
 
@@ -63,9 +63,9 @@ $ node examples/afs-replication/duplex/remote-requester.js
 
 ### AFS Replication with gRPC
 
-This example shows AFS replication with AFP via communication over gRPC on port 50051. 
+This example shows AFS replication with AFP via communication over gRPC on port 50051.
 
-The farmer example broadcasts the ability to replicate an AFS for zero cost. The requester example finds these farmers that have the specific AFS and communicates via gRPC to only find free replication. It uses the MaxCostMatcher to select a subset of peers. 
+The farmer example broadcasts the ability to replicate an AFS for zero cost. The requester example finds these farmers that have the specific AFS and communicates via gRPC to only find free replication. It uses the MaxCostMatcher to select a subset of peers.
 
 On the farmer's computer/terminal:
 

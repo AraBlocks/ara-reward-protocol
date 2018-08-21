@@ -5,7 +5,7 @@ password="supersecurepassword"
 networkname="farmingexample"
 keyfile="keys"
 
-echo "Migrating Example AFP Contracts..."
+echo "Migrating Example AFP Contract..."
 cd ../utils/farming_contract
 rm -rf build/
 truffle migrate
