@@ -1,6 +1,5 @@
-const { StreamProtocol, MSG } = require('../../src/duplex/stream-protocol')
+const { MSG } = require('../../src/duplex/stream-protocol')
 const messages = require('../../src/proto/messages_pb')
-const sinon = require('sinon')
 const test = require('ava')
 
 test('duplex.encode-decode.validData', (t) => {

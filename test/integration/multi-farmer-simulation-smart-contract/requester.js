@@ -1,3 +1,4 @@
+/* eslint class-methods-use-this: 1 */
 const { RequesterBase } = require('../../../src/requester')
 const { MatcherBase } = require('../../../src/matcher')
 const messages = require('../../../src/proto/messages_pb')
@@ -19,7 +20,8 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 
   /**
@@ -41,7 +43,8 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   validateAgreement(agreement) {
-    return true
+    if (agreement) return true
+    return false
   }
 
   /**
@@ -107,17 +110,18 @@ class ExampleRequester extends RequesterBase {
 
     this.wallet
       .submitReward(sowId, farmerId, amount)
-      .then((result) => {
-        server.sendReward(reward, (err, response) => {
+      .then(() => {
+        server.sendReward(reward, (err) => {
           if (err) {
-            debug(`RequesterExample: fail to notify farmer ${farmerId} about the reward`)
+            debug(`fail to notify farmer ${farmerId} about the reward`)
           } else {
-            debug(`RequesterExample: farmer ${farmerId} has been notified about the reward delivery`)
+            debug(`farmer ${farmerId} has been notified about the reward delivery`)
           }
         })
       })
       .catch((err) => {
-        debug(`RequesterExample: Fail to submit the reward ${amount} to farmer ${farmerId} for job ${sowId}`)
+        debug(`Fail to submit the reward for job ${sowId}.`)
+        debug(err)
       })
   }
 }

@@ -1,19 +1,13 @@
-const { afsDIDs, requesterDID } = require('../../constants.js')
-const { messages, afpgrpc, matchers } = require('ara-farming-protocol')
+const { messages, afpgrpc, matchers } = require('../../../index')
 const { createChannel, createSwarm } = require('ara-network/discovery')
+const { afsDIDs, requesterDID } = require('../../constants.js')
 const { ExampleRequester } = require('./requester')
+const debug = require('debug')('afp:grpc-example:main')
 const afs = require('ara-filesystem')
-const ip = require('ip')
 
-/**
- * Example: Finds peers on the discovery channel did:ara:desiredContent,
- * then connects to each peer on example port 50051 to determine costs.
- * Uses the MaxCostMatcher to determine peers.
- */
+download(afsDIDs[0], '50051')
 
-download(afsDIDs[0])
-
-async function download(did) {
+async function download(did, grpcPort) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
   const matcher = new matchers.MaxCostMatcher(10, 5)
 
@@ -39,7 +33,7 @@ async function download(did) {
   const channel = createChannel()
   channel.join(did)
   const requester = new ExampleRequester(sow, matcher, requesterSig, startWork)
-  channel.on('peer', (id, peer, type) => handlePeer(id, peer, type, requester))
+  channel.on('peer', (id, peer) => handlePeer(id, peer))
 
   async function loadAFS(aid) {
     const createResp = await afs.create({
@@ -48,7 +42,7 @@ async function download(did) {
     return createResp.afs
   }
 
-  async function startWork(ip, port) {
+  async function startWork(peer, port) {
     const downloadAFS = await loadAFS(did)
 
     const opts = {
@@ -58,47 +52,38 @@ async function download(did) {
 
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
-    swarm.addPeer(ip, { host: ip, port: port })
+    swarm.addPeer(peer.host, { host: peer.host, port })
 
-    function stream(peer) {
-      const partition = downloadAFS.partitions.resolve(downloadAFS.HOME)
-      if (partition.content) {
-        const { content } = partition
-        content.once('sync', () => {
-          console.log('Did sync %s', toLower(bytes(content.byteLength)))
-        })
-      }
-
-      const stream = downloadAFS.replicate({
+    function stream() {
+      const afsstream = downloadAFS.replicate({
         upload: false,
         download: true
       })
-      stream.once('end', onend)
-      stream.peer = peer
-      return stream
+      afsstream.once('end', onend)
+      return afsstream
     }
 
     async function onend() {
       downloadAFS.close()
       swarm.destroy()
       channel.destroy()
-      console.log(await downloadAFS.readdir('.'))
-      console.log('Downloaded!')
-      console.log('Swarm destroyed')
+      debug(await downloadAFS.readdir('.'))
+      debug('Downloaded!')
+      debug('Swarm destroyed')
     }
 
     // Handle when a peer connects to the swarm
     async function handleConnection(connection, info) {
-      console.log(`SWARM: New peer: ${info.host} on port: ${info.port}`)
+      debug(`SWARM: New peer: ${info.host} on port: ${info.port}`)
     }
   }
 
   // Process each peer when a new peer is discovered
-  function handlePeer(id, peer, type, requester) {
+  function handlePeer(id, peer) {
     const key = peer.host
     if (!farmerConnections.has(key)) {
-      console.log(`CHANNEL: New peer: ${peer.host} on port: ${peer.port}`)
-      const port = `${peer.host}:50051`
+      debug(`CHANNEL: New peer: ${peer.host} on port: ${peer.port}`)
+      const port = `${peer.host}:${grpcPort}`
       const farmerConnection = afpgrpc.util.connectToFarmer(port)
       farmerConnections.set(key, farmerConnection)
       requester.processFarmer(farmerConnection)

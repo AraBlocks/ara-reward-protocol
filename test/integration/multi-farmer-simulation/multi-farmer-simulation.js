@@ -1,4 +1,3 @@
-const sinon = require('sinon')
 const test = require('ava')
 
 const {

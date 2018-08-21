@@ -1,5 +1,5 @@
-const { messages, RequesterBase } = require('ara-farming-protocol')
-const debug = require('debug')('afp:grpc-example:requester')
+/* eslint class-methods-use-this: 1 */
+const { messages, RequesterBase } = require('../../../index')
 const crypto = require('ara-crypto')
 
 class ExampleRequester extends RequesterBase {
@@ -15,7 +15,8 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 
   /**
@@ -37,21 +38,23 @@ class ExampleRequester extends RequesterBase {
    * @returns {boolean}
    */
   async validateAgreement(agreement) {
-    return true
+    if (agreement) return true
+    return false
   }
 
   /**
    * This is called when a agreement has been marked as valid and a farmer
    * is ready to start work
    * @param {messages.Agreement} agreement
-   * @param {services.RFPClient} farmer
+   * @param {services.RFPClient} connection
    */
-  async onHireConfirmed(agreement, farmer) {
+  async onHireConfirmed(agreement, connection) {
+    const { peer } = connection
 
     // Extract port
     const data = Buffer.from(agreement.getData())
     const port = data.readUInt32LE(0)
-    
+
     this.onStartWork(peer, port)
   }
 }

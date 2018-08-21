@@ -1,11 +1,5 @@
-const sinon = require('sinon')
+const { messages, FarmerBase } = require('../../../index')
 const test = require('ava')
-
-const {
-  messages,
-  FarmerBase,
-  util
-} = require('../../../index')
 
 class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price) {

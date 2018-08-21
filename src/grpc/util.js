@@ -1,4 +1,3 @@
-const { Farmer } = require('../farmer')
 const services = require('../proto/route-guide_grpc_pb')
 const grpc = require('grpc')
 
@@ -9,28 +8,27 @@ class FarmerServer {
    * @param {string} port
    */
   constructor(farmer, port) {
-    this.server = this.createServer(farmer)
+    this.server = createServer(farmer)
     this.server.bind(port, grpc.ServerCredentials.createInsecure())
-  }
-
-  /**
-   * Creates a server for a given farmer
-   * @param {Farmer} farmer
-   * @returns {grpc.Server}
-   */
-  createServer(farmer) {
-    const server = new grpc.Server()
-    server.addService(services.RFPService, {
-      sendSow: farmer.onSow.bind(farmer),
-      sendAgreement: farmer.onAgreement.bind(farmer),
-      sendReward: farmer.onReward.bind(farmer)
-    })
-    return server
   }
 
   start() {
     this.server.start()
   }
+}
+
+/**
+   * Creates a server for a given farmer
+   * @returns {grpc.Server}
+   */
+function createServer(farmer) {
+  const server = new grpc.Server()
+  server.addService(services.RFPService, {
+    sendSow: farmer.onSow.bind(farmer),
+    sendAgreement: farmer.onAgreement.bind(farmer),
+    sendReward: farmer.onReward.bind(farmer)
+  })
+  return server
 }
 
 /**

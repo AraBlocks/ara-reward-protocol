@@ -1,4 +1,4 @@
-const { passphrase, networkSecret, networkKeyName } = require('./constants.js')
+const { passphrase, networkSecret, networkKeyName } = require('../constants.js')
 const { unpack, keyRing } = require('ara-network/keys')
 const { info, warn } = require('ara-console')
 const { Handshake } = require('ara-network/handshake')
@@ -24,6 +24,7 @@ function configFarmerHandshake(conf) {
 
 function configRequesterHandshake(conf) {
   const handshake = getHandshake(conf)
+  handshake.on('hello', onhello)
 
   function onhello() {
     info('got HELLO')
@@ -81,6 +82,7 @@ async function unpackKeys(identity, keypath) {
     }
   }
   warn(`No key for network "${networkKeyName}". Data will be unencrypted.`)
+  return null
 }
 
 module.exports = {

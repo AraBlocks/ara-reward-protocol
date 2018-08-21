@@ -1,8 +1,9 @@
-const sinon = require('sinon')
-const test = require('ava')
+/* eslint class-methods-use-this: 1 */
 const { FarmerBase } = require('../../../src/farmer')
 const messages = require('../../../src/proto/messages_pb')
 const debug = require('debug')('afp:contract-example:farmer')
+const sinon = require('sinon')
+const test = require('ava')
 
 class ExampleFarmer extends FarmerBase {
   constructor(farmerId, farmerSig, price, wallet) {
@@ -33,7 +34,8 @@ class ExampleFarmer extends FarmerBase {
    * @returns {boolean}
    */
   validateAgreement(agreement) {
-    return true
+    if (agreement) return true
+    return false
   }
 
   /**
@@ -52,11 +54,13 @@ class ExampleFarmer extends FarmerBase {
    * @returns {boolean}
    */
   validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 
   async validateReward(reward) {
-    return true
+    if (reward) return true
+    return false
   }
 
   async withdrawReward(reward) {
@@ -64,11 +68,12 @@ class ExampleFarmer extends FarmerBase {
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
-      .then((result) => {
+      .then(() => {
         debug(`Farmer ${farmerDid} has withdrawn reward`)
       })
       .catch((err) => {
         debug(`Farmer ${farmerDid} failed to withdraw reward`)
+        debug(err)
       })
   }
 

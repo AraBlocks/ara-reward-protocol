@@ -1,11 +1,12 @@
-const { messages, afpstream, util } = require('ara-farming-protocol')
-
-const { idify, nonceString } = util
+/* eslint class-methods-use-this: 1 */
+const { messages, afpstream, util } = require('../../../index')
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
 
-const blocksPerUnit = 400 // TODO: adjust this measurement
+const { idify, nonceString } = util
+// TODO: adjust this measurement
+const blocksPerUnit = 400
 
 class ExampleRequester extends afpstream.Requester {
   constructor(sow, matcher, requesterSig, wallet, afs, onComplete) {
@@ -23,7 +24,7 @@ class ExampleRequester extends afpstream.Requester {
   createContentSwarm(afs, onComplete) {
     const self = this
     let currSize = 0
-    let content = afs.partitions.resolve(afs.HOME).content
+    const { content } = afs.partitions.resolve(afs.HOME)
     let stakeSubmitted = false
 
     if (content) {
@@ -31,8 +32,7 @@ class ExampleRequester extends afpstream.Requester {
       attachDownloadListener(content)
     } else {
       afs.once('content', () => {
-        content = afs.partitions.resolve(afs.HOME).content
-        attachDownloadListener(content)
+        attachDownloadListener(afs.partitions.resolve(afs.HOME).content)
       })
     }
 
@@ -43,20 +43,20 @@ class ExampleRequester extends afpstream.Requester {
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
 
-    function stream(peer) {
-      const stream = afs.replicate({
+    function stream() {
+      const afsstream = afs.replicate({
         upload: false,
         download: true,
         live: false
       })
 
-      stream.once('end', () => {
+      afsstream.once('end', () => {
         debug('Replicate stream ended')
         if (!stakeSubmitted) onComplete()
         swarm.destroy()
       })
 
-      return stream
+      return afsstream
     }
 
     async function handleConnection(connection, info) {
@@ -73,7 +73,7 @@ class ExampleRequester extends afpstream.Requester {
       feed.once('download', () => {
         debug(`old size: ${currSize}, new size: ${feed.length}`)
         const sizeDelta = feed.length - currSize
-        const amount = Math.ceil(self.matcher.maxCost * sizeDelta / blocksPerUnit)
+        const amount = self.matcher.maxCost * Math.ceil(sizeDelta / blocksPerUnit)
         self.emit('downloading', feed.length)
         debug(`Staking ${amount} for a size delta of ${sizeDelta} blocks`)
         self.submitStake(amount, (err) => {
@@ -85,7 +85,8 @@ class ExampleRequester extends afpstream.Requester {
       // Record download data
       feed.on('download', (index, data, from) => {
         const peerIdHex = from.remoteId.toString('hex')
-        self.dataReceived(peerIdHex, 1) // TODO: Is this a good way to measure data amount?
+        // TODO: Is this a good way to measure data amount?
+        self.dataReceived(peerIdHex, 1)
         self.emit('progress', feed.downloaded())
       })
 
@@ -106,7 +107,7 @@ class ExampleRequester extends afpstream.Requester {
     const jobId = nonceString(this.sow)
     this.wallet
       .submitJob(jobId, amount)
-      .then((result) => {
+      .then(() => {
         onComplete()
       })
       .catch((err) => {
@@ -115,7 +116,8 @@ class ExampleRequester extends afpstream.Requester {
   }
 
   async validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 
   async generateAgreement(quote) {
@@ -127,11 +129,12 @@ class ExampleRequester extends afpstream.Requester {
   }
 
   async validateAgreement(agreement) {
-    return true
+    if (agreement) return true
+    return false
   }
 
   async onHireConfirmed(agreement, connection) {
-    const peer = connection.peer
+    const { peer } = connection
 
     // Extract port
     const data = Buffer.from(agreement.getData())
@@ -154,7 +157,9 @@ class ExampleRequester extends afpstream.Requester {
 
   async onReceipt(receipt, connection) {
     // Expects receipt from all rewarded farmers
-    this.incrementOnComplete()
+    if (receipt && connection) {
+      this.incrementOnComplete()
+    }
   }
 
   dataReceived(peerSwarmId, units) {
@@ -171,9 +176,10 @@ class ExampleRequester extends afpstream.Requester {
 
     debug('delivery map')
     debug(this.deliveryMap)
-    this.deliveryMap.forEach((value, key, map) => {
+    this.deliveryMap.forEach((value, key) => {
       const peerId = this.swarmIdMap.get(key)
-      const units = Math.floor(value / blocksPerUnit) // TODO: no rounding?
+      // TODO: no rounding
+      const units = Math.floor(value / blocksPerUnit)
       if (units > 0 && this.hiredFarmers.has(peerId)) {
         this.awardFarmer(peerId, units)
       } else {
@@ -228,11 +234,12 @@ class ExampleRequester extends afpstream.Requester {
 
     this.wallet
       .submitReward(sowId, farmerId, amount)
-      .then((result) => {
+      .then(() => {
         connection.sendReward(reward)
       })
       .catch((err) => {
-        debug(`Failed to submit the reward ${rewardValue} to farmer ${farmerId} for job ${sowId}`)
+        debug(`Failed to submit the reward ${amount} to farmer ${farmerId} for job ${sowId}`)
+        debug(err)
       })
   }
 }

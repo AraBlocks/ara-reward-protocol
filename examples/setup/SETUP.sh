@@ -6,11 +6,11 @@ networkname="farmingexample"
 keyfile="keys"
 
 echo "Migrating Example AFP Contracts..."
-cd ./farming_contract
+cd ../utils/farming_contract
 rm -rf build/
 truffle migrate
 farmingaddress="$(truffle networks | grep "Farming:" | sed 's/^.*: //')"
-cd ../
+cd ../../setup/
 
 echo "Creating Requester AID..."
 requesterid="$(aid create <<< $password | grep "did:ara:" | head -1 | sed 's/^.*did:ara://')"
@@ -24,7 +24,7 @@ afs add $afs1 $afscontent <<< $password
 afs commit $afs1 -f <<< $password
 
 echo "Creating ANK for Requester..."
-ank -i $requesterid -s $password -n $networkname -o ../$keyfile <<< $password
+ank -i $requesterid -s $password -n $networkname -o ../utils/$keyfile <<< $password
 
 echo "Updating constants.js..."
 sed "s/ContractPlaceholder/$farmingaddress/" $consttemplate | sed "s/PasswordPlaceholder/$password/" \

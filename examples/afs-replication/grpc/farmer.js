@@ -1,5 +1,7 @@
-const { messages, FarmerBase } = require('ara-farming-protocol')
+/* eslint class-methods-use-this: 1 */
+const { messages, FarmerBase } = require('../../../index')
 const crypto = require('ara-crypto')
+const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
 
@@ -62,7 +64,8 @@ class ExampleFarmer extends FarmerBase {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 }
 

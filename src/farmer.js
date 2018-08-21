@@ -1,3 +1,5 @@
+/* eslint class-methods-use-this: off */
+/* eslint no-unused-vars: off */
 const EventEmitter = require('events')
 const messages = require('./proto/messages_pb')
 

@@ -29,16 +29,15 @@
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0",
     "eslint-config-ara": "github:arablocks/eslint-config-ara",
-    "find-free-port": "^2.0.0",
-    "cli-progress": "^2.0.0",
     "eslint": "^4.19.1",
     "sinon": "^6.0.1",
-    "ava": "^0.25.0",
-    "did-uri": "^0.2.5"
+    "ava": "^0.25.0"
   },
   "dependencies": {
     "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
     "google-protobuf": "^3.6.0",
+    "find-free-port": "^2.0.0",
+    "cli-progress": "^2.0.0",
     "ara-console": "github:arablocks/ara-console",
     "ara-network": "github:arablocks/ara-network",
     "ara-crypto": "github:arablocks/ara-crypto",
@@ -46,6 +45,7 @@
     "duplexify": "^3.6.0",
     "through2": "^2.0.3",
     "through": "^2.3.8",
+    "did-uri": "^0.2.5",
     "pumpify": "^1.5.1",
     "unixify": "^1.0.0",
     "varint": "^5.0.0",

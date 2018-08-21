@@ -1,6 +1,16 @@
-# farming-protocol examples
+<img src="https://github.com/arablocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol examples
+========
 
 This folder contains a set of examples intended to demonstrate usage of the farming protocol.
+
+## Requirements
+
+The examples require you to have:
+- [AID](https://github.com/AraBlocks/ara-identity)
+- [AFS](https://github.com/AraBlocks/ara-filesystem)
+- [ANN](https://github.com/AraBlocks/ara-network)
+- [truffle](https://truffleframework.com/)
+- An accessible blockchain, such as [Ganache](https://truffleframework.com/ganache)
 
 ## Setup
 
@@ -11,7 +21,7 @@ $ npm link
 $ npm link ara-farming-protocol
 ```
 
-The examples require you to have [AID](https://github.com/AraBlocks/ara-identity), [AFS](https://github.com/AraBlocks/ara-filesystem), [ANN](https://github.com/AraBlocks/ara-network), [truffle](https://truffleframework.com/), and an accessible blockchain. Prior to running any examples, run the setup bash script:
+ Prior to running any examples, run the setup bash script:
 
 ```
 $ cd examples/setup

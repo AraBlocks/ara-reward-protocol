@@ -1,5 +1,6 @@
-const sinon = require('sinon')
+/* eslint class-methods-use-this: 1 */
 const test = require('ava')
+const debug = require('debug')('afp:contract-example:requester')
 
 const {
   messages,
@@ -7,7 +8,7 @@ const {
   util
 } = require('../../../index')
 
-const { idify, nonceString } = util
+const { nonceString } = util
 
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig) {
@@ -25,7 +26,7 @@ class ExampleRequester extends RequesterBase {
   async validatePeer(peer) {
     const farmerId = peer.getDid()
     if (farmerId == this.badFarmerId) {
-      console.log(`Requester: Invalid farmer ${farmerId}`)
+      debug(`Requester: Invalid farmer ${farmerId}`)
       return false
     }
     return true
@@ -61,7 +62,8 @@ class ExampleRequester extends RequesterBase {
      * @param {services.RFPClient} farmer
      */
   async onHireConfirmed(agreement, farmer) {
-    console.log(`Requester: Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
+    if (!agreement || !farmer) throw new Error('OnHire missing args.')
+    debug(`Requester: Agreement ${nonceString(agreement)} signed by farmer ${agreement.getQuote().getFarmer().getDid()}`)
   }
 }
 

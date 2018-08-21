@@ -1,25 +1,24 @@
 const {
-  contractAddress, walletAddresses, afsDIDs, farmerDID, networkPublicKeypath
-} = require('../../constants.js')
-const { unpackKeys, configFarmerHandshake } = require('../../handshake-utils.js')
-const { messages, afpstream, util } = require('ara-farming-protocol')
-
-const { idify, nonceString } = util
+  unpackKeys, configFarmerHandshake, ContractABI, constants
+} = require('../../index')
+const { messages, afpstream, util } = require('../../../index')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
-const ContractABI = require('../../farming_contract/contract-abi.js')
 const duplexify = require('duplexify')
 const debug = require('debug')('afp:duplex-example:main')
 
+const {
+  contractAddress, walletAddresses, afsDIDs, farmerDID
+} = constants
+const { idify } = util
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
-const price = 1
 
-const keypath = null
-// const keypath = networkPublicKeypath
+const networkkeypath = null
+// const networkkeypath = constants.networkPublicKeypath
 
 for (let i = 0; i < afsDIDs.length; i++) {
-  broadcast(afsDIDs[i], price, keypath)
+  broadcast(afsDIDs[i], 1, networkkeypath)
 }
 
 /**
@@ -67,13 +66,13 @@ function createFarmingSwarm(did, farmer, conf) {
 
   function handleConnection(connection, info) {
     debug(`SWARM: New peer: ${idify(info.host, info.port)}`)
-    let stream = connection
+    let duplex = connection
     if (conf) {
       const writer = connection.createWriteStream()
       const reader = connection.createReadStream()
-      stream = duplexify(writer, reader)
+      duplex = duplexify(writer, reader)
     }
-    const requesterConnection = new afpstream.RequesterConnection(info, stream, { timeout: 6000 })
+    const requesterConnection = new afpstream.RequesterConnection(info, duplex, { timeout: 6000 })
     farmer.processRequester(requesterConnection)
   }
 

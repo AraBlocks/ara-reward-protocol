@@ -1,32 +1,33 @@
 const {
-  contractAddress, walletAddresses, afsDIDs, requesterDID, networkSecretKeypath
-} = require('../../constants.js')
-const { unpackKeys, configRequesterHandshake } = require('../../handshake-utils.js')
+  unpackKeys, configRequesterHandshake, ContractABI, constants
+} = require('../../index')
 const {
   messages, matchers, afpstream, util
-} = require('ara-farming-protocol')
-
-const { idify, nonceString } = util
+} = require('../../../index')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
-const ContractABI = require('../../farming_contract/contract-abi.js')
+const duplexify = require('duplexify')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
 
+const {
+  contractAddress, walletAddresses, afsDIDs, requesterDID
+} = constants
+const { idify } = util
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
-const keypath = null
-// const keypath = networkSecretKeypath
+const networkkeypath = null
+// const networkkeypath = constants.networkSecretKeypath
 
-download(afsDIDs[0], 1, keypath)
+download(afsDIDs[0], 1, networkkeypath)
 
 /**
  * Download a specific AFS
  * @param {string} did DID of the AFS
  * @param {float} reward Reward per unit of work
- * @param {string} keypath Path to Ara Network Key 
+ * @param {string} keypath Path to Ara Network Key
  */
 async function download(did, reward, keypath) {
   // A default matcher which will match for a max cost of 10 to a max of 5 farmers
@@ -59,7 +60,7 @@ async function download(did, reward, keypath) {
   // Load network keys if applicable
   let handshakeConf
   if (keypath) {
-    try { handshakeConf = await unpackKeys(requesterDID, networkSecretKeypath) } catch (e) { debug({ e }) }
+    try { handshakeConf = await unpackKeys(requesterDID, keypath) } catch (e) { debug({ e }) }
   }
 
   // Find farmers
@@ -88,13 +89,13 @@ function createFarmerSwarm(did, requester, conf) {
 
   function handleConnection(connection, info) {
     debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
-    let stream = connection
+    let duplex = connection
     if (conf) {
       const writer = connection.createWriteStream()
       const reader = connection.createReadStream()
-      stream = duplexify(writer, reader)
+      duplex = duplexify(writer, reader)
     }
-    const farmerConnection = new afpstream.FarmerConnection(info, stream, { timeout: 6000 })
+    const farmerConnection = new afpstream.FarmerConnection(info, duplex, { timeout: 6000 })
     process.nextTick(() => requester.processFarmer(farmerConnection))
   }
 

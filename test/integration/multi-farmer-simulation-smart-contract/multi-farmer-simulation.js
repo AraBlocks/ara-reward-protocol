@@ -1,12 +1,11 @@
-const sinon = require('sinon')
-const test = require('ava')
-const { ExampleFarmer } = require('./farmer')
-const { ExampleRequester } = require('./requester')
 const { messages, matchers, afpgrpc } = require('../../../index')
-const { contractAddress, walletAddresses } = require('../../../examples/constants')
-const ContractABI = require('../../../examples/setup/farming_contract/contract-abi.js')
+const { ContractABI, constants } = require('../../../examples/index')
+const { ExampleRequester } = require('./requester')
+const { ExampleFarmer } = require('./farmer')
 const debug = require('debug')('afp:contract-example:main')
+const test = require('ava')
 
+const { contractAddress, walletAddresses } = constants
 const wallets = [
   new ContractABI(contractAddress, walletAddresses[0]),
   new ContractABI(contractAddress, walletAddresses[1]),
@@ -92,7 +91,7 @@ test('multi-farmer-simulation-contract', (t) => {
   debug(`Job ${jobId} has a budget of: ${budget}`)
   requesterWallet
     .submitJob(jobId, budget)
-    .then((result) => {
+    .then(() => {
       debug('Job has been submitted to the contract')
       requester.processFarmers(farmerConnections)
 

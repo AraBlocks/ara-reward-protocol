@@ -1,12 +1,13 @@
-const { messages, afpstream, util } = require('ara-farming-protocol')
-
-const { idify, nonceString } = util
+/* eslint class-methods-use-this: 1 */
+const { messages, afpstream, util } = require('../../../index')
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
+
+const { nonceString } = util
 
 class ExampleFarmer extends afpstream.Farmer {
   constructor(farmerId, farmerSig, price, wallet, afs) {
@@ -68,7 +69,8 @@ class ExampleFarmer extends afpstream.Farmer {
    * @returns {boolean}
    */
   async validatePeer(peer) {
-    return true
+    if (peer) return true
+    return false
   }
 
   dataTransmitted(sowId, units) {
@@ -87,11 +89,12 @@ class ExampleFarmer extends afpstream.Farmer {
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
-      .then((result) => {
+      .then(() => {
         debug(`Reward amount ${reward.getAmount()} withdrawn for SOW ${sowId}`)
       })
       .catch((err) => {
         debug(`Failed to withdraw reward for SOW ${sowId}`)
+        debug(err)
       })
   }
 
@@ -101,7 +104,8 @@ class ExampleFarmer extends afpstream.Farmer {
    * @returns {boolean}
    */
   async validateReward(reward) {
-    return true
+    if (reward) return true
+    return false
   }
 
   /**
@@ -123,10 +127,11 @@ class ExampleFarmer extends afpstream.Farmer {
     const sow = agreement.getQuote().getSow()
     debug(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
-    const content = this.afs.partitions.resolve(this.afs.HOME).content
+    const { content } = this.afs.partitions.resolve(this.afs.HOME)
 
-    content.on('upload', (index, data) => {
-      this.dataTransmitted(sowId, 1) // TODO: is this a good way to measure data amount?
+    content.on('upload', () => {
+      // TODO: is this a good way to measure data amount?
+      this.dataTransmitted(sowId, 1)
     })
 
     const opts = {
@@ -136,18 +141,18 @@ class ExampleFarmer extends afpstream.Farmer {
     swarm.on('connection', handleConnection)
     swarm.listen(port)
 
-    function stream(peer) {
-      const stream = self.afs.replicate({
+    function stream() {
+      const afsstream = self.afs.replicate({
         upload: true,
         download: false
       })
-      stream.once('end', onend)
+      afsstream.once('end', onend)
 
       function onend() {
         swarm.destroy()
       }
 
-      return stream
+      return afsstream
     }
 
     function handleConnection(connection, info) {

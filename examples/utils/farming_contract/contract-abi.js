@@ -9,34 +9,34 @@ class ContractABI {
     this.contract = new web3.eth.Contract(abi, contractAdd)
   }
 
-  convertToEther(number) {
-    return number * 1000000000000000000
-  }
-
   // Budget in Ether
   submitJob(jobId, budget) {
-    return this.contract.methods.submitJob(this.maskHex(jobId)).send({
+    return this.contract.methods.submitJob(maskHex(jobId)).send({
       from: this.wallet,
-      value: `${this.convertToEther(budget)}`
+      value: `${convertToEther(budget)}`
     })
   }
 
   // Reward in Ether
   submitReward(jobId, farmerId, reward) {
     return this.contract.methods
-      .submitReward(this.maskHex(jobId), this.maskHex(farmerId), this.convertToEther(reward))
+      .submitReward(maskHex(jobId), maskHex(farmerId), convertToEther(reward))
       .send({ from: this.wallet })
   }
 
   claimReward(jobId, farmerId) {
     return this.contract.methods
-      .claimReward(this.maskHex(jobId), this.maskHex(farmerId))
+      .claimReward(maskHex(jobId), maskHex(farmerId))
       .send({ from: this.wallet })
   }
+}
 
-  maskHex(hex) {
-    return `0x${hex}`
-  }
+function convertToEther(number) {
+  return number * 1000000000000000000
+}
+
+function maskHex(hex) {
+  return `0x${hex}`
 }
 
 module.exports = ContractABI
