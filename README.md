@@ -13,11 +13,11 @@ Performing a service for another peer in the network, potentially for a reward.
 
 #### Farmer
 
-A peer in the network who provides a service.
+A peer in the network who can provide a service.
 
 #### Requester
 
-A peer in the network who intends to distribute work amoungst farmers.
+A peer in the network who desires to distribute work amoungst peers.
 
 ### Job
 
@@ -80,13 +80,17 @@ For an application that enables a user to participate in distributed work reques
 
 Base classes are provided that enable communication through gRPC and through duplex streams. 
 
+### Duplex Streams
+
+To communicate via duplex streams, you can extend the classes `Farmer` in `src/duplex/farmer` and `Requester` in `src/duplex/requester`.
+
 ### gRPC
 
 To communicate via gRPC, you can extend the base classes `FarmerBase` in `src/farmer` and `RequesterBase` in `src/requester`.
 
 #### Farming
 
-For broadcasting the ability to farm using gRPC.
+For broadcasting the ability to farm via gRPC, there are helper methods in afpgrpc.util:
 
 ```js
 const { ExampleFarmer } = require('./farmer')
@@ -102,7 +106,7 @@ afpgrpc.util.broadcastFarmer(farmer, port)
 
 #### Requesting
 
-For requesting a farming job via gRPC.
+For requesting a farming job via gRPC via gRPC, there are helper methods in afpgrpc.util:
 
 ```js
 const { ExampleRequester } = require('./requester')
@@ -120,17 +124,13 @@ const connection = afpgrpc.util.connectToFarmer(port)
 requester.processFarmers([connection])
 ```
 
-### Duplex Streams
-
-To communicate via duplex streams, you can extend the classes `Farmer` in `src/duplex/farmer` and `Requester` in `src/duplex/requester`.
-
 ### Implementation
 
 This section describes the classes that must be extended for AFP.
 
 #### Requester
 
-A requester would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task.
+A requester must extend the Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task.
 
 ```js
   /**
@@ -182,7 +182,7 @@ A requester would extend the AFP Requester class to define the requester's speci
 
 #### Farmer
 
-A farmer would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. If rewards are expected, then a farmer would also handle validating the reward and generating a receipt.
+A farmer must extend the Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. If rewards are expected, then a farmer would also handle validating the reward and generating a receipt.
 
 ```js
   /**

@@ -40,7 +40,7 @@ The farmer example broadcasts the ability to replicate an AFS for a certain pric
 
 #### Enabling Encryption / Farmer sub-networks
 
-To enable sub-network encryption, the requester should distribute the `examples/keys.pub` file to the farmer's computer. Then, uncomment the line in `remote-farmer.js`:
+To enable sub-network encryption, the requester should distribute the `examples/utils/keys.pub` file to the farmer's computer. Then, uncomment the line in `remote-farmer.js`:
 ```
 const networkkeypath = constants.networkPublicKeypath
 ```
