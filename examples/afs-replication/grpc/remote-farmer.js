@@ -6,9 +6,9 @@ const debug = require('debug')('afp:grpc-example:main')
 const afs = require('ara-filesystem')
 const ip = require('ip')
 
-broadcast(afsDIDs[0], '50051')
+broadcast(afsDIDs[0], 0, '50051')
 
-async function broadcast(did, grpcport) {
+async function broadcast(did, price, grpcport) {
   // The ARAid of the Farmer
   const farmerID = new messages.ARAid()
   farmerID.setDid(farmerDID)
@@ -19,7 +19,6 @@ async function broadcast(did, grpcport) {
   farmerSig.setData('avalidsignature')
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const price = 6
   const farmer = new ExampleFarmer(farmerID, farmerSig, price, startWork)
 
   // Start broadcasting the willingness to farm

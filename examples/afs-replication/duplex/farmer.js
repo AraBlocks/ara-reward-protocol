@@ -10,6 +10,14 @@ const ip = require('ip')
 const { nonceString } = util
 
 class ExampleFarmer extends afpstream.Farmer {
+  /**
+   * Example Farmer replicates an AFS for a min price
+   * @param {*} farmerId
+   * @param {*} farmerSig
+   * @param {int} price Desired price in wei/byte
+   * @param {ContractABI} wallet Farmer's Wallet Contract ABI
+   * @param {AFS} afs Instance of AFS
+   */
   constructor(farmerId, farmerSig, price, wallet, afs) {
     super()
     this.price = price

@@ -4,9 +4,9 @@ const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
 
-const { idify, nonceString } = util
-// TODO: adjust this measurement
-const blocksPerUnit = 400
+const {
+  idify, nonceString, bytesToGBs, weiToEther
+} = util
 
 class ExampleRequester extends afpstream.Requester {
   constructor(sow, matcher, requesterSig, wallet, afs, onComplete) {
@@ -23,12 +23,13 @@ class ExampleRequester extends afpstream.Requester {
   // Creates a private swarm for downloading a piece of content
   createContentSwarm(afs, onComplete) {
     const self = this
-    let currSize = 0
+    let oldByteLength = 0
     const { content } = afs.partitions.resolve(afs.HOME)
     let stakeSubmitted = false
 
     if (content) {
-      currSize = content.downloaded()
+      // TODO: calc current downloaded size in bytes
+      oldByteLength = 0
       attachDownloadListener(content)
     } else {
       afs.once('content', () => {
@@ -71,11 +72,11 @@ class ExampleRequester extends afpstream.Requester {
       // Calculate and submit stake
       // NOTE: this is a hack to get content size and should be done prior to download
       feed.once('download', () => {
-        debug(`old size: ${currSize}, new size: ${feed.length}`)
-        const sizeDelta = feed.length - currSize
-        const amount = self.matcher.maxCost * Math.ceil(sizeDelta / blocksPerUnit)
+        debug(`old size: ${oldByteLength}, new size: ${feed.byteLength}`)
+        const sizeDelta = feed.byteLength - oldByteLength
+        const amount = self.matcher.maxCost * sizeDelta
         self.emit('downloading', feed.length)
-        debug(`Staking ${amount} for a size delta of ${sizeDelta} blocks`)
+        debug(`Staking ${weiToEther(amount)} for a size delta of ${bytesToGBs(sizeDelta)} GBs`)
         self.submitStake(amount, (err) => {
           if (err) onComplete(err)
           else stakeSubmitted = true
@@ -85,8 +86,7 @@ class ExampleRequester extends afpstream.Requester {
       // Record download data
       feed.on('download', (index, data, from) => {
         const peerIdHex = from.remoteId.toString('hex')
-        // TODO: Is this a good way to measure data amount?
-        self.dataReceived(peerIdHex, 1)
+        self.dataReceived(peerIdHex, data.length)
         self.emit('progress', feed.downloaded())
       })
 
@@ -178,8 +178,7 @@ class ExampleRequester extends afpstream.Requester {
     debug(this.deliveryMap)
     this.deliveryMap.forEach((value, key) => {
       const peerId = this.swarmIdMap.get(key)
-      // TODO: no rounding
-      const units = Math.floor(value / blocksPerUnit)
+      const units = value
       if (units > 0 && this.hiredFarmers.has(peerId)) {
         this.awardFarmer(peerId, units)
       } else {

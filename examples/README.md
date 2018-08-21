@@ -14,13 +14,6 @@ The examples require you to have:
 
 ## Setup
 
-Note: as ara-farming-protocol is not yet on npm, you may need to run the following commands prior to running an example:
-
-```
-$ npm link
-$ npm link ara-farming-protocol
-```
-
  Prior to running any examples, run the setup bash script:
 
 ```
@@ -41,19 +34,19 @@ You will need to replace the wallet addresses in `examples/constants.js` with th
 
 ### AFS Replication with Streams
 
-This example shows afs replication with AFP via communication over duplex streams. This example can optionally using sub-networks with encryption via [Ara Network Keys](https://github.com/AraBlocks/ara-network).
+This example shows AFS replication with AFP via communication over duplex streams. This example can optionally using sub-networks with encryption via [Ara Network Keys](https://github.com/AraBlocks/ara-network).
 
-The farmer example broadcasts the ability to replicate a set of AFSes for a certain price per GB. The requester example finds these farmers that have a specific AFS and communicates via duplex stream to determine the cost of replication. It uses the MaxCostMatcher to select a subset of peers. 
+The farmer example broadcasts the ability to replicate an AFS for a certain price per GB. The requester example finds these farmers that have the specific AFS and communicates via duplex stream to determine the cost of replication. It uses the MaxCostMatcher to select a subset of peers. 
 
 #### Enabling Encryption / Farmer sub-networks
 
 To enable sub-network encryption, the requester should distribute the `examples/keys.pub` file to the farmer's computer. Then, uncomment the line in `remote-farmer.js`:
 ```
-const keypath = networkPublicKeypath
+const networkkeypath = constants.networkPublicKeypath
 ```
 and uncomment the line in `remote-requester.js`:
 ```
-const keypath = networkSecretKeypath
+const networkkeypath = constants.networkSecretKeypath
 ```
 
 #### Running the example
@@ -70,7 +63,9 @@ $ node examples/afs-replication/duplex/remote-requester.js
 
 ### AFS Replication with gRPC
 
-The requester example finds peers on the discovery channel did:ara:desiredContent, then connects to each peer on an example port 50051 to determine costs. It uses the MaxCostMatcher to determine peers. The farmer example broadcasts on example port 19000 on discovery channel did:ara:desiredContent, and on the example farming port 50051.
+This example shows AFS replication with AFP via communication over gRPC on port 50051. 
+
+The farmer example broadcasts the ability to replicate an AFS for zero cost. The requester example finds these farmers that have the specific AFS and communicates via gRPC to only find free replication. It uses the MaxCostMatcher to select a subset of peers. 
 
 On the farmer's computer/terminal:
 

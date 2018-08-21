@@ -11,7 +11,7 @@ const debug = require('debug')('afp:duplex-example:main')
 const {
   contractAddress, walletAddresses, afsDIDs, farmerDID
 } = constants
-const { idify } = util
+const { idify, etherToWei, gbsToBytes } = util
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 
 const networkkeypath = null
@@ -24,7 +24,7 @@ for (let i = 0; i < afsDIDs.length; i++) {
 /**
  * Broadcast the ability to farm for an AFS
  * @param {string} did DID of the AFS
- * @param {int} price Desired cost per unit
+ * @param {int} price Desired Cost in Ether per GB
  * @param {string} keypath Keypath to Ara Network Key
  */
 async function broadcast(did, price, keypath) {
@@ -42,8 +42,11 @@ async function broadcast(did, price, keypath) {
   // Load the afs
   const { afs } = await create({ did })
 
+  // Convert Ether/GB to Wei/Byte
+  const convertedPrice = gbsToBytes(etherToWei(price))
+
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const farmer = new ExampleFarmer(farmerID, farmerSig, price, wallet, afs)
+  const farmer = new ExampleFarmer(farmerID, farmerSig, convertedPrice, wallet, afs)
 
   // Load network keys for encryption if applicable
   let handshakeConf

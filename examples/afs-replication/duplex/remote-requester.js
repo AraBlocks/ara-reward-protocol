@@ -15,7 +15,7 @@ const clip = require('cli-progress')
 const {
   contractAddress, walletAddresses, afsDIDs, requesterDID
 } = constants
-const { idify } = util
+const { idify, gbsToBytes, etherToWei } = util
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
 const networkkeypath = null
@@ -26,12 +26,15 @@ download(afsDIDs[0], 1, networkkeypath)
 /**
  * Download a specific AFS
  * @param {string} did DID of the AFS
- * @param {float} reward Reward per unit of work
+ * @param {float} reward Reward in Ether/GB
  * @param {string} keypath Path to Ara Network Key
  */
 async function download(did, reward, keypath) {
-  // A default matcher which will match for a max cost of 10 to a max of 5 farmers
-  const matcher = new matchers.MaxCostMatcher(reward, 5)
+  // Convert Ether/GB to Wei/Byte
+  const convertedReward = gbsToBytes(etherToWei(reward))
+
+  // A default matcher which will match for a max cost to a max of 5 farmers
+  const matcher = new matchers.MaxCostMatcher(convertedReward, 5)
 
   // The ARAid of the Requester
   const requesterID = new messages.AraId()
@@ -45,7 +48,7 @@ async function download(did, reward, keypath) {
   // Create the statement of work
   const sow = new messages.SOW()
   sow.setNonce(crypto.randomBytes(32))
-  sow.setWorkUnit('MB')
+  sow.setWorkUnit('Byte')
   sow.setRequester(requesterID)
 
   // Load the sparse afs

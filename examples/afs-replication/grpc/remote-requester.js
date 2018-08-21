@@ -3,13 +3,14 @@ const { createChannel, createSwarm } = require('ara-network/discovery')
 const { afsDIDs, requesterDID } = require('../../constants.js')
 const { ExampleRequester } = require('./requester')
 const debug = require('debug')('afp:grpc-example:main')
+const crypto = require('ara-crypto')
 const afs = require('ara-filesystem')
 
-download(afsDIDs[0], '50051')
+download(afsDIDs[0], 0, '50051')
 
-async function download(did, grpcPort) {
-  // A default matcher which will match for a max cost of 10 to a max of 5 farmers
-  const matcher = new matchers.MaxCostMatcher(10, 5)
+async function download(did, reward, grpcPort) {
+  // A default matcher which will match for a max cost of 0 to a max of 5 farmers
+  const matcher = new matchers.MaxCostMatcher(reward, 5)
 
   // The ARAid of the Requester
   const requesterID = new messages.ARAid()
@@ -22,8 +23,8 @@ async function download(did, grpcPort) {
 
   // Create the statement of work
   const sow = new messages.SOW()
-  sow.setNonce(2)
-  sow.setWorkUnit('MB')
+  sow.setNonce(crypto.randomBytes(32))
+  sow.setWorkUnit('GB')
   sow.setRequester(requesterID)
 
   // The RPC Connections to the farmers

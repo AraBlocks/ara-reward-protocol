@@ -9,18 +9,18 @@ class ContractABI {
     this.contract = new web3.eth.Contract(abi, contractAdd)
   }
 
-  // Budget in Ether
+  // Budget in Wei
   submitJob(jobId, budget) {
     return this.contract.methods.submitJob(maskHex(jobId)).send({
       from: this.wallet,
-      value: `${convertToEther(budget)}`
+      value: `${budget}`
     })
   }
 
-  // Reward in Ether
+  // Reward in Wei
   submitReward(jobId, farmerId, reward) {
     return this.contract.methods
-      .submitReward(maskHex(jobId), maskHex(farmerId), convertToEther(reward))
+      .submitReward(maskHex(jobId), maskHex(farmerId), reward)
       .send({ from: this.wallet })
   }
 
@@ -29,10 +29,6 @@ class ContractABI {
       .claimReward(maskHex(jobId), maskHex(farmerId))
       .send({ from: this.wallet })
   }
-}
-
-function convertToEther(number) {
-  return number * 1000000000000000000
 }
 
 function maskHex(hex) {
