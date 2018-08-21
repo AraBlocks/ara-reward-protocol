@@ -7,7 +7,7 @@ const { resolve } = require('path')
 const { DID } = require('did-uri')
 const crypto = require('ara-crypto')
 const pify = require('pify')
-const rc = require('ara-network/rc.js')(require('ara-identity/rc')())
+const rc = require('ara-runtime-configuration')()
 
 function configFarmerHandshake(conf) {
   const handshake = getHandshake(conf)

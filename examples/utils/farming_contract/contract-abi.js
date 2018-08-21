@@ -1,10 +1,10 @@
 const Web3 = require('web3')
 const { abi } = require('./build/contracts/Farming.json')
-const { provider } = (require('ara-identity/rc')()).web3
+const rc = require('ara-runtime-configuration')()
 
 class ContractABI {
   constructor(contractAdd, walletAdd) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(provider))
+    const web3 = new Web3(new Web3.providers.HttpProvider(rc.web3.provider))
     this.wallet = walletAdd
     this.contract = new web3.eth.Contract(abi, contractAdd)
   }

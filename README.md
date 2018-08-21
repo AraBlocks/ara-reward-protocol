@@ -106,7 +106,7 @@ afpgrpc.util.broadcastFarmer(farmer, port)
 
 #### Requesting
 
-For requesting a farming job via gRPC via gRPC, there are helper methods in afpgrpc.util:
+For requesting a farming job via gRPC, there are helper methods in afpgrpc.util:
 
 ```js
 const { ExampleRequester } = require('./requester')
