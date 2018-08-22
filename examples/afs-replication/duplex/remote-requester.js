@@ -79,6 +79,7 @@ async function download(did, reward, keypath) {
     debug('Swarm destroyed')
     if (afs) afs.close()
     if (farmerSwarm) farmerSwarm.destroy()
+    process.exit(0)
   }
 }
 

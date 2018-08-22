@@ -19,7 +19,7 @@ echo "Creating Farmer AID..."
 farmerid="$(aid create <<< $password | grep "did:ara:" | head -1 | sed 's/^.*did:ara://')"
 
 echo "Creating AFSes..."
-afs1="$(afs create $farmerid <<< $password | grep "did:ara:" | head -1 | sed 's/^.*did:ara://')"
+afs1="$(afs create $farmerid <<< $password | grep "<" | head -1 | sed 's/.*< //' | sed 's/ >.*//')"
 afs add $afs1 $afscontent <<< $password
 afs commit $afs1 -f <<< $password
 

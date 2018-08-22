@@ -331,19 +331,6 @@ Different service requesters may have different needs when selecting peers, such
 
 ## Local Development Setup
 
-### Generating gRPC and Protobuf files
-
-This repo uses statically generated gRPC and Protobuf files. Further documentation on static generation can be found [here](https://github.com/grpc/grpc/tree/v1.6.x/examples/node/static_codegen)
-
-```sh
-$ cd src/proto
-$ npm install -g grpc-tools
-$ grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` messages.proto
-$ grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` route-guide.proto
-```
-
-**Note**: For Windows, you may need to replace `which grpc_tools_node_protoc_plugin` with the full path to grpc_node_plugin.exe (including the .exe extension)
-
 ## Contributing
 
 * [How to contribute](/.github/CONTRIBUTING.md)
