@@ -16,8 +16,8 @@ class Farmer extends FarmerBase {
   }
 
   async onAgreement(agreement, connection) {
-    const callback = (error, agreement) => {
-      connection.sendAgreement(agreement)
+    const callback = (error, signedAgreement) => {
+      connection.sendAgreement(signedAgreement)
     }
     super.onAgreement({ request: agreement }, callback)
   }

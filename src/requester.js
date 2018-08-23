@@ -1,8 +1,11 @@
+/* eslint class-methods-use-this: off */
+/* eslint no-unused-vars: off */
+const EventEmitter = require('events')
 const messages = require('./proto/messages_pb')
 const services = require('./proto/route-guide_grpc_pb')
 const debug = require('debug')('afp:requester-base')
 
-class RequesterBase {
+class RequesterBase extends EventEmitter {
   /**
    * Class that handles the communication for requesting a specific SOW
    * for a single task.
@@ -10,6 +13,7 @@ class RequesterBase {
    * @param {Matcher} matcher
    */
   constructor(sow, matcher) {
+    super()
     this.sow = sow
     this.matcher = matcher
   }
@@ -127,7 +131,7 @@ class RequesterBase {
   }
 
   /**
-   *
+   * This is called when a receipt for the reward has been return by the farmer
    * @param {messages.Receipt} receipt
    * @param {services.RFPClient} connection
    */

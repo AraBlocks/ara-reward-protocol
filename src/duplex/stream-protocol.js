@@ -5,11 +5,11 @@ const debug = require('debug')('afp:duplex')
 
 // Helper object for determining message types
 const MSG = {
-  SOW: { head: 1 << 1, str: 'sow' },
-  QUOTE: { head: 2 << 1, str: 'quote' },
-  AGREEMENT: { head: 3 << 1, str: 'agreement' },
-  REWARD: { head: 4 << 1, str: 'reward' },
-  RECEIPT: { head: 5 << 1, str: 'receipt' },
+  SOW: { head: 1, str: 'sow' },
+  QUOTE: { head: 2, str: 'quote' },
+  AGREEMENT: { head: 3, str: 'agreement' },
+  REWARD: { head: 4, str: 'reward' },
+  RECEIPT: { head: 5, str: 'receipt' },
 
   encode(head, data) {
     head = Buffer.from(varint.encode(head))
@@ -39,7 +39,7 @@ class StreamProtocol {
     this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
 
-    this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
+    this.timeout = null
     this.ended = false
   }
 

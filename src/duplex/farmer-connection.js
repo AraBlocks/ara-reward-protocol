@@ -3,10 +3,6 @@ const debug = require('debug')('afp:duplex')
 
 // Class for managing a duplex stream connection to a farmer
 class FarmerConnection extends StreamProtocol {
-  constructor(peer, connection, opts) {
-    super(peer, connection, opts)
-  }
-
   // If sow, peer is not a farmer, then destroy
   async onSow(sow) {
     super.onSow(sow)

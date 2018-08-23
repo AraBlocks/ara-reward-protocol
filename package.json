@@ -6,7 +6,8 @@
   "scripts": {
     "test": "ava test",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "lint-fix": "eslint . --fix",
+    "nyc": "nyc npm test"
   },
   "repository": {
     "type": "git",
@@ -27,22 +28,22 @@
     "eslint-config-ara": "github:arablocks/eslint-config-ara",
     "eslint": "^4.19.1",
     "sinon": "^6.0.1",
-    "ava": "^0.25.0"
+    "ava": "^0.25.0",
+    "nyc": "^12.0.2"
   },
   "dependencies": {
-    "ara-crypto": "github:arablocks/ara-crypto",
     "ara-filesystem": "github:arablocks/ara-filesystem",
+    "ara-identity": "github:arablocks/ara-identity",
+    "ara-console": "github:arablocks/ara-console",
+    "ara-crypto": "github:arablocks/ara-crypto",
     "ara-network": "github:arablocks/ara-network",
     "ara-runtime-configuration": "github:arablocks/ara-runtime-configuration",
     "cli-progress": "^2.0.0",
     "debug": "^3.1.0",
+    "did-uri": "^0.2.5",
     "duplexify": "^3.6.0",
     "find-free-port": "^2.0.0",
-    "google-protobuf": "^3.6.0",
-    "grpc": "^1.13.0-pre1",
-    "grpc-tools": "^1.6.6",
     "ip": "^1.1.5",
-    "mirror-folder": "^3.0.0",
     "pify": "^3.0.0",
     "pump": "^3.0.0",
     "pumpify": "^1.5.1",
