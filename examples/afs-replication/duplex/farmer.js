@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, afpstream, util } = require('../../../index')
+const { messages, FarmerBase, util } = require('../../../index')
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:farmer')
@@ -9,7 +9,7 @@ const ip = require('ip')
 
 const { nonceString } = util
 
-class ExampleFarmer extends afpstream.Farmer {
+class ExampleFarmer extends FarmerBase {
   /**
    * Example Farmer replicates an AFS for a min price
    * @param {*} farmerId
@@ -71,13 +71,8 @@ class ExampleFarmer extends afpstream.Farmer {
     return agreement
   }
 
-  /**
-   * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
-   * @returns {boolean}
-   */
-  async validatePeer(peer) {
-    if (peer) return true
+  async validateSow(sow) {
+    if (sow) return true
     return false
   }
 

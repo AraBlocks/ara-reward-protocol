@@ -1,4 +1,4 @@
-<img src="https://github.com/arablocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
+<img src="https://github.com/arablocks/ara-farming-protocol/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
 ========
 [![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
 
@@ -33,7 +33,7 @@ An agreed upon statement of work and quote between a farmer and a requester. Thi
 
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a duplex streaming implementation.
+AFP defines a set of extensible classes in Javascript which enable peers of a distributed service to communicate about and define a statement of work for that service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers). AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a duplex streaming implementation.
 
 A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use a discovery-swarm (or some other peer discovery method) to broadcast their ability to complete a task, and then communicate via a duplex stream or a gRPC server their capabilities and costs. 
 
@@ -70,9 +70,7 @@ This project is still in alpha development.
 ## Dependencies
 
 * [node](https://nodejs.org)
-* [grpc](https://www.npmjs.com/package/grpc)
-* [grpc-tools](https://www.npmjs.com/package/grpc-tools)
-* [google-protobuf](https://www.npmjs.com/package/google-protobuf)
+* [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers)
 
 ## Installation
 
@@ -144,47 +142,6 @@ function handleConnection(connection, info) {
   const farmerConnection = new afpstream.FarmerConnection(info, connection, { timeout: 6000 })
   process.nextTick(() => requester.processFarmer(farmerConnection))
 }
-```
-
-### gRPC
-
-To communicate via gRPC, you can extend the base classes `FarmerBase` in `src/farmer` and `RequesterBase` in `src/requester`.
-
-#### Farming
-
-For broadcasting the ability to farm via gRPC, there are helper methods in afpgrpc.util:
-
-```js
-const { ExampleFarmer } = require('./farmer')
-const { afpgrpc } = require('ara-farming-protocol')
-
-// The application's custom class
-const farmer = new ExampleFarmer()
-
-// Broadcast on a specific port
-const port = `localhost:50051`
-afpgrpc.util.broadcastFarmer(farmer, port)
-```
-
-#### Requesting
-
-For requesting a farming task via gRPC, there are helper methods in afpgrpc.util:
-
-```js
-const { ExampleRequester } = require('./requester')
-const { afpgrpc } = require('ara-farming-protocol')
-
-// The statement of work for the request
-const sow = new messages.SOW()
-
-// The application's custom classes
-const matcher = new ExampleMatcher()
-const requester = new ExampleRequester(sow, matcher)
-
-// Connect to a specific farmer
-const port = `localhost:50051`
-const connection = afpgrpc.util.connectToFarmer(port)
-requester.processFarmer(connection)
 ```
 
 ### Implementation

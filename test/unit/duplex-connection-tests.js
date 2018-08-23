@@ -1,5 +1,5 @@
-const { MSG } = require('../../src/duplex/stream-protocol')
-const messages = require('../../src/proto/messages_pb')
+const { MSG } = require('../../src/duplex/duplex-connection')
+const { messages } = require('farming-protocol-buffers')
 const test = require('ava')
 
 const {

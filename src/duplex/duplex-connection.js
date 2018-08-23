@@ -1,5 +1,6 @@
 const { idify, nonceString } = require('../util')
-const messages = require('../proto/messages_pb')
+const { messages } = require('farming-protocol-buffers')
+const { PeerConnection } = require('../peer-connection')
 const varint = require('varint')
 const debug = require('debug')('afp:duplex')
 
@@ -23,12 +24,10 @@ const MSG = {
   }
 }
 
-/**
- * Class for managing a duplex stream connection to a peer.
- * This mimics RPC Client functionality with duplex streams for afp
- */
-class StreamProtocol {
+// Class for managing a duplex stream connection to a peer.
+class DuplexConnection extends PeerConnection {
   constructor(peer, connection, opts) {
+    super()
     this.peer = peer
     this.opts = opts
     this.opts.timeout = this.opts.timeout || 10000
@@ -94,31 +93,31 @@ class StreamProtocol {
   async onSow(sow) {
     clearTimeout(this.timeout)
     debug(`On Sow: ${nonceString(sow)} from ${this.peerId}`)
-    this.stream.emit(MSG.SOW.str, sow, this.peer)
+    super.onSow(sow)
   }
 
   async onQuote(quote) {
     clearTimeout(this.timeout)
     debug(`On Quote: ${nonceString(quote)} from ${this.peerId}`)
-    this.stream.emit(MSG.QUOTE.str, quote, this.peer)
+    super.onQuote(quote)
   }
 
   async onAgreement(agreement) {
     clearTimeout(this.timeout)
     debug(`On Agreement: ${nonceString(agreement)} from ${this.peerId}`)
-    this.stream.emit(MSG.AGREEMENT.str, agreement, this.peer)
+    super.onAgreement(agreement)
   }
 
   async onReward(reward) {
     clearTimeout(this.timeout)
     debug(`On Reward: ${nonceString(reward)} from ${this.peerId}`)
-    this.stream.emit(MSG.REWARD.str, reward, this.peer)
+    super.onReward(reward)
   }
 
   async onReceipt(receipt) {
     clearTimeout(this.timeout)
     debug(`On Receipt: ${nonceString(receipt)} from ${this.peerId}`)
-    this.stream.emit(MSG.RECEIPT.str, receipt, this.peer)
+    super.onReceipt(receipt)
   }
 
   onData(chunk) {
@@ -143,6 +142,6 @@ class StreamProtocol {
 }
 
 module.exports = {
-  StreamProtocol,
+  DuplexConnection,
   MSG
 }

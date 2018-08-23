@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, afpstream, util } = require('../../../index')
+const { messages, RequesterBase, util } = require('../../../index')
 const { createSwarm } = require('ara-network/discovery')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
@@ -8,7 +8,7 @@ const {
   idify, nonceString, bytesToGBs, weiToEther
 } = util
 
-class ExampleRequester extends afpstream.Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet, afs, onComplete) {
     super(sow, matcher)
     this.requesterSig = requesterSig
@@ -115,8 +115,8 @@ class ExampleRequester extends afpstream.Requester {
       })
   }
 
-  async validatePeer(peer) {
-    if (peer) return true
+  async validateQuote(quote) {
+    if (quote) return true
     return false
   }
 

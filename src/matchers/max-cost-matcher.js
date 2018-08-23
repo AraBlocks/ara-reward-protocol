@@ -11,7 +11,7 @@ class MaxCostMatcher extends MatcherBase {
     this.reserveWorkers = []
   }
 
-  async validateQuote(quote, hireFarmerCallback) {
+  async addQuote(quote, hireFarmerCallback) {
     const farmerId = quote.getFarmer().getDid()
     this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, hireFarmerCallback))
 
@@ -24,7 +24,7 @@ class MaxCostMatcher extends MatcherBase {
     }
   }
 
-  async invalidateQuote(quote) {
+  async removeQuote(quote) {
     const farmerId = quote.getFarmer().getDid()
     this.hiredQuoteCallbacks.delete(farmerId)
 

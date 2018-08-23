@@ -1,8 +1,8 @@
-const { StreamProtocol } = require('./stream-protocol')
+const { DuplexConnection } = require('./duplex-connection')
 const debug = require('debug')('afp:duplex')
 
 // Class for managing a duplex stream connection to a farmer
-class FarmerConnection extends StreamProtocol {
+class FarmerConnection extends DuplexConnection {
   // If sow, peer is not a farmer, then destroy
   async onSow(sow) {
     super.onSow(sow)

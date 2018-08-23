@@ -2,7 +2,7 @@ const {
   unpackKeys, configRequesterHandshake, ContractABI, constants
 } = require('../../index')
 const {
-  messages, matchers, afpstream, util
+  messages, matchers, duplex, util
 } = require('../../../index')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
@@ -16,6 +16,7 @@ const {
   contractAddress, walletAddresses, afsDIDs, requesterDID
 } = constants
 const { idify, gbsToBytes, etherToWei } = util
+const { FarmerConnection } = duplex
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
 const networkkeypath = null
@@ -95,14 +96,13 @@ function createFarmerSwarm(did, requester, conf) {
 
   function handleConnection(connection, info) {
     debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
-    let duplex = connection
     if (conf) {
       const writer = connection.createWriteStream()
       const reader = connection.createReadStream()
-      duplex = duplexify(writer, reader)
+      connection = duplexify(writer, reader)
     }
-    const farmerConnection = new afpstream.FarmerConnection(info, duplex, { timeout: 6000 })
-    process.nextTick(() => requester.processFarmer(farmerConnection))
+    const farmerConnection = new FarmerConnection(info, connection, { timeout: 6000 })
+    process.nextTick(() => requester.addFarmer(farmerConnection))
   }
 
   return swarm

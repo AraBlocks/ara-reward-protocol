@@ -1,25 +1,25 @@
 /* eslint class-methods-use-this: off */
 /* eslint no-unused-vars: off */
-const messages = require('./proto/messages_pb')
+const { messages } = require('farming-protocol-buffers')
 
 class MatcherBase {
   /**
-   * This is called to validate a quote. If a quote is considered
-   * valid, then this should calls hireFarmerCallback to continue
+   * Add a quote for consideration. If a quote is considered
+   * valid, then call hireFarmerCallback to continue
    * agreement process.
    * @param {messages.Quote} quote
    * @param {function(messages.Agreement)} hireFarmerCallback
    */
-  async validateQuote(quote, hireFarmerCallback) {
-    throw new Error('Extended classes must implement validateQuote')
+  async addQuote(quote, hireFarmerCallback) {
+    throw new Error('Extended classes must implement addQuote')
   }
 
   /**
-   * This is called when a quote is no longer valid.
+   * Remove quote from consideration.
    * @param {messages.Quote} quote
    */
-  async invalidateQuote(quote) {
-    throw new Error('Extended classes must implement invalidateQuote')
+  async removeQuote(quote) {
+    throw new Error('Extended classes must implement removeQuote')
   }
 }
 
