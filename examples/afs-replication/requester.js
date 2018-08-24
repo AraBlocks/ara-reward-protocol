@@ -76,12 +76,12 @@ class ExampleRequester extends RequesterBase {
         debug(`old size: ${oldByteLength}, new size: ${feed.byteLength}`)
         const sizeDelta = feed.byteLength - oldByteLength
         const amount = self.matcher.maxCost * sizeDelta
-        self.emit('downloading', feed.length)
         info(`Staking ${weiToEther(amount)} for a size delta of ${bytesToGBs(sizeDelta)} GBs`)
         self.submitStake(amount, (err) => {
           if (err) onComplete(err)
           else stakeSubmitted = true
         })
+        self.emit('downloading', feed.length)
       })
 
       // Record download data

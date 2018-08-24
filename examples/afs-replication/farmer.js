@@ -8,7 +8,7 @@ const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
 
-const { nonceString, weiToEther } = util
+const { nonceString, weiToEther, bytesToGBs } = util
 
 class ExampleFarmer extends FarmerBase {
   /**
@@ -88,7 +88,7 @@ class ExampleFarmer extends FarmerBase {
 
   async withdrawReward(reward) {
     const sowId = nonceString(reward.getAgreement().getQuote().getSow())
-    info(`Uploaded ${this.deliveryMap.get(sowId)} blocks for job ${sowId}`)
+    info(`Uploaded ${bytesToGBs(this.deliveryMap.get(sowId))} Gbs for job ${sowId}`)
 
     const farmerDid = this.farmerId.getDid()
     this.wallet
