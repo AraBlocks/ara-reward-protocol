@@ -1,13 +1,14 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, FarmerBase, util } = require('../../../index')
+const { messages, FarmerBase, util } = require('../../index')
 const { createSwarm } = require('ara-network/discovery')
+const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:farmer')
 const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')
 
-const { nonceString } = util
+const { nonceString, weiToEther } = util
 
 class ExampleFarmer extends FarmerBase {
   /**
@@ -87,16 +88,16 @@ class ExampleFarmer extends FarmerBase {
 
   async withdrawReward(reward) {
     const sowId = nonceString(reward.getAgreement().getQuote().getSow())
-    debug(`Uploaded ${this.deliveryMap.get(sowId)} blocks for job ${sowId}`)
+    info(`Uploaded ${this.deliveryMap.get(sowId)} blocks for job ${sowId}`)
 
     const farmerDid = this.farmerId.getDid()
     this.wallet
       .claimReward(sowId, farmerDid)
       .then(() => {
-        debug(`Reward amount ${reward.getAmount()} withdrawn for SOW ${sowId}`)
+        info(`Reward amount ${weiToEther(reward.getAmount())} withdrawn for SOW ${sowId}`)
       })
       .catch((err) => {
-        debug(`Failed to withdraw reward for SOW ${sowId}`)
+        warn(`Failed to withdraw reward for SOW ${sowId}`)
         debug(err)
       })
   }
@@ -128,13 +129,12 @@ class ExampleFarmer extends FarmerBase {
   async startWork(agreement, port) {
     const self = this
     const sow = agreement.getQuote().getSow()
-    debug(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
+    info(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
     const { content } = this.afs.partitions.resolve(this.afs.HOME)
 
-    content.on('upload', () => {
-      // TODO: is this a good way to measure data amount?
-      this.dataTransmitted(sowId, 1)
+    content.on('upload', (index, data) => {
+      this.dataTransmitted(sowId, data.length)
     })
 
     const opts = {
@@ -158,8 +158,8 @@ class ExampleFarmer extends FarmerBase {
       return afsstream
     }
 
-    function handleConnection(connection, info) {
-      debug(`Peer connected: ${info.host} on port: ${info.port}`)
+    function handleConnection(connection, peer) {
+      info(`Peer connected: ${peer.host} on port: ${peer.port}`)
     }
   }
 }

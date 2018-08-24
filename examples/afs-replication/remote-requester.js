@@ -1,12 +1,13 @@
 const {
   unpackKeys, configRequesterHandshake, ContractABI, constants
-} = require('../../index')
+} = require('../index')
 const {
   messages, matchers, duplex, util
-} = require('../../../index')
+} = require('../../index')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
+const { info, warn } = require('ara-console')
 const duplexify = require('duplexify')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
@@ -19,10 +20,9 @@ const { idify, gbsToBytes, etherToWei } = util
 const { FarmerConnection } = duplex
 const wallet = new ContractABI(contractAddress, walletAddresses[2])
 
-const networkkeypath = null
+const useSubnet = ('--subnet' === process.argv[2])
 
-// Uncomment next line to enable sub-network encryption
-// networkkeypath = constants.networkSecretKeypath
+const networkkeypath = (useSubnet) ? constants.networkSecretKeypath : null
 
 download(afsDIDs[0], 1, networkkeypath)
 
@@ -34,7 +34,7 @@ download(afsDIDs[0], 1, networkkeypath)
  */
 async function download(did, reward, keypath) {
   // Convert Ether/GB to Wei/Byte
-  const convertedReward = gbsToBytes(etherToWei(reward))
+  const convertedReward = etherToWei(reward) / gbsToBytes(1)
 
   // A default matcher which will match for a max cost to a max of 5 farmers
   const matcher = new matchers.MaxCostMatcher(convertedReward, 5)
@@ -66,6 +66,7 @@ async function download(did, reward, keypath) {
   // Load network keys if applicable
   let handshakeConf
   if (keypath) {
+    info('Using subnetwork encryption')
     try { handshakeConf = await unpackKeys(requesterDID, keypath) } catch (e) { debug({ e }) }
   }
 
@@ -75,9 +76,9 @@ async function download(did, reward, keypath) {
   // Handle when the swarms end
   async function onComplete(error) {
     if (error) {
-      debug(error)
+      warn(error)
     }
-    debug('Swarm destroyed')
+    info('Swarm destroyed')
     if (afs) afs.close()
     if (farmerSwarm) farmerSwarm.destroy()
     process.exit(0)
@@ -94,14 +95,14 @@ function createFarmerSwarm(did, requester, conf) {
   swarm.on('connection', handleConnection)
   swarm.join(did)
 
-  function handleConnection(connection, info) {
-    debug(`Farmer Swarm: Peer connected: ${idify(info.host, info.port)}`)
+  function handleConnection(connection, peer) {
+    info(`Farmer Swarm: Peer connected: ${idify(peer.host, peer.port)}`)
     if (conf) {
       const writer = connection.createWriteStream()
       const reader = connection.createReadStream()
       connection = duplexify(writer, reader)
     }
-    const farmerConnection = new FarmerConnection(info, connection, { timeout: 6000 })
+    const farmerConnection = new FarmerConnection(peer, connection, { timeout: 6000 })
     process.nextTick(() => requester.addFarmer(farmerConnection))
   }
 

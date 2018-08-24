@@ -1,9 +1,10 @@
 const {
   unpackKeys, configFarmerHandshake, ContractABI, constants
-} = require('../../index')
-const { messages, duplex, util } = require('../../../index')
+} = require('../index')
+const { messages, duplex, util } = require('../../index')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
+const { info } = require('ara-console')
 const { create } = require('ara-filesystem')
 const duplexify = require('duplexify')
 const debug = require('debug')('afp:duplex-example:main')
@@ -15,10 +16,9 @@ const { idify, etherToWei, gbsToBytes } = util
 const { RequesterConnection } = duplex
 const wallet = new ContractABI(contractAddress, walletAddresses[3])
 
-const networkkeypath = null
+const useSubnet = ('--subnet' === process.argv[2])
 
-// Uncomment next line to enable sub-network encryption
-// networkkeypath = constants.networkPublicKeypath
+const networkkeypath = (useSubnet) ? constants.networkPublicKeypath : null
 
 for (let i = 0; i < afsDIDs.length; i++) {
   broadcast(afsDIDs[i], 1, networkkeypath)
@@ -31,7 +31,7 @@ for (let i = 0; i < afsDIDs.length; i++) {
  * @param {string} keypath Keypath to Ara Network Key
  */
 async function broadcast(did, price, keypath) {
-  debug('Broadcasting: ', did)
+  info('Broadcasting: ', did)
 
   // The ARAid of the Farmer
   const farmerID = new messages.AraId()
@@ -46,7 +46,7 @@ async function broadcast(did, price, keypath) {
   const { afs } = await create({ did })
 
   // Convert Ether/GB to Wei/Byte
-  const convertedPrice = gbsToBytes(etherToWei(price))
+  const convertedPrice = etherToWei(price) / gbsToBytes(1)
 
   // The Farmer instance which sets a specific price, an ID, and a signature
   const farmer = new ExampleFarmer(farmerID, farmerSig, convertedPrice, wallet, afs)
@@ -54,6 +54,7 @@ async function broadcast(did, price, keypath) {
   // Load network keys for encryption if applicable
   let handshakeConf
   if (keypath) {
+    info('Using subnetwork encryption')
     try { handshakeConf = await unpackKeys(farmerDID, keypath) } catch (e) { debug({ e }) }
   }
 
@@ -70,14 +71,14 @@ function createFarmingSwarm(did, farmer, conf) {
   swarm.on('connection', handleConnection)
   swarm.join(did, { announce: false })
 
-  function handleConnection(connection, info) {
-    debug(`SWARM: New peer: ${idify(info.host, info.port)}`)
+  function handleConnection(connection, peer) {
+    info(`SWARM: New peer: ${idify(peer.host, peer.port)}`)
     if (conf) {
       const writer = connection.createWriteStream()
       const reader = connection.createReadStream()
       connection = duplexify(writer, reader)
     }
-    const requesterConnection = new RequesterConnection(info, connection, { timeout: 6000 })
+    const requesterConnection = new RequesterConnection(peer, connection, { timeout: 6000 })
     farmer.addRequester(requesterConnection)
   }
 
