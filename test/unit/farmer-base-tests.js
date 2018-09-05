@@ -1,9 +1,10 @@
+const { PeerConnection } = require('../../src/peer-connection')
 const { FarmerBase } = require('../../src/farmer')
-const messages = require('../../src/proto/messages_pb')
+const { messages } = require('farming-protocol-buffers')
 const sinon = require('sinon')
 const test = require('ava')
 
-test('farmer.onSow.ValidPeer', async (t) => {
+test('farmer.onSow.ValidSow', async (t) => {
   const quoteId = '1234'
   const sow = new messages.SOW()
 
@@ -12,35 +13,30 @@ test('farmer.onSow.ValidPeer', async (t) => {
 
   const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
-  sinon.stub(farmer, 'validatePeer').resolves(true)
+  sinon.stub(farmer, 'validateSow').resolves(true)
 
-  const stubCall = {
-    request: sow
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendQuote').callsFake(sendFake)
 
-  farmer.onSow(stubCall, (error, response) => {
-    t.true(null === error)
-    t.true(quote === response)
-    t.true(quoteId === response.getNonce())
-  })
+  await farmer.onSow(sow, connection)
+  t.true(sendFake.calledOnce)
 })
 
-test('farmer.onSow.InvalidPeer', async (t) => {
+test('farmer.onSow.InvalidSow', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
   const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
-  sinon.stub(farmer, 'validatePeer').resolves(false)
+  sinon.stub(farmer, 'validateSow').resolves(false)
 
-  const stubCall = {
-    request: sow
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendQuote').callsFake(sendFake)
 
-  farmer.onSow(stubCall, (error, response) => {
-    t.true(null != error)
-    t.true(null === response)
-  })
+  await farmer.onSow(sow, connection)
+  t.true(sendFake.notCalled)
 })
 
 test('farmer.onAgreement.ValidAgreement', async (t) => {
@@ -53,15 +49,12 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
   sinon.stub(farmer, 'validateAgreement').resolves(true)
   sinon.stub(farmer, 'signAgreement').resolves(agreement)
 
-  const stubCall = {
-    request: agreement
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendAgreement').callsFake(sendFake)
 
-  farmer.onAgreement(stubCall, (error, response) => {
-    t.true(null === error)
-    t.true(agreement === response)
-    t.true(agreementId === response.getNonce())
-  })
+  await farmer.onAgreement(agreement, connection)
+  t.true(sendFake.calledOnce)
 })
 
 test('farmer.onAgreement.InvalidAgreement', async (t) => {
@@ -72,15 +65,12 @@ test('farmer.onAgreement.InvalidAgreement', async (t) => {
   sinon.stub(farmer, 'validateAgreement').resolves(false)
   sinon.stub(farmer, 'signAgreement').callsFake(signAgreementFake)
 
-  const stubCall = {
-    request: agreement
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendAgreement').callsFake(sendFake)
 
-  farmer.onAgreement(stubCall, (error, response) => {
-    t.true(null != error)
-    t.true(null === response)
-    t.true(signAgreementFake.notCalled)
-  })
+  await farmer.onAgreement(agreement, connection)
+  t.true(sendFake.notCalled)
 })
 
 test('farmer.onReward.ValidReward', async (t) => {
@@ -95,15 +85,12 @@ test('farmer.onReward.ValidReward', async (t) => {
   sinon.stub(farmer, 'validateReward').resolves(true)
   sinon.stub(farmer, 'generateReceipt').resolves(receipt)
 
-  const stubCall = {
-    request: reward
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendReceipt').callsFake(sendFake)
 
-  farmer.onReward(stubCall, (error, response) => {
-    t.true(null === error)
-    t.true(receipt === response)
-    t.true(rewardId === response.getReward().getNonce())
-  })
+  await farmer.onReward(reward, connection)
+  t.true(sendFake.calledOnce)
 })
 
 test('farmer.onReward.InvalidReward', async (t) => {
@@ -114,13 +101,10 @@ test('farmer.onReward.InvalidReward', async (t) => {
   sinon.stub(farmer, 'validateReward').resolves(false)
   sinon.stub(farmer, 'generateReceipt').callsFake(generateReceiptFake)
 
-  const stubCall = {
-    request: reward
-  }
+  const connection = new PeerConnection()
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendReceipt').callsFake(sendFake)
 
-  farmer.onReward(stubCall, (error, response) => {
-    t.true(null != error)
-    t.true(null === response)
-    t.true(generateReceiptFake.notCalled)
-  })
+  await farmer.onReward(reward, connection)
+  t.true(sendFake.notCalled)
 })

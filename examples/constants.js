@@ -12,15 +12,15 @@ const walletAddresses = [
   '0x6812Fd56a91aC229792937f635d335Ad6e90472B'
 ]
 
-const farmerDID = '4a876f9cab8ddbc9cfa93fbe25c5b3e62818733c6d42fed2ccf786b33ac68cb2'
-const requesterDID = 'ae5732fe1fc35d0d665b25323dda59741a1c6929f92923850b9396f1ebd5349c'
+const farmerDID = 'f05074eecbe4589f0b6ba8ea54b1a91bc17f167afdc66d63eea4bddd9d51f63e'
+const requesterDID = '402a5807434506ea83268177b0dc84d6ec785cf6836dc44b54794e925c104610'
 const passphrase = 'supersecurepassword'
 const networkPublicKeypath = 'keys.pub'
 const networkSecretKeypath = 'keys'
 const networkSecret = 'supersecurepassword'
 const networkKeyName = 'farmingexample'
 const afsDIDs = [
-  '244a9082ad01cac8c2af88aee286975201528c9db8bbcf229c6fc3dd341db833',
+  '786a9126ab2397f179165e26e35d9c01abff526ece03195c98b31e3f1c446290',
 ]
 
 module.exports = {

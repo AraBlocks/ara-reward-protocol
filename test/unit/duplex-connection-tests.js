@@ -1,5 +1,5 @@
-const { MSG } = require('../../src/duplex/stream-protocol')
-const messages = require('../../src/proto/messages_pb')
+const { MSG, DuplexConnection } = require('../../src/duplex/duplex-connection')
+const { messages } = require('farming-protocol-buffers')
 const test = require('ava')
 
 const {
@@ -43,4 +43,12 @@ test('duplex.encode-decode.validData', (t) => {
   const encodedReceipt = MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary())
   const decodedReceipt = Receipt.deserializeBinary(MSG.decode(encodedReceipt).data)
   t.true(Buffer.from(decodedReceipt.getNonce()).toString('hex') === id)
+})
+
+test('duplex.connection.sendSow', (t) => {
+  const connection = new DuplexConnection()
+  const sow = new SOW()
+
+  connection.sendSow(sow)
+  t.todo()
 })

@@ -1,11 +1,9 @@
 const { RequesterBase } = require('./src/requester')
 const { MatcherBase } = require('./src/matcher')
 const { FarmerBase } = require('./src/farmer')
-const messages = require('./src/proto/messages_pb')
-const services = require('./src/proto/route-guide_grpc_pb')
+const { messages } = require('farming-protocol-buffers')
 const matchers = require('./src/matchers/index')
-const afpstream = require('./src/duplex/index')
-const afpgrpc = require('./src/grpc/index')
+const duplex = require('./src/duplex/index')
 const util = require('./src/util')
 
 module.exports = {
@@ -13,9 +11,7 @@ module.exports = {
   MatcherBase,
   FarmerBase,
   messages,
-  services,
   matchers,
-  afpstream,
-  afpgrpc,
+  duplex,
   util,
 }

@@ -1,8 +1,8 @@
-const { StreamProtocol } = require('./stream-protocol')
+const { DuplexConnection } = require('./duplex-connection')
 const debug = require('debug')('afp:duplex')
 
 // Class for managing a duplex stream connection to a requester
-class RequesterConnection extends StreamProtocol {
+class RequesterConnection extends DuplexConnection {
   // If quote, peer is not a requester, then destroy
   async onQuote(quote) {
     super.onQuote(quote)

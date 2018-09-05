@@ -1,4 +1,4 @@
-<img src="https://github.com/arablocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
+<img src="https://github.com/arablocks/ara-farming-protocol/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
 ========
 [![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
 
@@ -33,16 +33,18 @@ An agreed upon statement of work and quote between a farmer and a requester. Thi
 
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript and objects in Proto which enable peers of a distributed service to communicate about and define a statement of work for that service. AFP also provides a default implementation using gRPC servers/clients in Javascript, as well as a duplex streaming implementation.
+AFP defines a set of extensible classes in Javascript which enable peers of a distributed service to communicate about and define a statement of work for that service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers). 
 
-A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. The farmer could then use a discovery-swarm (or some other peer discovery method) to broadcast their ability to complete a task, and then communicate via a duplex stream or a gRPC server their capabilities and costs. 
+AFP also provides a default implementation for communicating over duplex streams.
 
-A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use a discovery-swarm to connect to peers and use AFP to discuss the task.
+A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer/SOW for a task, and signing and validating an agreement for a task. The farmer could then use a discovery-swarm (or some other peer discovery method) to broadcast their ability to complete a task, and then communicate via a duplex stream their capabilities and costs. 
+
+A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers/quotes for a task, creating and validating agreements for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use a discovery-swarm to connect to peers and use AFP to discuss the task.
 
 The default interaction between a requester and a farmer resembles the following:
 - Requester sends statement-of-work to farmer
-- Farmer validates requester and replies with quote for statement-of-work
-- Requester validates farmer and selects set of peers to complete work based on quotes
+- Farmer validates sow and replies with quote for work
+- Requester validates quote and selects set of peers to complete work based on quotes
 - Requester sends agreement to selected farmers
 - Farmer validates agreement and countersigns agreement
 - Requester validates agreement and distributes work
@@ -70,9 +72,7 @@ This project is still in alpha development.
 ## Dependencies
 
 * [node](https://nodejs.org)
-* [grpc](https://www.npmjs.com/package/grpc)
-* [grpc-tools](https://www.npmjs.com/package/grpc-tools)
-* [google-protobuf](https://www.npmjs.com/package/google-protobuf)
+* [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers)
 
 ## Installation
 
@@ -84,108 +84,19 @@ $ npm i
 
 The expected usage is for an application to extend the following classes:
 
-* Farmer
-* Matcher
-* Requester
+* FarmerBase
+* MatcherBase
+* RequesterBase
 
-For an application that enables a user to request distributed work to be done on the network, that application would create an implementation of the Requester (which handles communicating with farmers) and the Matcher (which handles selecting a subset of farmers for a task).
+For an application that enables a user to request distributed work to be done on the network, that application would extend the RequesterBase class (which handles interacting with farmers) and the MatcherBase (which handles selecting a subset of farmers for a task).
 
-For an application that enables a user to participate in distributed work requests and receive rewards, that application would create an implementation of the Farmer (which handles communicating with requesters).
+For an application that enables a user to participate in distributed work requests and receive rewards, that application would extend the FarmerBase class (which handles interaction with requesters).
 
-Base classes are provided that enable communication through gRPC and through duplex streams.
+The FarmerBase and RequesterBase classes communicate via the PeerConnection interface. 
 
-### Duplex Streams
+### Connections
 
-To communicate via duplex streams, you can extend the classes `Farmer` in `src/duplex/farmer` and `Requester` in `src/duplex/requester`.
-
-#### Farming
-
-A simple example for farming via a discovery swarm:
-
-```js
-const { ExampleFarmer } = require('./farmer')
-const { createSwarm } = require('ara-network/discovery')
-const { afpstream } = require('ara-farming-protocol')
-
-const did = "617e5e325147ee167b710eb75a6b09181ea103157422c0567a18b001757025a6"
-
-// The application's custom class
-const farmer = new ExampleFarmer()
-
-const swarm = createSwarm()
-swarm.on('connection', handleConnection)
-swarm.join(did)
-
-function handleConnection(connection, info) {
-  const requesterConnection = new afpstream.RequesterConnection(info, connection, { timeout: 6000 })
-  farmer.processRequester(requesterConnection)
-}
-```
-
-#### Requesting
-
-A simple example for requesting via a discovery swarm:
-
-```js
-const { ExampleRequester } = require('./requester')
-const { createSwarm } = require('ara-network/discovery')
-const { afpstream } = require('ara-farming-protocol')
-
-const did = "617e5e325147ee167b710eb75a6b09181ea103157422c0567a18b001757025a6"
-
-// The application's custom class
-const farmer = new ExampleRequester()
-
-const swarm = createSwarm()
-swarm.on('connection', handleConnection)
-swarm.join(did)
-
-function handleConnection(connection, info) {
-  const farmerConnection = new afpstream.FarmerConnection(info, connection, { timeout: 6000 })
-  process.nextTick(() => requester.processFarmer(farmerConnection))
-}
-```
-
-### gRPC
-
-To communicate via gRPC, you can extend the base classes `FarmerBase` in `src/farmer` and `RequesterBase` in `src/requester`.
-
-#### Farming
-
-For broadcasting the ability to farm via gRPC, there are helper methods in afpgrpc.util:
-
-```js
-const { ExampleFarmer } = require('./farmer')
-const { afpgrpc } = require('ara-farming-protocol')
-
-// The application's custom class
-const farmer = new ExampleFarmer()
-
-// Broadcast on a specific port
-const port = `localhost:50051`
-afpgrpc.util.broadcastFarmer(farmer, port)
-```
-
-#### Requesting
-
-For requesting a farming task via gRPC, there are helper methods in afpgrpc.util:
-
-```js
-const { ExampleRequester } = require('./requester')
-const { afpgrpc } = require('ara-farming-protocol')
-
-// The statement of work for the request
-const sow = new messages.SOW()
-
-// The application's custom classes
-const matcher = new ExampleMatcher()
-const requester = new ExampleRequester(sow, matcher)
-
-// Connect to a specific farmer
-const port = `localhost:50051`
-const connection = afpgrpc.util.connectToFarmer(port)
-requester.processFarmer(connection)
-```
+The PeerConnection interface is effectively an abstract class that can be extended to wrap streams, RPCs, sockets, etc. The [`/src/duplex`](/src/duplex/README.md) folder contains an implementation of duplex streams wrapped with the PeerConnection interface.
 
 ### Implementation
 
@@ -193,114 +104,114 @@ This section describes the classes that must be extended for AFP.
 
 #### Requester
 
-A requester must extend the Requester class to define the requester's specifications for validating peers for a task, creating and validating agreements for a task, and for starting a task.
+A requester must extend the Requester class to define the requester's specifications for validating quotes for a task, creating and validating agreements for a task, and for starting a task.
 
 ```js
-  /**
-   * Returns whether a user is valid.
-   * @param {messages.ARAid} peer
-   * @returns {boolean}
-   */
-  async validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.')
-  }
+/**
+ * Returns whether a quote is valid.
+ * @param {messages.Quote} quote
+ * @returns {boolean}
+ */
+async validateQuote(quote) {
+  throw new Error('Extended classes must implement validateQuote.')
+}
 
-  /**
-   * Generate and return an agreement for a quote.
-   * @param {messages.Quote} quote
-   * @returns {messages.Agreement}
-   */
-  async generateAgreement(quote) {
-    throw new Error('Extended classes must implement generateAgreement.')
-  }
+/**
+ * Generate and return an agreement for a quote.
+ * @param {messages.Quote} quote
+ * @returns {messages.Agreement}
+ */
+async generateAgreement(quote) {
+  throw new Error('Extended classes must implement generateAgreement.')
+}
 
-  /**
-   * Return whether an agreement is valid.
-   * @param {messages.Agreement} agreement
-   * @returns {boolean}
-   */
-  async validateAgreement(agreement) {
-    throw new Error('Extended classes must implement validateAgreement.')
-  }
+/**
+ * Return whether an agreement is valid.
+ * @param {messages.Agreement} agreement
+ * @returns {boolean}
+ */
+async validateAgreement(agreement) {
+  throw new Error('Extended classes must implement validateAgreement.')
+}
 
-  /**
-   * Called when an agreement has been marked as valid and a farmer
-   * is ready to start work
-   * @param {messages.Agreement} agreement
-   * @param {services.RFPClient} connection
-   */
-  async onHireConfirmed(agreement, connection) {
-    throw new Error('Extended classes must implement onHireConfirmed')
-  }
+/**
+ * Called when an agreement has been marked as valid and a farmer
+ * is ready to start work.
+ * @param {messages.Agreement} agreement
+ * @param {PeerConnection} connection
+ */
+async onHireConfirmed(agreement, connection) {
+  throw new Error('Extended classes must implement onHireConfirmed')
+}
 
-  /**
-   * Called when a receipt for the reward has been return by the farmer
-   * @param {messages.Receipt} receipt
-   * @param {services.RFPClient} connection
-   */
-  async onReceipt(receipt, connection){
-    throw new Error('Extended classes must implement onReceipt')
-  }
+/**
+ * On receipt of a reward receipt from a farmer.
+ * @param {messages.Receipt} receipt
+ * @param {PeerConnection} connection
+ */
+async onReceipt(receipt, connection) {
+  throw new Error('Extended classes must implement onReceipt')
+}
 ```
 
 #### Farmer
 
-A farmer must extend the Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer for a task, and signing and validating an agreement for a task. If rewards are expected, then a farmer would also handle validating the reward and generating a receipt.
+A farmer must extend the Farmer class to define that farmer’s specifications for generating a quote for a task, validating a SOW for a task, and signing and validating an agreement for a task. If rewards are expected, then a farmer would also handle validating the reward and generating a receipt.
 
 ```js
-  /**
-   * Return whether a user is valid.
-   * @param {messages.ARAid} peer
-   * @returns {boolean}
-   */
-  async validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.')
-  }
+/**
+ * Return whether a sow is valid.
+ * @param {messages.SOW} sow
+ * @returns {boolean}
+ */
+async validateSow(sow) {
+  throw new Error('Extended classes must implement validateSow.')
+}
 
-  /**
-   * Return a quote given an SOW.
-   * @param {messages.SOW} sow
-   * @returns {messages.Quote}
-   */
-  async generateQuote(sow) {
-    throw new Error('Extended classes must implement generateQuote.')
-  }
+/**
+ * Return whether a reward is valid.
+ * @param {messages.Reward} reward
+ * @returns {boolean}
+ */
+async validateReward(reward) {
+  throw new Error('Extended classes must implement validateReward.')
+}
 
-  /**
-   * Returns whether or not an agreement is valid.
-   * @param {messages.Agreement} agreement
-   * @returns {boolean}
-   */
-  async validateAgreement(agreement) {
-    throw new Error('Extended classes must implement validateAgreement.')
-  }
+/**
+ * Return whether an agreement is valid.
+ * @param {messages.Agreement} agreement
+ * @returns {boolean}
+ */
+async validateAgreement(agreement) {
+  throw new Error('Extended classes must implement validateAgreement.')
+}
 
-  /**
-   * Sign and return an agreement.
-   * @param {messages.Agreement} agreement
-   * @returns {messages.Agreement}
-   */
-  async signAgreement(agreement) {
-    throw new Error('Extended classes must implement signAgreement.')
-  }
+/**
+ * Return a receipt given a reward.
+ * @param {messages.Reward} reward
+ * @returns {messages.Receipt}
+ */
+async generateReceipt(reward) {
+  throw new Error('Extended classes must implement generateQuote.')
+}
 
-  /**
-   * Returns whether a reward is valid.
-   * @param {messages.Reward} reward
-   * @returns {boolean}
-   */
-  async validateReward(reward) {
-    throw new Error('Extended classes must implement validateReward.')
-  }
+/**
+ * Return a quote given a sow.
+ * @param {messages.SOW} sow
+ * @returns {messages.Quote}
+ */
+async generateQuote(sow) {
+  throw new Error('Extended classes must implement generateQuote.')
+}
 
-  /**
-   * Return a receipt given a reward.
-   * @param {messages.Reward} reward
-   * @returns {messages.Receipt}
-   */
-  async generateReceipt(reward) {
-    throw new Error('Extended classes must implement generateReceipt.')
-  }
+/**
+ * Sign and return an agreement.
+ * @param {messages.Agreement} agreement
+ * @returns {messages.Agreement}
+ */
+async signAgreement(agreement) {
+  throw new Error('Extended classes must implement signAgreement.')
+}
 ```
 
 #### Matcher
@@ -308,23 +219,24 @@ A farmer must extend the Farmer class to define that farmer’s specifications f
 Different service requesters may have different needs when selecting peers, such as selecting the cheapest set, the fastest set, the first set number of peers, etc. To allow for this, each service may implement their own matcher (or use one of a set of predefined matchers) that extends the Matcher class. This class describes an object that, given a set of options, selects a subset of peers using a matching strategy specific to the service.
 
 ```js
-  /**
-   * Validate  quote. If valid, call hireFarmerCallback to continue
-   * agreement award process.
-   * @param {messages.Quote} quote
-   * @param {function(messages.Contract)} hireFarmerCallback
-   */
-  validateQuote(quote, hireFarmerCallback) {
-    throw new Error('Extended classes must implement validateQuote')
-  }
+/**
+ * Add a quote for consideration. If a quote is considered
+ * valid, then call hireFarmerCallback to continue
+ * agreement process.
+ * @param {messages.Quote} quote
+ * @param {function(messages.Agreement)} hireFarmerCallback
+ */
+async addQuote(quote, hireFarmerCallback) {
+  throw new Error('Extended classes must implement addQuote')
+}
 
-  /**
-   * Called when a quote is no longer valid.
-   * @param {messages.Quote} quote
-   */
-  invalidateQuote(quote) {
-    throw new Error('Extended classes must implement invalidateQuote')
-  }
+/**
+ * Remove quote from consideration.
+ * @param {messages.Quote} quote
+ */
+async removeQuote(quote) {
+  throw new Error('Extended classes must implement removeQuote')
+}
 ```
 
 ## [Examples](/examples/README.md)

@@ -1,69 +1,77 @@
 /* eslint class-methods-use-this: off */
 /* eslint no-unused-vars: off */
+const { PeerConnection } = require('./peer-connection')
+const { messages } = require('farming-protocol-buffers')
 const EventEmitter = require('events')
-const messages = require('./proto/messages_pb')
 
-// Class defining the required working conditions demanded by (and RPC methods of) a Farmer
+// Base Farmer class handling connections with requesters
 class FarmerBase extends EventEmitter {
   /**
-   * Proto RPC method for getting a quote for an SOW
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.Quote)} callback Response callback
+   * Add listeners for requester connection.
+   * @param {PeerConnection} connection
    */
-  async onSow(call, callback) {
-    const sow = call.request
-    const valid = await this.validatePeer(sow.getRequester())
+  async addRequester(connection) {
+    connection.on('sow', sow => this.onSow(sow, connection))
+    connection.on('agreement', agreement => this.onAgreement(agreement, connection))
+    connection.on('reward', reward => this.onReward(reward, connection))
+  }
+
+  /**
+   * Handle a sow from a peer
+   * @param {messages.SOW} sow
+   * @param {PeerConnection} connection
+   */
+  async onSow(sow, connection) {
+    const valid = await this.validateSow(sow)
     if (valid) {
       const quote = await this.generateQuote(sow)
-      callback(null, quote)
+      connection.sendQuote(quote)
     } else {
-      callback('Error: Invalid Auth', null)
+      this.emit('invalidSow', sow, connection)
     }
   }
 
   /**
-   * Proto RPC method for being awarded a agreement
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.Agreement)} callback Response callback
+   * Handle an agreement from a peer
+   * @param {messages.Agreement} agreement
+   * @param {PeerConnection} connection
    */
-  async onAgreement(call, callback) {
-    const agreement = call.request
+  async onAgreement(agreement, connection) {
     const valid = await this.validateAgreement(agreement)
     if (valid) {
-      const contract = await this.signAgreement(agreement)
-      callback(null, contract)
+      const signedAgreement = await this.signAgreement(agreement)
+      connection.sendAgreement(signedAgreement)
     } else {
-      callback('Error: Invalid Agreement', null)
+      this.emit('invalidAgreement', agreement, connection)
     }
   }
 
   /**
-   * Proto RPC method for being awarded a contract
-   * @param {EventEmitter} call Call object for the handler to process
-   * @param {function(Error, messages.ARAid)} callback Response callback
+   * Handle a reward from a peer
+   * @param {messages.Reward} reward
+   * @param {PeerConnection} connection
    */
-  async onReward(call, callback) {
-    const reward = call.request
+  async onReward(reward, connection) {
     const valid = await this.validateReward(reward)
     if (valid) {
       const receipt = await this.generateReceipt(reward)
-      callback(null, receipt)
+      connection.sendReceipt(receipt)
     } else {
-      callback('Error: Invalid Reward', null)
+      this.emit('invalidReward', reward, connection)
     }
   }
 
   /**
-   * This should returns whether a user is valid.
-   * @param {messages.ARAid} peer
+   * Return whether a sow is valid.
+   * @param {messages.SOW} sow
    * @returns {boolean}
    */
-  async validatePeer(peer) {
-    throw new Error('Extended classes must implement validatePeer.')
+  async validateSow(sow) {
+    throw new Error('Extended classes must implement validateSow.')
   }
 
   /**
-   * This should returns whether a reward is valid.
+   * Return whether a reward is valid.
    * @param {messages.Reward} reward
    * @returns {boolean}
    */
@@ -72,25 +80,7 @@ class FarmerBase extends EventEmitter {
   }
 
   /**
-   * This should return a receipt given a reward.
-   * @param {messages.Reward} reward
-   * @returns {messages.Receipt}
-   */
-  async generateReceipt(reward) {
-    throw new Error('Extended classes must implement generateQuote.')
-  }
-
-  /**
-   * This should return a quote given an SOW.
-   * @param {messages.SOW} sow
-   * @returns {messages.Quote}
-   */
-  async generateQuote(sow) {
-    throw new Error('Extended classes must implement generateQuote.')
-  }
-
-  /**
-   * This should returns whether or not a agreement is valid.
+   * Return whether an agreement is valid.
    * @param {messages.Agreement} agreement
    * @returns {boolean}
    */
@@ -99,7 +89,25 @@ class FarmerBase extends EventEmitter {
   }
 
   /**
-   * This should sign and return a agreement.
+   * Return a receipt given a reward.
+   * @param {messages.Reward} reward
+   * @returns {messages.Receipt}
+   */
+  async generateReceipt(reward) {
+    throw new Error('Extended classes must implement generateQuote.')
+  }
+
+  /**
+   * Return a quote given a sow.
+   * @param {messages.SOW} sow
+   * @returns {messages.Quote}
+   */
+  async generateQuote(sow) {
+    throw new Error('Extended classes must implement generateQuote.')
+  }
+
+  /**
+   * Sign and return an agreement.
    * @param {messages.Agreement} agreement
    * @returns {messages.Agreement}
    */

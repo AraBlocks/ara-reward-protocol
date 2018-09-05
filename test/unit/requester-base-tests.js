@@ -1,39 +1,44 @@
+const { PeerConnection } = require('../../src/peer-connection')
 const { RequesterBase } = require('../../src/requester')
 const { MatcherBase } = require('../../src/matcher')
-const messages = require('../../src/proto/messages_pb')
+const { messages } = require('farming-protocol-buffers')
 const sinon = require('sinon')
 const test = require('ava')
 
-test('requester.onQuote.ValidPeer', async (t) => {
+test('requester.onQuote.ValidQuote', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
   const stubMatcher = new MatcherBase()
-  const quoteMatchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
+  const matchFake = sinon.fake()
+  sinon.stub(stubMatcher, 'addQuote').callsFake(matchFake)
 
   const requester = new RequesterBase(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').resolves(true)
+  sinon.stub(requester, 'validateQuote').resolves(true)
 
-  await requester.onQuote(null, quote, null)
+  const connection = new PeerConnection()
 
-  t.true(quoteMatchFake.calledOnce)
+  await requester.onQuote(quote, connection)
+
+  t.true(matchFake.calledOnce)
 })
 
-test('requester.onQuote.InvalidPeer', async (t) => {
+test('requester.onQuote.InvalidQuote', async (t) => {
   const sow = new messages.SOW()
   const quote = new messages.Quote()
 
   const stubMatcher = new MatcherBase()
-  const quoteMatchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'validateQuote').callsFake(quoteMatchFake)
+  const matchFake = sinon.fake()
+  sinon.stub(stubMatcher, 'addQuote').callsFake(matchFake)
 
   const requester = new RequesterBase(sow, stubMatcher)
-  sinon.stub(requester, 'validatePeer').resolves(false)
+  sinon.stub(requester, 'validateQuote').resolves(false)
 
-  await requester.onQuote(null, quote, null)
+  const connection = new PeerConnection()
 
-  t.true(quoteMatchFake.notCalled)
+  await requester.onQuote(quote, connection)
+
+  t.true(matchFake.notCalled)
 })
 
 test('requester.onAgreement.ValidAgreement', async (t) => {
@@ -47,7 +52,9 @@ test('requester.onAgreement.ValidAgreement', async (t) => {
   sinon.stub(requester, 'validateAgreement').resolves(true)
   sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  await requester.onAgreement(null, agreement)
+  const connection = new PeerConnection()
+
+  await requester.onAgreement(agreement, connection)
 
   t.true(agreementConfirmFake.calledOnce)
 })
@@ -58,14 +65,16 @@ test('requester.onAgreement.InvalidAgreement', async (t) => {
 
   const stubMatcher = new MatcherBase()
   const invalidQuoteFake = sinon.fake()
-  sinon.stub(stubMatcher, 'invalidateQuote').callsFake(invalidQuoteFake)
+  sinon.stub(stubMatcher, 'removeQuote').callsFake(invalidQuoteFake)
 
   const requester = new RequesterBase(sow, stubMatcher)
   const agreementConfirmFake = sinon.fake()
   sinon.stub(requester, 'validateAgreement').resolves(false)
   sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
 
-  await requester.onAgreement(null, agreement)
+  const connection = new PeerConnection()
+
+  await requester.onAgreement(agreement, connection)
 
   t.true(agreementConfirmFake.notCalled)
   t.true(invalidQuoteFake.calledOnce)
@@ -92,32 +101,30 @@ test('requester.hireFarmer', async (t) => {
   t.true(sendAgreementFake.calledOnce)
 })
 
-test('requester.processFarmers', async (t) => {
+test('requester.addFarmers', async (t) => {
   const sow = new messages.SOW()
   const stubMatcher = new MatcherBase()
   const requester = new RequesterBase(sow, stubMatcher)
+  const connection = new PeerConnection()
 
-  const sendSowFake = sinon.fake()
-  const stubRFP = {
-    sendSow: sendSowFake
-  }
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendSow').callsFake(sendFake)
 
-  await requester.processFarmers([ stubRFP ])
+  await requester.addFarmers([ connection ])
 
-  t.true(sendSowFake.calledOnce)
+  t.true(sendFake.calledOnce)
 })
 
-test('requester.processFarmer', async (t) => {
+test('requester.addFarmer', async (t) => {
   const sow = new messages.SOW()
   const stubMatcher = new MatcherBase()
   const requester = new RequesterBase(sow, stubMatcher)
+  const connection = new PeerConnection()
 
-  const sendSowFake = sinon.fake()
-  const stubRFP = {
-    sendSow: sendSowFake
-  }
+  const sendFake = sinon.fake()
+  sinon.stub(connection, 'sendSow').callsFake(sendFake)
 
-  await requester.processFarmer(stubRFP)
+  await requester.addFarmer(connection)
 
-  t.true(sendSowFake.calledOnce)
+  t.true(sendFake.calledOnce)
 })

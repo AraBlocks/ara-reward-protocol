@@ -34,47 +34,20 @@ This script will do the following:
 
 ### AFS Replication with Duplex Streams
 
-This example shows AFS replication with AFP via communication over duplex streams. This example can optionally using sub-networks with encryption via [Ara Network Keys](https://github.com/AraBlocks/ara-network).
+This example shows AFS replication with AFP via communication over duplex streams. This example can optionally use a sub-network with encryption via [Ara Network Keys](https://github.com/AraBlocks/ara-network).
 
 The farmer example broadcasts the ability to replicate an AFS for a certain price per GB. The requester example finds these farmers that have the specific AFS and communicates via duplex stream to determine the cost of replication. It uses the `MaxCostMatcher` to select a subset of peers.
-
-#### Enabling Encryption / Farmer sub-networks
-
-To enable sub-network encryption, the requester should distribute the `examples/utils/keys.pub` file to the farmer's computer. Then, uncomment the line in `remote-farmer.js`:
-```
-const networkkeypath = constants.networkPublicKeypath
-```
-and uncomment the line in `remote-requester.js`:
-```
-const networkkeypath = constants.networkSecretKeypath
-```
 
 #### Running the example
 
 On the farmer's computer/terminal:
 ```
-$ node examples/afs-replication/duplex/remote-farmer.js
+$ node examples/afs-replication/remote-farmer.js
 ```
 
 On the requester's computer/terminal:
 ```
-$ node examples/afs-replication/duplex/remote-requester.js
+$ node examples/afs-replication/remote-requester.js
 ```
 
-### AFS Replication with gRPC
-
-This example shows AFS replication with AFP via communication over gRPC on port 50051.
-
-The farmer example broadcasts the ability to replicate an AFS for zero cost. The requester example finds these farmers that have the specific AFS and communicates via gRPC to only find free replication. It uses the MaxCostMatcher to select a subset of peers.
-
-On the farmer's computer/terminal:
-
-```
-$ node examples/afs-replication/grpc/remote-farmer.js
-```
-
-On the requester's computer/terminal:
-
-```
-$ node examples/afs-replication/grpc/remote-requester.js
-```
+To enable subnet encryption add the argument `--subnet` to both of the above commands.

@@ -1,6 +1,7 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, afpstream, util } = require('../../../index')
+const { messages, RequesterBase, util } = require('../../index')
 const { createSwarm } = require('ara-network/discovery')
+const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
 
@@ -8,7 +9,7 @@ const {
   idify, nonceString, bytesToGBs, weiToEther
 } = util
 
-class ExampleRequester extends afpstream.Requester {
+class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet, afs, onComplete) {
     super(sow, matcher)
     this.requesterSig = requesterSig
@@ -60,11 +61,11 @@ class ExampleRequester extends afpstream.Requester {
       return afsstream
     }
 
-    async function handleConnection(connection, info) {
+    async function handleConnection(connection, peer) {
       const contentSwarmId = connection.remoteId.toString('hex')
-      const connectionId = idify(info.host, info.port)
+      const connectionId = idify(peer.host, peer.port)
       self.swarmIdMap.set(contentSwarmId, connectionId)
-      debug(`Content Swarm: Peer connected: ${connectionId}`)
+      info(`Content Swarm: Peer connected: ${connectionId}`)
     }
 
     // Handle when the content needs updated
@@ -75,12 +76,12 @@ class ExampleRequester extends afpstream.Requester {
         debug(`old size: ${oldByteLength}, new size: ${feed.byteLength}`)
         const sizeDelta = feed.byteLength - oldByteLength
         const amount = self.matcher.maxCost * sizeDelta
-        self.emit('downloading', feed.length)
-        debug(`Staking ${weiToEther(amount)} for a size delta of ${bytesToGBs(sizeDelta)} GBs`)
+        info(`Staking ${weiToEther(amount)} for a size delta of ${bytesToGBs(sizeDelta)} GBs`)
         self.submitStake(amount, (err) => {
           if (err) onComplete(err)
           else stakeSubmitted = true
         })
+        self.emit('downloading', feed.length)
       })
 
       // Record download data
@@ -94,7 +95,7 @@ class ExampleRequester extends afpstream.Requester {
       feed.once('sync', async () => {
         self.emit('complete')
         debug(await afs.readdir('.'))
-        debug('Downloaded!')
+        info('Downloaded!')
         self.sendRewards(onComplete)
       })
     }
@@ -115,8 +116,8 @@ class ExampleRequester extends afpstream.Requester {
       })
   }
 
-  async validatePeer(peer) {
-    if (peer) return true
+  async validateQuote(quote) {
+    if (quote) return true
     return false
   }
 
@@ -229,7 +230,7 @@ class ExampleRequester extends afpstream.Requester {
     const sowId = nonceString(quote.getSow())
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
-    debug(`Sending reward to farmer ${farmerId} for ${amount} tokens`)
+    info(`Sending reward to farmer ${farmerId} for ${weiToEther(amount)} tokens`)
 
     this.wallet
       .submitReward(sowId, farmerId, amount)
@@ -237,7 +238,7 @@ class ExampleRequester extends afpstream.Requester {
         connection.sendReward(reward)
       })
       .catch((err) => {
-        debug(`Failed to submit the reward ${amount} to farmer ${farmerId} for job ${sowId}`)
+        warn(`Failed to submit the reward to farmer ${farmerId} for job ${sowId}`)
         debug(err)
       })
   }
