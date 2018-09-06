@@ -4,11 +4,19 @@ const { messages } = require('farming-protocol-buffers')
 const sinon = require('sinon')
 const test = require('ava')
 
+const {
+  Agreement,
+  Receipt,
+  Reward,
+  Quote,
+  SOW
+} = messages
+
 test('farmer.onSow.ValidSow', async (t) => {
   const quoteId = '1234'
-  const sow = new messages.SOW()
+  const sow = new SOW()
 
-  const quote = new messages.Quote()
+  const quote = new Quote()
   quote.setNonce(quoteId)
 
   const farmer = new FarmerBase()
@@ -24,8 +32,8 @@ test('farmer.onSow.ValidSow', async (t) => {
 })
 
 test('farmer.onSow.InvalidSow', async (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
+  const sow = new SOW()
+  const quote = new Quote()
 
   const farmer = new FarmerBase()
   sinon.stub(farmer, 'generateQuote').resolves(quote)
@@ -42,7 +50,7 @@ test('farmer.onSow.InvalidSow', async (t) => {
 test('farmer.onAgreement.ValidAgreement', async (t) => {
   const agreementId = '1234'
 
-  const agreement = new messages.Agreement()
+  const agreement = new Agreement()
   agreement.setNonce(agreementId)
 
   const farmer = new FarmerBase()
@@ -58,7 +66,7 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
 })
 
 test('farmer.onAgreement.InvalidAgreement', async (t) => {
-  const agreement = new messages.Agreement()
+  const agreement = new Agreement()
 
   const farmer = new FarmerBase()
   const signAgreementFake = sinon.fake()
@@ -76,9 +84,9 @@ test('farmer.onAgreement.InvalidAgreement', async (t) => {
 test('farmer.onReward.ValidReward', async (t) => {
   const rewardId = '1234'
 
-  const reward = new messages.Reward()
+  const reward = new Reward()
   reward.setNonce(rewardId)
-  const receipt = new messages.Receipt()
+  const receipt = new Receipt()
   receipt.setReward(reward)
 
   const farmer = new FarmerBase()
@@ -94,7 +102,7 @@ test('farmer.onReward.ValidReward', async (t) => {
 })
 
 test('farmer.onReward.InvalidReward', async (t) => {
-  const reward = new messages.Reward()
+  const reward = new Reward()
 
   const farmer = new FarmerBase()
   const generateReceiptFake = sinon.fake()
@@ -107,4 +115,50 @@ test('farmer.onReward.InvalidReward', async (t) => {
 
   await farmer.onReward(reward, connection)
   t.true(sendFake.notCalled)
+})
+
+test('farmer.addRequester', async (t) => {
+  const farmer = new FarmerBase()
+  const connection = new PeerConnection()
+
+  const onSowFake = sinon.fake()
+  sinon.stub(farmer, 'onSow').callsFake(onSowFake)
+
+  const onAgreementFake = sinon.fake()
+  sinon.stub(farmer, 'onAgreement').callsFake(onAgreementFake)
+
+  const onRewardFake = sinon.fake()
+  sinon.stub(farmer, 'onReward').callsFake(onRewardFake)
+
+  await farmer.addRequester(connection)
+
+  const sow = new SOW()
+  await connection.onSow(sow)
+  t.true(sow === onSowFake.getCall(0).args[0] && connection === onSowFake.getCall(0).args[1])
+
+  const agreement = new Agreement()
+  await connection.onAgreement(agreement)
+  t.true(agreement === onAgreementFake.getCall(0).args[0] && connection === onAgreementFake.getCall(0).args[1])
+
+  const reward = new Reward()
+  await connection.onReward(reward)
+  t.true(reward === onRewardFake.getCall(0).args[0] && connection === onRewardFake.getCall(0).args[1])
+
+})
+
+test('farmer.noOverride', async (t) => {
+  const farmer = new FarmerBase()
+  const connection = new PeerConnection()
+
+  const sow = new SOW()
+  await t.throws(farmer.validateSow(sow), Error)
+  await t.throws(farmer.generateQuote(sow), Error)
+
+  const agreement = new Agreement()
+  await t.throws(farmer.validateAgreement(agreement), Error)
+  await t.throws(farmer.signAgreement(agreement), Error)
+
+  const reward = new Reward()
+  await t.throws(farmer.validateReward(reward), Error)
+  await t.throws(farmer.generateReceipt(reward), Error)
 })
