@@ -1,5 +1,7 @@
 const { MSG, DuplexConnection } = require('../../src/duplex/duplex-connection')
 const { messages } = require('farming-protocol-buffers')
+const { Duplex } = require('stream');
+const sinon = require('sinon')
 const test = require('ava')
 
 const {
@@ -45,10 +47,42 @@ test('duplex.encode-decode.validData', (t) => {
   t.true(Buffer.from(decodedReceipt.getNonce()).toString('hex') === id)
 })
 
-test('duplex.connection.sendSow', (t) => {
-  const connection = new DuplexConnection()
-  const sow = new SOW()
+test('duplex.send.validData', (t) => {
+  const id = 'abcd'
+  const bb = Buffer.from(id, 'hex')
+  const opts = {}
+  const peer = {}
+  const duplex = sinon.createStubInstance(Duplex)
 
+  const connection = new DuplexConnection(peer, duplex, opts)
+
+  const sow = new SOW()
+  sow.setNonce(bb)
   connection.sendSow(sow)
-  t.todo()
+  const decodedSow = SOW.deserializeBinary(MSG.decode(duplex.write.getCall(0).args[0]).data)
+  t.true(Buffer.from(decodedSow.getNonce()).toString('hex') === id)
+
+  const quote = new Quote()
+  quote.setNonce(bb)
+  connection.sendQuote(quote)
+  const decodedQuote = Quote.deserializeBinary(MSG.decode(duplex.write.getCall(1).args[0]).data)
+  t.true(Buffer.from(decodedQuote.getNonce()).toString('hex') === id)
+
+  const agreeement = new Agreement()
+  agreeement.setNonce(bb)
+  connection.sendAgreement(agreeement)
+  const decodedAgreement = Agreement.deserializeBinary(MSG.decode(duplex.write.getCall(2).args[0]).data)
+  t.true(Buffer.from(decodedAgreement.getNonce()).toString('hex') === id)
+
+  const reward = new Reward()
+  reward.setNonce(bb)
+  connection.sendReward(reward)
+  const decodedReward = Reward.deserializeBinary(MSG.decode(duplex.write.getCall(3).args[0]).data)
+  t.true(Buffer.from(decodedReward.getNonce()).toString('hex') === id)
+
+  const receipt = new Receipt()
+  receipt.setNonce(bb)
+  connection.sendReceipt(receipt)
+  const decodedReceipt = Receipt.deserializeBinary(MSG.decode(duplex.write.getCall(4).args[0]).data)
+  t.true(Buffer.from(decodedReceipt.getNonce()).toString('hex') === id)
 })

@@ -28,8 +28,8 @@ const MSG = {
 class DuplexConnection extends PeerConnection {
   constructor(peer, connection, opts) {
     super()
-    this.peer = peer
-    this.opts = opts
+    this.peer = peer || {}
+    this.opts = opts || {}
     this.opts.timeout = this.opts.timeout || 10000
     this.peerId = idify(this.peer.host, this.peer.port)
 
