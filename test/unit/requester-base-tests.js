@@ -29,6 +29,13 @@ test('requester.onQuote.ValidQuote', async (t) => {
   await requester.onQuote(quote, connection)
 
   t.true(matchFake.calledOnce)
+
+  const hireFake = sinon.fake()
+  sinon.stub(requester, 'hireFarmer').callsFake(hireFake)
+
+  await matchFake.getCall(0).args[1]()
+  t.true(hireFake.calledOnce)
+
 })
 
 test('requester.onQuote.InvalidQuote', async (t) => {
@@ -132,9 +139,30 @@ test('requester.addFarmer', async (t) => {
   const sendFake = sinon.fake()
   sinon.stub(connection, 'sendSow').callsFake(sendFake)
 
+  const onQuoteFake = sinon.fake()
+  sinon.stub(requester, 'onQuote').callsFake(onQuoteFake)
+
+  const onAgreementFake = sinon.fake()
+  sinon.stub(requester, 'onAgreement').callsFake(onAgreementFake)
+
+  const onReceiptFake = sinon.fake()
+  sinon.stub(requester, 'onReceipt').callsFake(onReceiptFake)
+
   await requester.addFarmer(connection)
 
   t.true(sendFake.calledOnce)
+
+  const quote = new Quote()
+  await connection.onQuote(quote)
+  t.true(quote === onQuoteFake.getCall(0).args[0] && connection === onQuoteFake.getCall(0).args[1])
+
+  const agreement = new Agreement()
+  await connection.onAgreement(agreement)
+  t.true(agreement === onAgreementFake.getCall(0).args[0] && connection === onAgreementFake.getCall(0).args[1])
+
+  const receipt = new Receipt()
+  await connection.onReceipt(receipt)
+  t.true(receipt === onReceiptFake.getCall(0).args[0] && connection === onReceiptFake.getCall(0).args[1])
 })
 
 test('requester.noOverride', async (t) => {

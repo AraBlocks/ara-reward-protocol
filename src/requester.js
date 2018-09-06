@@ -49,10 +49,11 @@ class RequesterBase extends EventEmitter {
    * @param {PeerConnection} connection
    */
   async onQuote(quote, connection) {
+    const self = this
     const valid = await this.validateQuote(quote)
     if (valid) {
-      const callback = () => this.hireFarmer(quote, connection)
-      this.matcher.addQuote(quote, callback.bind(this))
+      const callback = async () => self.hireFarmer(quote, connection)
+      this.matcher.addQuote(quote, callback)
     } else {
       this.emit('invalidQuote', quote)
     }

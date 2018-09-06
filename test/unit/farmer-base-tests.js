@@ -143,7 +143,6 @@ test('farmer.addRequester', async (t) => {
   const reward = new Reward()
   await connection.onReward(reward)
   t.true(reward === onRewardFake.getCall(0).args[0] && connection === onRewardFake.getCall(0).args[1])
-
 })
 
 test('farmer.noOverride', async (t) => {
