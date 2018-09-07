@@ -87,7 +87,10 @@ test('duplex.send.validData', (t) => {
   t.true(Buffer.from(decodedReceipt.getNonce()).toString('hex') === id)
 })
 
-test('duplex.on.validData', async (t) => {
+test('duplex.onData.validData', async (t) => {
+  const id = 'abcd'
+  const bb = Buffer.from(id, 'hex')
+
   const opts = {}
   const peer = {}
   const duplex = sinon.createStubInstance(Duplex)
@@ -98,22 +101,56 @@ test('duplex.on.validData', async (t) => {
   sinon.stub(connection, 'emit').callsFake(emitFake)
 
   const sow = new SOW()
-  await connection.onSow(sow)
-  t.true('sow' === emitFake.getCall(0).args[0] && sow === emitFake.getCall(0).args[1])
+  sow.setNonce(bb)
+  const encodedSow = MSG.encode(MSG.SOW.head, sow.serializeBinary())
+  await connection.onData(encodedSow)
+  t.true('sow' === emitFake.getCall(0).args[0] && id === Buffer.from(emitFake.getCall(0).args[1].getNonce()).toString('hex'))
 
   const quote = new Quote()
-  await connection.onQuote(quote)
-  t.true('quote' === emitFake.getCall(1).args[0] && quote === emitFake.getCall(1).args[1])
+  quote.setNonce(bb)
+  const encodedQuote = MSG.encode(MSG.QUOTE.head, quote.serializeBinary())
+  await connection.onData(encodedQuote) 
+  t.true('quote' === emitFake.getCall(1).args[0] && id === Buffer.from(emitFake.getCall(1).args[1].getNonce()).toString('hex'))
 
-  const agreement = new Agreement()
-  await connection.onAgreement(agreement)
-  t.true('agreement' === emitFake.getCall(2).args[0] && agreement === emitFake.getCall(2).args[1])
+  const agreeement = new Agreement()
+  agreeement.setNonce(bb)
+  const encodedAgreement = MSG.encode(MSG.AGREEMENT.head, agreeement.serializeBinary())
+  await connection.onData(encodedAgreement)
+  t.true('agreement' === emitFake.getCall(2).args[0] && id === Buffer.from(emitFake.getCall(2).args[1].getNonce()).toString('hex'))
 
   const reward = new Reward()
-  await connection.onReward(reward)
-  t.true('reward' === emitFake.getCall(3).args[0] && reward === emitFake.getCall(3).args[1])
+  reward.setNonce(bb)
+  const encodedReward = MSG.encode(MSG.REWARD.head, reward.serializeBinary())
+  await connection.onData(encodedReward)
+  t.true('reward' === emitFake.getCall(3).args[0] && id === Buffer.from(emitFake.getCall(3).args[1].getNonce()).toString('hex'))
 
   const receipt = new Receipt()
-  await connection.onReceipt(receipt)
-  t.true('receipt' === emitFake.getCall(4).args[0] && receipt === emitFake.getCall(4).args[1])
+  receipt.setNonce(bb)
+  const encodedReceipt = MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary())
+  await connection.onData(encodedReceipt)
+  t.true('receipt' === emitFake.getCall(4).args[0] && id === Buffer.from(emitFake.getCall(4).args[1].getNonce()).toString('hex'))
+})
+
+test ('duplex.onData.invalidData', (t) => {
+  const opts = {}
+  const peer = {}
+  const duplex = sinon.createStubInstance(Duplex)
+
+  const connection = new DuplexConnection(peer, duplex, opts)
+  const invalidData = Buffer.from('InvalidData', 'ascii')
+
+  t.false(connection.onData(invalidData))
+})
+
+test ('duplex.emit', async (t) => {
+  const opts = {}
+  const peer = {}
+  const duplex = sinon.createStubInstance(Duplex)  
+
+  const connection = new DuplexConnection(peer, duplex, opts)
+  await connection.onTimeout()
+  await connection.onClose()
+  await connection.onEnd()
+
+  t.true(3 === duplex.destroy.callCount)
 })

@@ -124,20 +124,18 @@ class DuplexConnection extends PeerConnection {
     try {
       const { head, data } = MSG.decode(chunk)
       switch (head) {
-      case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
-      case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break
-      case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data)); break
-      case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data)); break
-      case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data)); break
-      default: throw new TypeError(`Unknown message type: ${head}`)
+        case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
+        case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break
+        case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data)); break
+        case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data)); break
+        case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data)); break
+        default: throw new TypeError(`Unknown message type: ${head}`)
       }
+      return true
     } catch (e) {
       debug('On Receive Error:', e)
+      return false
     }
-  }
-
-  close() {
-    if (this.stream) this.stream.emit('close')
   }
 }
 
