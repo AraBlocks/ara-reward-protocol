@@ -250,10 +250,11 @@ async removeQuote(quote) {
 * [Commit message examples](/.github/COMMIT_FORMAT_EXAMPLES.md)
 
 ## See Also
+* [RFC](https://github.com/AraBlocks/RFCs/blob/0000-AFP/text/0000-afp.md)
 * [AID](https://github.com/AraBlocks/ara-identity)
 * [AFS](https://github.com/AraBlocks/ara-filesystem)
 * [ANN](https://github.com/AraBlocks/ara-network)
 
 ## License
 
-LGPL-3.0
+[LGPL-3.0](/LICENSE)

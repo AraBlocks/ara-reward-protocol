@@ -1,4 +1,4 @@
-<img src="https://github.com/arablocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol examples
+<img src="https://github.com/arablocks/ara-farming-protocol/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol examples
 ========
 
 This folder contains a set of examples intended to demonstrate usage of the farming protocol.
