@@ -8,7 +8,6 @@ const test = require('ava')
 const {
   Agreement,
   Receipt,
-  Reward,
   Quote,
   SOW
 } = messages
@@ -35,7 +34,6 @@ test('requester.onQuote.ValidQuote', async (t) => {
 
   await matchFake.getCall(0).args[1]()
   t.true(hireFake.calledOnce)
-
 })
 
 test('requester.onQuote.InvalidQuote', async (t) => {

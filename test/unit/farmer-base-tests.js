@@ -147,7 +147,6 @@ test('farmer.addRequester', async (t) => {
 
 test('farmer.noOverride', async (t) => {
   const farmer = new FarmerBase()
-  const connection = new PeerConnection()
 
   const sow = new SOW()
   await t.throws(farmer.validateSow(sow), Error)

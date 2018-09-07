@@ -1,6 +1,6 @@
 const { MSG, DuplexConnection } = require('../../src/duplex/duplex-connection')
 const { messages } = require('farming-protocol-buffers')
-const { Duplex } = require('stream');
+const { Duplex } = require('stream')
 const sinon = require('sinon')
 const test = require('ava')
 
@@ -109,7 +109,7 @@ test('duplex.onData.validData', async (t) => {
   const quote = new Quote()
   quote.setNonce(bb)
   const encodedQuote = MSG.encode(MSG.QUOTE.head, quote.serializeBinary())
-  await connection.onData(encodedQuote) 
+  await connection.onData(encodedQuote)
   t.true('quote' === emitFake.getCall(1).args[0] && id === Buffer.from(emitFake.getCall(1).args[1].getNonce()).toString('hex'))
 
   const agreeement = new Agreement()
@@ -131,7 +131,7 @@ test('duplex.onData.validData', async (t) => {
   t.true('receipt' === emitFake.getCall(4).args[0] && id === Buffer.from(emitFake.getCall(4).args[1].getNonce()).toString('hex'))
 })
 
-test ('duplex.onData.invalidData', (t) => {
+test('duplex.onData.invalidData', (t) => {
   const opts = {}
   const peer = {}
   const duplex = sinon.createStubInstance(Duplex)
@@ -142,10 +142,10 @@ test ('duplex.onData.invalidData', (t) => {
   t.false(connection.onData(invalidData))
 })
 
-test ('duplex.emit', async (t) => {
+test('duplex.emit', async (t) => {
   const opts = {}
   const peer = {}
-  const duplex = sinon.createStubInstance(Duplex)  
+  const duplex = sinon.createStubInstance(Duplex)
 
   const connection = new DuplexConnection(peer, duplex, opts)
   await connection.onTimeout()
