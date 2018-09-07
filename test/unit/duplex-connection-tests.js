@@ -142,7 +142,18 @@ test('duplex.onData.invalidData', (t) => {
   t.false(connection.onData(invalidData))
 })
 
-test('duplex.emit', async (t) => {
+test('duplex.constructor', (t) => {
+  const opts = {}
+  const peer = {}
+  const duplex = sinon.createStubInstance(Duplex)
+
+  t.true(Boolean(new DuplexConnection(peer, duplex, opts)))
+  t.true(Boolean(new DuplexConnection(peer, duplex, null)))
+  t.throws(() => { new DuplexConnection(null, duplex, opts) }, TypeError)
+  t.throws(() => { new DuplexConnection(peer, null, opts) }, TypeError)
+})
+
+test('duplex.emit.withStream', async (t) => {
   const opts = {}
   const peer = {}
   const duplex = sinon.createStubInstance(Duplex)
@@ -153,4 +164,19 @@ test('duplex.emit', async (t) => {
   await connection.onEnd()
 
   t.true(3 === duplex.destroy.callCount)
+})
+
+test('duplex.emit.withoutStream', async (t) => {
+  const opts = {}
+  const peer = {}
+  const duplex = sinon.createStubInstance(Duplex)
+
+  const connection = new DuplexConnection(peer, duplex, opts)
+  connection.stream = null
+
+  await connection.onTimeout()
+  await connection.onClose()
+  await connection.onEnd()
+
+  t.true(duplex.destroy.notCalled)
 })
