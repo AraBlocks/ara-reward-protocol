@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
 
 
-ARA Farming Protocol (AFP) provides methods for distributed decentralized services, or decents, in the ARA Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details).
+Ara Farming Protocol (AFP) provides methods for distributed decentralized services in the Ara Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details).
 
 ### Terminology
 
@@ -192,7 +192,7 @@ async validateAgreement(agreement) {
  * @returns {messages.Receipt}
  */
 async generateReceipt(reward) {
-  throw new Error('Extended classes must implement generateQuote.')
+  throw new Error('Extended classes must implement generateReceipt.')
 }
 
 /**
