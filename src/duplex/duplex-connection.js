@@ -28,8 +28,15 @@ const MSG = {
 class DuplexConnection extends PeerConnection {
   constructor(peer, connection, opts) {
     super()
+
+    if (!peer || 'object' !== typeof peer) {
+      throw new TypeError('Expecting peer object.')
+    } else if (!connection || 'object' !== typeof connection){
+      throw new TypeError('Expecting connection object.')
+    }
+
     this.peer = peer
-    this.opts = opts
+    this.opts = opts || {}
     this.opts.timeout = this.opts.timeout || 10000
     this.peerId = idify(this.peer.host, this.peer.port)
 
@@ -74,8 +81,10 @@ class DuplexConnection extends PeerConnection {
 
   async onTimeout() {
     debug(`Stream timed out with peer: ${this.peerId}`)
-    this.stream.emit('timeout', this.peer)
-    if (this.stream) this.stream.destroy()
+    if (this.stream) {
+      this.stream.emit('timeout', this.peer)
+      this.stream.destroy()
+    }
   }
 
   async onClose() {
@@ -131,13 +140,11 @@ class DuplexConnection extends PeerConnection {
       case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data)); break
       default: throw new TypeError(`Unknown message type: ${head}`)
       }
+      return true
     } catch (e) {
       debug('On Receive Error:', e)
+      return false
     }
-  }
-
-  close() {
-    if (this.stream) this.stream.emit('close')
   }
 }
 

@@ -94,7 +94,7 @@ class FarmerBase extends EventEmitter {
    * @returns {messages.Receipt}
    */
   async generateReceipt(reward) {
-    throw new Error('Extended classes must implement generateQuote.')
+    throw new Error('Extended classes must implement generateReceipt.')
   }
 
   /**

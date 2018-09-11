@@ -5,15 +5,22 @@ const { messages } = require('farming-protocol-buffers')
 const sinon = require('sinon')
 const test = require('ava')
 
+const {
+  Agreement,
+  Receipt,
+  Quote,
+  SOW
+} = messages
+
 test('requester.onQuote.ValidQuote', async (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
+  const sow = new SOW()
+  const quote = new Quote()
 
-  const stubMatcher = new MatcherBase()
+  const matcher = new MatcherBase()
   const matchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'addQuote').callsFake(matchFake)
+  sinon.stub(matcher, 'addQuote').callsFake(matchFake)
 
-  const requester = new RequesterBase(sow, stubMatcher)
+  const requester = new RequesterBase(sow, matcher)
   sinon.stub(requester, 'validateQuote').resolves(true)
 
   const connection = new PeerConnection()
@@ -21,17 +28,23 @@ test('requester.onQuote.ValidQuote', async (t) => {
   await requester.onQuote(quote, connection)
 
   t.true(matchFake.calledOnce)
+
+  const hireFake = sinon.fake()
+  sinon.stub(requester, 'hireFarmer').callsFake(hireFake)
+
+  await matchFake.getCall(0).args[1]()
+  t.true(hireFake.calledOnce)
 })
 
 test('requester.onQuote.InvalidQuote', async (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
+  const sow = new SOW()
+  const quote = new Quote()
 
-  const stubMatcher = new MatcherBase()
+  const matcher = new MatcherBase()
   const matchFake = sinon.fake()
-  sinon.stub(stubMatcher, 'addQuote').callsFake(matchFake)
+  sinon.stub(matcher, 'addQuote').callsFake(matchFake)
 
-  const requester = new RequesterBase(sow, stubMatcher)
+  const requester = new RequesterBase(sow, matcher)
   sinon.stub(requester, 'validateQuote').resolves(false)
 
   const connection = new PeerConnection()
@@ -42,12 +55,12 @@ test('requester.onQuote.InvalidQuote', async (t) => {
 })
 
 test('requester.onAgreement.ValidAgreement', async (t) => {
-  const sow = new messages.SOW()
-  const agreement = new messages.Agreement()
+  const sow = new SOW()
+  const agreement = new Agreement()
 
-  const stubMatcher = new MatcherBase()
+  const matcher = new MatcherBase()
 
-  const requester = new RequesterBase(sow, stubMatcher)
+  const requester = new RequesterBase(sow, matcher)
   const agreementConfirmFake = sinon.fake()
   sinon.stub(requester, 'validateAgreement').resolves(true)
   sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
@@ -60,14 +73,14 @@ test('requester.onAgreement.ValidAgreement', async (t) => {
 })
 
 test('requester.onAgreement.InvalidAgreement', async (t) => {
-  const sow = new messages.SOW()
-  const agreement = new messages.Agreement()
+  const sow = new SOW()
+  const agreement = new Agreement()
 
-  const stubMatcher = new MatcherBase()
+  const matcher = new MatcherBase()
   const invalidQuoteFake = sinon.fake()
-  sinon.stub(stubMatcher, 'removeQuote').callsFake(invalidQuoteFake)
+  sinon.stub(matcher, 'removeQuote').callsFake(invalidQuoteFake)
 
-  const requester = new RequesterBase(sow, stubMatcher)
+  const requester = new RequesterBase(sow, matcher)
   const agreementConfirmFake = sinon.fake()
   sinon.stub(requester, 'validateAgreement').resolves(false)
   sinon.stub(requester, 'onHireConfirmed').callsFake(agreementConfirmFake)
@@ -81,10 +94,10 @@ test('requester.onAgreement.InvalidAgreement', async (t) => {
 })
 
 test('requester.hireFarmer', async (t) => {
-  const sow = new messages.SOW()
-  const quote = new messages.Quote()
-  const stubMatcher = new MatcherBase()
-  const requester = new RequesterBase(sow, stubMatcher)
+  const sow = new SOW()
+  const quote = new Quote()
+  const matcher = new MatcherBase()
+  const requester = new RequesterBase(sow, matcher)
 
   const genAgreementFake = sinon.fake()
   sinon.stub(requester, 'generateAgreement').callsFake(genAgreementFake)
@@ -102,9 +115,9 @@ test('requester.hireFarmer', async (t) => {
 })
 
 test('requester.addFarmers', async (t) => {
-  const sow = new messages.SOW()
-  const stubMatcher = new MatcherBase()
-  const requester = new RequesterBase(sow, stubMatcher)
+  const sow = new SOW()
+  const matcher = new MatcherBase()
+  const requester = new RequesterBase(sow, matcher)
   const connection = new PeerConnection()
 
   const sendFake = sinon.fake()
@@ -116,15 +129,54 @@ test('requester.addFarmers', async (t) => {
 })
 
 test('requester.addFarmer', async (t) => {
-  const sow = new messages.SOW()
-  const stubMatcher = new MatcherBase()
-  const requester = new RequesterBase(sow, stubMatcher)
+  const sow = new SOW()
+  const matcher = new MatcherBase()
+  const requester = new RequesterBase(sow, matcher)
   const connection = new PeerConnection()
 
   const sendFake = sinon.fake()
   sinon.stub(connection, 'sendSow').callsFake(sendFake)
 
+  const onQuoteFake = sinon.fake()
+  sinon.stub(requester, 'onQuote').callsFake(onQuoteFake)
+
+  const onAgreementFake = sinon.fake()
+  sinon.stub(requester, 'onAgreement').callsFake(onAgreementFake)
+
+  const onReceiptFake = sinon.fake()
+  sinon.stub(requester, 'onReceipt').callsFake(onReceiptFake)
+
   await requester.addFarmer(connection)
 
   t.true(sendFake.calledOnce)
+
+  const quote = new Quote()
+  await connection.onQuote(quote)
+  t.true(quote === onQuoteFake.getCall(0).args[0] && connection === onQuoteFake.getCall(0).args[1])
+
+  const agreement = new Agreement()
+  await connection.onAgreement(agreement)
+  t.true(agreement === onAgreementFake.getCall(0).args[0] && connection === onAgreementFake.getCall(0).args[1])
+
+  const receipt = new Receipt()
+  await connection.onReceipt(receipt)
+  t.true(receipt === onReceiptFake.getCall(0).args[0] && connection === onReceiptFake.getCall(0).args[1])
+})
+
+test('requester.noOverride', async (t) => {
+  const sow = new SOW()
+  const matcher = new MatcherBase()
+  const requester = new RequesterBase(sow, matcher)
+  const connection = new PeerConnection()
+
+  const quote = new Quote()
+  await t.throws(requester.validateQuote(quote), Error)
+  await t.throws(requester.generateAgreement(quote), Error)
+
+  const agreement = new Agreement()
+  await t.throws(requester.validateAgreement(agreement), Error)
+  await t.throws(requester.onHireConfirmed(agreement, connection), Error)
+
+  const receipt = new Receipt()
+  await t.throws(requester.onReceipt(receipt, connection), Error)
 })
