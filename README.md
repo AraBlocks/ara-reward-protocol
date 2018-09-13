@@ -19,13 +19,13 @@ A peer in the network who can provide a service.
 
 A peer in the network who desires to distribute work amongst peers.
 
-#### SOW (Statement-of-Work)
+#### SOW (Statement-of-Work) // all `Statement-of-Work` or `Statement of Work` or just all `SOW`
 
 The scope of a distributable task, i.e. units-of-work, minimum resources, delivery date, etc.
 
 #### Quote
 
-A farmer's response to a SOW, include cost per unit-of-work for the given SOW. 
+A farmer's response to a SOW, include cost per unit-of-work for the given SOW.
 
 #### Agreement
 
@@ -33,17 +33,15 @@ An agreed upon statement of work and quote between a farmer and a requester. Thi
 
 ### Introduction
 
-AFP defines a set of extensible classes in Javascript which enable peers of a distributed service to communicate about and define a statement of work for that service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers). 
+AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers).
 
-AFP also provides a default implementation for communicating over duplex streams.
+To Farm: Extend the AFP Farmer class to define specifications to generate a quote for a task, validate a peer/SOW for a task, and sign and validate an agreement for a task. A discovery-swarm (or another peer discovery method) is used to broadcast ability to complete a task, and then communicate capabilities and costs via a duplex stream.
 
-A [farmer](#farmer) would extend the AFP Farmer class to define that farmer’s specifications for generating a quote for a task, validating a peer/SOW for a task, and signing and validating an agreement for a task. The farmer could then use a discovery-swarm (or some other peer discovery method) to broadcast their ability to complete a task, and then communicate via a duplex stream their capabilities and costs. 
-
-A [requester](#requester) would extend the AFP Requester class to define the requester's specifications for validating peers/quotes for a task, creating and validating agreements for a task, and for starting a task. A requester would also extend the AFP Matcher class to define the specifications for selecting and hiring a set of peers given their quotes for a task. The requester could then use a discovery-swarm to connect to peers and use AFP to discuss the task.
+To Make a Request: Extend the AFP Requester class to define specifications to validate peers/quotes for a task, create and validate agreements for a task, and to start a task. Also extend the AFP Matcher class to define the specifications to select and hire a set of peers given their quotes for a task. Use a discovery-swarm to connect to peers and use AFP to discuss the task.
 
 The default interaction between a requester and a farmer resembles the following:
-- Requester sends statement-of-work to farmer
-- Farmer validates sow and replies with quote for work
+- Requester sends `SOW` to farmer
+- Farmer validates `SOW` and replies with Quote for work
 - Requester validates quote and selects set of peers to complete work based on quotes
 - Requester sends agreement to selected farmers
 - Farmer validates agreement and countersigns agreement
@@ -51,23 +49,11 @@ The default interaction between a requester and a farmer resembles the following
 - When work is finished, requester sends reward to farmer
 - Farmer validates reward and returns a receipt to requester
 
-### Real World Examples
-
-#### A Decentralized Content Distribution Service
-
-In the case of content distribution, a content requester is looking for a set of peers that have a specific piece of content who are willing to transfer that content to the requester. The requester is willing to reward a certain amount per GB for the file transfer.
-
-The content requester would first find a set of farmers that have the specific desired content. The requester would then pass those farmers to their implementation of AFP. AFP would then ask each peer their transfer cost per GB of data. If the cost is less than or equal the maximum amount the requester is willing to pay, then the requester would employ the farmer. The AFP implementation could then take subset of farmers who have contractually agreed to do work for the requester and start file transfer.
-
-#### A Video Transcoding Service
-
-In the case of video transcoding, a requester is looking for a set of peers that are able to transcode videos. The requester is willing to reward a certain amount per frame that is transcoded.
-
-The requester would first find a set of farmers who have the correct software for transcoding a video. The requester would then pass those farmers to their AFP implementation. AFP would then ask each peer their transcode cost per frame. The matcher implementation could then find a set of peers whose total cost is less than a desired amount and then hire that set of farmers. The AFP implementation could then take subset of farmers who have contractually agreed to do work for the requester and start the video transcode.
+AFP provides a [default implementation](link to example files here) for communicating over duplex streams.
 
 ## Status
 
-This project is still in alpha development.
+This project is still in alpha development. // make this **Stable** when tagged/released
 
 ## Dependencies
 
@@ -77,32 +63,31 @@ This project is still in alpha development.
 ## Installation
 
 ```
-$ npm i
+$ git clone git@github.com:littlstar/farming-protocol.gitblahblah
+$ npm install
 ```
 
 ## Usage
 
-The expected usage is for an application to extend the following classes:
+Extend the following classes:
 
 * FarmerBase
 * MatcherBase
 * RequesterBase
 
-For an application that enables a user to request distributed work to be done on the network, that application would extend the RequesterBase class (which handles interacting with farmers) and the MatcherBase (which handles selecting a subset of farmers for a task).
+Applications that enable users to request work to be done on the network would extend the RequesterBase class (which handles interacting with farmers) and the MatcherBase (which handles selecting a subset of farmers for a task).
 
-For an application that enables a user to participate in distributed work requests and receive rewards, that application would extend the FarmerBase class (which handles interaction with requesters).
+Applications that enable a user to participate in distributed work requests and receive rewards would extend the FarmerBase class (which handles interaction with requesters).
 
-The FarmerBase and RequesterBase classes communicate via the PeerConnection interface. 
+All applications must extend and wrap communication with the PeerConnection interface.
 
 ### Connections
 
-The PeerConnection interface is effectively an abstract class that can be extended to wrap streams, RPCs, sockets, etc. The [`/src/duplex`](/src/duplex/README.md) folder contains an implementation of duplex streams wrapped with the PeerConnection interface.
+The PeerConnection interface is an abstract class that can be extended to wrap streams, RPCs, sockets, etc. The [`/src/duplex`](/src/duplex/README.md) folder contains an implementation of duplex streams wrapped with the PeerConnection interface.
 
 ### Implementation
 
-This section describes the classes that must be extended for AFP.
-
-#### Requester
+#### Requester - I would move all these signatures into the API section / format
 
 A requester must extend the Requester class to define the requester's specifications for validating quotes for a task, creating and validating agreements for a task, and for starting a task.
 
@@ -239,9 +224,11 @@ async removeQuote(quote) {
 }
 ```
 
-## [Examples](/examples/README.md)
+Make a `## API` section here ala
+https://github.com/AraBlocks/ara-module-template#anotherThing
+Maddie may know a script to auto gen markup from the JS comments (which are awesome)
 
-## Local Development Setup
+## [Examples](/examples/README.md)
 
 ## Contributing
 
@@ -251,9 +238,10 @@ async removeQuote(quote) {
 
 ## See Also
 * [RFC](https://github.com/AraBlocks/RFCs/blob/0000-AFP/text/0000-afp.md)
-* [AID](https://github.com/AraBlocks/ara-identity)
-* [AFS](https://github.com/AraBlocks/ara-filesystem)
-* [ANN](https://github.com/AraBlocks/ara-network)
+* [ara-identity](https://github.com/AraBlocks/ara-identity)
+* [ara-filesystem](https://github.com/AraBlocks/ara-filesystem)
+* [ara-network](https://github.com/AraBlocks/ara-network)
+* [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex)
 
 ## License
 
