@@ -1,4 +1,4 @@
-<img src="https://github.com/arablocks/ara-farming-protocol/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
+<img src="https://github.com/AraBlocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
 ========
 [![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
 
@@ -63,7 +63,7 @@ This project is still in alpha development. // make this **Stable** when tagged/
 ## Installation
 
 ```
-$ git clone git@github.com:littlstar/farming-protocol.gitblahblah
+$ git clone git@github.com:ara-farming-protocol/farming-protocol.git
 $ npm install
 ```
 
