@@ -20,7 +20,10 @@
     "farming",
     "farming-protocol"
   ],
-  "author": "@bplaster",
+  "contributors": [
+    "Brandon Plaster <brandon@littlstar.com>",
+    "Huy Dao <huy@littlstar.com>"
+  ],
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/littlstar/farming-protocol/issues"
@@ -36,7 +39,7 @@
   },
   "dependencies": {
     "ara-filesystem": "github:arablocks/ara-filesystem",
-    "ara-identity": "github:arablocks/ara-identity",
+    "ara-identity": "github:arablocks/ara-identity#0.15.1",
     "ara-console": "github:arablocks/ara-console",
     "ara-crypto": "github:arablocks/ara-crypto",
     "ara-network": "github:arablocks/ara-network",
