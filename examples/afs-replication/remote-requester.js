@@ -12,6 +12,13 @@ const duplexify = require('duplexify')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
+const aid = require('ara-filesystem/aid')
+const { createAFSKeyPath } = require('ara-filesystem/key-path')
+const {
+  web3: { toHex }
+} = require('ara-util')
+const { defaultStorage } = require('ara-filesystem/storage')
+const { createCFS } = require('cfsnet/create')
 
 const {
   contractAddress, walletAddresses, afsDIDs, requesterDID
@@ -55,7 +62,23 @@ async function download(did, reward, keypath) {
   sow.setRequester(requesterID)
 
   // Load the sparse afs
-  const { afs } = await create({ did })
+  // const { afs } = await create({ did })
+  const password = 't'
+  const owner = 'did:ara:4a2dacd7dce2b864a0fd96125e59a177c1a773707bff520c84efd7468f36b38e'
+  let afsId = await aid.create({ password, owner });
+  const { publicKey, secretKey } = afsId
+  const afsDid = toHex(publicKey)
+  let storage
+  const path = '/Users/huydao/.ara/afs/test2'
+
+  const afs = await createCFS({
+    id: afsDid,
+    key: publicKey,
+    secretKey,
+    path,
+    storage: defaultStorage(afsDid, password, storage)
+  })
+
 
   // Create the requester object
   const requester = new ExampleRequester(sow, matcher, requesterSig, wallet, afs, onComplete)

@@ -9,7 +9,7 @@ provider = ws://127.0.0.1:8546
 
 echo "${conf}" > /root/.ararc
 
-for repo in ara-identity; do
+for repo in ara-identity ara-network; do
   git clone git@github.com:AraBlocks/${repo}.git
   if [ $? -ne 0 ]; then
     exit 1
@@ -32,11 +32,22 @@ root=/root/.ara/identities
 keyring=/root/.ara/keyrings/keyring
 "
 
+ls -la
+cat /root/.ararc
+
+echo
+echo
+echo vip
+echo
+echo
+
 echo "${identity}" >> /root/.ararc
 
 cat /root/.ararc
 
-echo added identity to .ararc
+echo
+echo
+echo vip
 echo
 echo
 

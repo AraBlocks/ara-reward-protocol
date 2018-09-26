@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER "Madeline Cameron <madeline@littlstar.com>"
+MAINTAINER "Huy Dao <huy@littlstar.com>"
 
 ## Image dependencies
 RUN apt-get update && \
@@ -24,9 +24,10 @@ RUN echo "IdentityFile /root/.ssh/id_rsa" >> /etc/ssh/ssh_config
 RUN ./scripts/nave usemain stable
 
 ## Install app dependencies
-RUN npm install
-RUN npm install -g --save ethereumjs-testrpc
-RUN npm install -g truffle
+RUN npm install && true
+
+# RUN npm install -g --save ethereumjs-testrpc
+# RUN npm install -g truffle
 
 ## Install Ara specific utilities
 RUN ./scripts/setup
@@ -34,4 +35,6 @@ RUN ./scripts/setup
 # Expose port
 EXPOSE 8545
 # Start TestRPC
-ENTRYPOINT ["testrpc"]
+# ENTRYPOINT ["testrpc"]
+# ENTRYPOINT [ "node", "/examples/afs-replication/remote-farmer" ]
+# ENTRYPOINT ["pwd"]
