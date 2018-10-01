@@ -53,25 +53,33 @@ async function broadcast(did, price, keypath) {
   // Load the afs
   // const { afs } = await create({ did })
 
-  const password = 't'
-  const owner = 'did:ara:b78066f30df47307b238f76a511a13d4d05c3a7414243a744ae5b427f69e8ef1'
-  let afsId = await aid.create({ password, owner });
-  const { publicKey, secretKey } = afsId
-  const afsDid = toHex(publicKey)
-  let storage
-  const path = '/Users/huydao/.ara/afs/test'
+  // const password = 't'
+  // const owner = 'did:ara:b78066f30df47307b238f76a511a13d4d05c3a7414243a744ae5b427f69e8ef1'
+  // let afsId = await aid.create({ password, owner });
+  // const { publicKey, secretKey } = afsId
+  // const afsDid = toHex(publicKey)
+  // let storage
+  // const path = '/Users/huydao/.ara/afs/test'
+  //
+  // const afs = await createCFS({
+  //   id: afsDid,
+  //   key: publicKey,
+  //   secretKey,
+  //   path,
+  //   storage: defaultStorage(afsDid, password, storage)
+  // })
 
-  console.log("djflkafj");
+  let afs
+  try {
+    afs = await createCFS({
+      path: '/Users/huydao/.ara/afs/newAFS2'
+    })
+    // console.log(afs)
+    // await mirrorPath('/Users/huydao/Desktop/robot.jpg', afs)
+  } catch (e) {
+    console.log(e);
+  }
 
-  const afs = await createCFS({
-    id: afsDid,
-    key: publicKey,
-    secretKey,
-    path,
-    storage: defaultStorage(afsDid, password, storage)
-  })
-
-  console.log("djflkafj");
   // Convert Ether/GB to Wei/Byte
   const convertedPrice = etherToWei(price) / gbsToBytes(1)
 

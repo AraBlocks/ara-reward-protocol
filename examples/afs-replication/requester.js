@@ -46,6 +46,7 @@ class ExampleRequester extends RequesterBase {
     swarm.on('connection', handleConnection)
 
     function stream() {
+
       const afsstream = afs.replicate({
         upload: false,
         download: true,
@@ -62,6 +63,7 @@ class ExampleRequester extends RequesterBase {
     }
 
     async function handleConnection(connection, peer) {
+      console.log("on connection requester");
       const contentSwarmId = connection.remoteId.toString('hex')
       const connectionId = idify(peer.host, peer.port)
       self.swarmIdMap.set(contentSwarmId, connectionId)
@@ -70,6 +72,7 @@ class ExampleRequester extends RequesterBase {
 
     // Handle when the content needs updated
     async function attachDownloadListener(feed) {
+      console.log(feed);
       // Calculate and submit stake
       // NOTE: this is a hack to get content size and should be done prior to download
       feed.once('download', () => {
@@ -77,6 +80,7 @@ class ExampleRequester extends RequesterBase {
         const sizeDelta = feed.byteLength - oldByteLength
         const amount = self.matcher.maxCost * sizeDelta
         info(`Staking ${weiToEther(amount)} for a size delta of ${bytesToGBs(sizeDelta)} GBs`)
+
         self.submitStake(amount, (err) => {
           if (err) onComplete(err)
           else stakeSubmitted = true
@@ -151,6 +155,7 @@ class ExampleRequester extends RequesterBase {
 
   // Handle when ready to start work
   async startWork(peer, port) {
+    console.log("start work: ", port);
     const connectionId = idify(peer.host, port)
     debug(`Starting AFS Connection with ${connectionId}`)
     this.contentSwarm.addPeer(connectionId, { host: peer.host, port })
