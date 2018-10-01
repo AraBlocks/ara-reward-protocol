@@ -143,7 +143,7 @@ class ExampleFarmer extends FarmerBase {
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
     swarm.listen(port)
-
+    console.log("farmer port: ", port);
     function stream() {
       const afsstream = self.afs.replicate({
         upload: true,
@@ -159,6 +159,7 @@ class ExampleFarmer extends FarmerBase {
     }
 
     function handleConnection(connection, peer) {
+      console.log("CONNECTION");
       info(`Peer connected: ${peer.host} on port: ${peer.port}`)
     }
   }

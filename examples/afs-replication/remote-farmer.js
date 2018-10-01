@@ -59,38 +59,15 @@ async function broadcast(did, price, keypath) {
   let afs
   try {
     afs = await createCFS({
-      path: '/Users/huydao/.ara/afs/newAFS2'
+      id: "test",
+      key: Buffer.from('f615a9bcba0d8953cd2fc56add30f0ba85fed751278cfd10330f6ca290f0e02a', 'hex'),
+      path: '/Users/huydao/.ara/afs/testAFS'
     })
-    await mirrorPath('robot.jpg', afs)
   } catch (e) {
     console.log(e);
   }
 
-  async function mirrorPath(path, afs) {
-    debug(`copy start: ${path}`)
-    const name = join(afs.HOME, basename(path))
 
-    // Mirror and log
-    const progress = mirror({ name: path }, { name, fs: afs }, { keepExisting: true })
-    progress.on('put', (src, dst) => {
-      debug(`adding path ${dst.name}`)
-    })
-    progress.on('skip', (src, dst) => {
-      debug(`skipping path ${dst.name}`)
-    })
-    progress.on('del', (dst) => {
-      debug(`deleting path ${dst.name}`)
-    })
-
-    // Await end or error
-    const error = await new Promise((accept, reject) => progress.once('end', accept).once('error', reject))
-
-    if (error) {
-      debug(`copy error: ${path}: ${error}`)
-    } else {
-      debug(`copy complete: ${path}`)
-    }
-  }
 
   // Convert Ether/GB to Wei/Byte
   const convertedPrice = etherToWei(price) / gbsToBytes(1)

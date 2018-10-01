@@ -26,7 +26,7 @@ class ExampleRequester extends RequesterBase {
     const self = this
     let oldByteLength = 0
     const { content } = afs.partitions.resolve(afs.HOME)
-    let stakeSubmitted = false
+    let stakeSubmitted = true
 
     if (content) {
       // TODO: calc current downloaded size in bytes
@@ -46,6 +46,7 @@ class ExampleRequester extends RequesterBase {
     swarm.on('connection', handleConnection)
 
     function stream() {
+      console.log("test if stream requester");
       const afsstream = afs.replicate({
         upload: false,
         download: true,
@@ -70,9 +71,11 @@ class ExampleRequester extends RequesterBase {
 
     // Handle when the content needs updated
     async function attachDownloadListener(feed) {
+      console.log("attachDownloadListener");
       // Calculate and submit stake
       // NOTE: this is a hack to get content size and should be done prior to download
       feed.once('download', () => {
+        console.log("download feed");
         debug(`old size: ${oldByteLength}, new size: ${feed.byteLength}`)
         const sizeDelta = feed.byteLength - oldByteLength
         const amount = self.matcher.maxCost * sizeDelta
@@ -86,6 +89,7 @@ class ExampleRequester extends RequesterBase {
 
       // Record download data
       feed.on('download', (index, data, from) => {
+        console.log("on download feed");
         const peerIdHex = from.remoteId.toString('hex')
         self.dataReceived(peerIdHex, data.length)
         self.emit('progress', feed.downloaded())
@@ -93,6 +97,7 @@ class ExampleRequester extends RequesterBase {
 
       // Handle when the content finishes downloading
       feed.once('sync', async () => {
+        console.log("on sync feed");
         self.emit('complete')
         debug(await afs.readdir('.'))
         info('Downloaded!')
@@ -153,6 +158,8 @@ class ExampleRequester extends RequesterBase {
   async startWork(peer, port) {
     const connectionId = idify(peer.host, port)
     debug(`Starting AFS Connection with ${connectionId}`)
+    console.log("requester port: ", port);
+
     this.contentSwarm.addPeer(connectionId, { host: peer.host, port })
   }
 
