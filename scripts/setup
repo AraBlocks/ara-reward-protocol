@@ -20,6 +20,14 @@ for repo in ara-identity ara-network; do
   cd ..
 done
 
+
+echo
+echo hdao
+npm install truffle
+echo
+echo
+
+
 mkdir -p /root/.ara/keyrings
 
 # Create identity

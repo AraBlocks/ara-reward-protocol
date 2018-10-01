@@ -33,7 +33,7 @@ RUN npm install && true
 RUN ./scripts/setup
 
 # Expose port
-EXPOSE 8545
+# EXPOSE 8545
 # Start TestRPC
 # ENTRYPOINT ["testrpc"]
 # ENTRYPOINT [ "node", "/examples/afs-replication/remote-farmer" ]

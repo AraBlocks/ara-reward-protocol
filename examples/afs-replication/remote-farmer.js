@@ -1,6 +1,7 @@
 const {
   unpackKeys, configFarmerHandshake, ContractABI, constants
 } = require('../index')
+const mirror = require('mirror-folder')
 const { messages, duplex, util } = require('../../index')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
@@ -10,6 +11,11 @@ const duplexify = require('duplexify')
 const debug = require('debug')('afp:duplex-example:main')
 const aid = require('ara-filesystem/aid')
 const { createAFSKeyPath } = require('ara-filesystem/key-path')
+const {
+  join,
+  basename,
+  resolve
+} = require('path')
 const {
   web3: { toHex }
 } = require('ara-util')
@@ -50,34 +56,40 @@ async function broadcast(did, price, keypath) {
   farmerSig.setAraId(farmerID)
   farmerSig.setData('avalidsignature')
 
-  // Load the afs
-  // const { afs } = await create({ did })
-
-  // const password = 't'
-  // const owner = 'did:ara:b78066f30df47307b238f76a511a13d4d05c3a7414243a744ae5b427f69e8ef1'
-  // let afsId = await aid.create({ password, owner });
-  // const { publicKey, secretKey } = afsId
-  // const afsDid = toHex(publicKey)
-  // let storage
-  // const path = '/Users/huydao/.ara/afs/test'
-  //
-  // const afs = await createCFS({
-  //   id: afsDid,
-  //   key: publicKey,
-  //   secretKey,
-  //   path,
-  //   storage: defaultStorage(afsDid, password, storage)
-  // })
-
   let afs
   try {
     afs = await createCFS({
       path: '/Users/huydao/.ara/afs/newAFS2'
     })
-    // console.log(afs)
-    // await mirrorPath('/Users/huydao/Desktop/robot.jpg', afs)
+    await mirrorPath('robot.jpg', afs)
   } catch (e) {
     console.log(e);
+  }
+
+  async function mirrorPath(path, afs) {
+    debug(`copy start: ${path}`)
+    const name = join(afs.HOME, basename(path))
+
+    // Mirror and log
+    const progress = mirror({ name: path }, { name, fs: afs }, { keepExisting: true })
+    progress.on('put', (src, dst) => {
+      debug(`adding path ${dst.name}`)
+    })
+    progress.on('skip', (src, dst) => {
+      debug(`skipping path ${dst.name}`)
+    })
+    progress.on('del', (dst) => {
+      debug(`deleting path ${dst.name}`)
+    })
+
+    // Await end or error
+    const error = await new Promise((accept, reject) => progress.once('end', accept).once('error', reject))
+
+    if (error) {
+      debug(`copy error: ${path}: ${error}`)
+    } else {
+      debug(`copy complete: ${path}`)
+    }
   }
 
   // Convert Ether/GB to Wei/Byte

@@ -71,67 +71,13 @@ async function download(did, reward, keypath) {
   sow.setWorkUnit('Byte')
   sow.setRequester(requesterID)
 
-  // Load the sparse afs
-  // const { afs } = await create({ did })
-  // const password = 't'
-  // const owner = 'did:ara:4a2dacd7dce2b864a0fd96125e59a177c1a773707bff520c84efd7468f36b38e'
-  // let afsId = await aid.create({ password, owner });
-  // const { publicKey, secretKey } = afsId
-  // console.log(Buffer.from('eec1f470ffc5e51eb39cac0abef5ddc236b7acc10dec88d54c695f778b660af7', 'hex'));
-  // const afsDid = toHex('f4d40b4384e4cba215a38a1591beb24b5b4c294646e765a6a4a44cef56777637')
-  // console.log(Buffer.from(afsDid));
-  // const path = './.ara/afs/test2'
-
-  // console.log("buffer: ", Buffer.from('76a09be2880fcc641682a4e6d6af95f9a6f382603201f410e45c173d9c2a0143', 'hex'));
-  // const afs = await createCFS({
-  //   id: '76a09be2880fcc641682a4e6d6af95f9a6f382603201f410e45c173d9c2a0143',
-  //   key: Buffer.from('76a09be2880fcc641682a4e6d6af95f9a6f382603201f410e45c173d9c2a0143', 'hex'),
-  //   path: '/Users/huydao/.ara/afs/336aa8549fbd09275b98df7f0c02974a91bb5113a16224b876dd423cb83f1660'
-  // })
   let afs
   try {
     afs = await createCFS({
       path: '/Users/huydao/.ara/afs/newAFS'
     })
-    // console.log(afs)
-    // await mirrorPath('/Users/huydao/Desktop/robot.jpg', afs)
   } catch (e) {
     console.log(e);
-  }
-  //
-  // try {
-  //   await mirrorPath('/Users/huydao/Desktop/robot.jpg')
-  //   console.log('full copy complete')
-  //   console.log(await afs.readdir(afs.HOME));
-  // } catch(e) {
-  //   console.log(e);
-  // }
-
-
-  async function mirrorPath(path, afs) {
-    debug(`copy start: ${path}`)
-    const name = join(afs.HOME, basename(path))
-
-    // Mirror and log
-    const progress = mirror({ name: path }, { name, fs: afs }, { keepExisting: true })
-    progress.on('put', (src, dst) => {
-      debug(`adding path ${dst.name}`)
-    })
-    progress.on('skip', (src, dst) => {
-      debug(`skipping path ${dst.name}`)
-    })
-    progress.on('del', (dst) => {
-      debug(`deleting path ${dst.name}`)
-    })
-
-    // Await end or error
-    const error = await new Promise((accept, reject) => progress.once('end', accept).once('error', reject))
-
-    if (error) {
-      debug(`copy error: ${path}: ${error}`)
-    } else {
-      debug(`copy complete: ${path}`)
-    }
   }
 
   // Create the requester object

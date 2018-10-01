@@ -127,12 +127,12 @@ class ExampleFarmer extends FarmerBase {
   }
 
   async startWork(agreement, port) {
-    console.log("start work");
     const self = this
     const sow = agreement.getQuote().getSow()
     info(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
     const { content } = this.afs.partitions.resolve(this.afs.HOME)
+
     content.on('upload', (index, data) => {
       this.dataTransmitted(sowId, data.length)
     })
@@ -141,7 +141,6 @@ class ExampleFarmer extends FarmerBase {
       stream
     }
     const swarm = createSwarm(opts)
-    console.log("port: ", port);
     swarm.on('connection', handleConnection)
     swarm.listen(port)
 
@@ -153,7 +152,6 @@ class ExampleFarmer extends FarmerBase {
       afsstream.once('end', onend)
 
       function onend() {
-        console.log("on end");
         swarm.destroy()
       }
 
