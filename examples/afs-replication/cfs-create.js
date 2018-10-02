@@ -5,7 +5,7 @@ const { join, basename, resolve } = require('path')
 const fs = require('fs')
 
 const path = ('./robot.jpg')
-const afsPath = ('./.ara/afs/farmerAFS')
+const afsPath = ('./.ara/cfs/farmerAFS')
 const afsId = "farming-docker"
 
 async function create() {
@@ -15,7 +15,7 @@ async function create() {
   })
 
   await mirrorPath(path, afs)
-  await fs.writeFile(`./constant.json`, `{id: ${afsId}, key: ${afs.key.toString('hex')}}`, function(err) {
+  await fs.writeFile(`./constants.json`, `{"id": "${afsId}", "key": "${afs.key.toString('hex')}"}`, function(err) {
       if(err) {
           return console.log(err);
       }
@@ -50,21 +50,3 @@ async function mirrorPath(path, afs) {
 }
 
 create()
-
-
-
-// console.log(afs);
-// console.log(afs.key.toString('hex'));
-// f615a9bcba0d8953cd2fc56add30f0ba85fed751278cfd10330f6ca290f0e02a
-
-// console.log(discoveryKey.toString('hex'))
-// const afs2 = await createCFS({
-// id: "test",
-// key: afs.key,
-//
-// path: '/Users/huydao/.ara/afs/testAFS67'
-// })
-// console.log(afs2);
-// Buffer.from(afs.key, )
-// console.log(afs.discoveryKey, afs.key);
-// console.log(afs2.discoveryKey, afs2.key);

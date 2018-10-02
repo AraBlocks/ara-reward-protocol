@@ -26,7 +26,7 @@ class ExampleRequester extends RequesterBase {
     const self = this
     let oldByteLength = 0
     const { content } = afs.partitions.resolve(afs.HOME)
-    let stakeSubmitted = true
+    let stakeSubmitted = false
 
     if (content) {
       // TODO: calc current downloaded size in bytes

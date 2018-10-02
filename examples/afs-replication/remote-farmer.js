@@ -1,6 +1,7 @@
 const {
   unpackKeys, configFarmerHandshake, ContractABI, constants
 } = require('../index')
+const afsConst = require('./constants.json')
 const mirror = require('mirror-folder')
 const { messages, duplex, util } = require('../../index')
 const { ExampleFarmer } = require('./farmer')
@@ -58,10 +59,11 @@ async function broadcast(did, price, keypath) {
 
   let afs
   try {
+    console.log(Buffer.from(afsConst.key, 'hex'));
     afs = await createCFS({
-      id: "test",
-      key: Buffer.from('f615a9bcba0d8953cd2fc56add30f0ba85fed751278cfd10330f6ca290f0e02a', 'hex'),
-      path: '/Users/huydao/.ara/afs/testAFS'
+      id: afsConst.id,
+      key: Buffer.from(afsConst.key, 'hex'),
+      path: './.ara/cfs/farmerAFS'
     })
   } catch (e) {
     console.log(e);

@@ -8,7 +8,7 @@ const {
 } = require('path')
 const pify = require('pify')
 const isFile = require('is-file')
-// const ignored = require('./ignore')
+const afsConst = require('./constants.json')
 
 const {
   messages, matchers, duplex, util
@@ -74,9 +74,9 @@ async function download(did, reward, keypath) {
   let afs
   try {
     afs = await createCFS({
-      id: "test",
-      key: Buffer.from('f615a9bcba0d8953cd2fc56add30f0ba85fed751278cfd10330f6ca290f0e02a', 'hex'),
-      path: '/Users/huydao/.ara/afs/testAFS2'
+      id: afsConst.id,
+      key: Buffer.from(afsConst.key, 'hex'),
+      path: './.ara/cfs/requesterCFS'
     })
   } catch (e) {
     console.log(e);
