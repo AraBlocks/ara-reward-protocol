@@ -1,10 +1,5 @@
 version: '2'
 services:
-  testrpc:
-    image: hdao/testrpc
-    command: bash -c "testrpc -h 0.0.0.0"
-    ports:
-      - "7000:8545"
   truffle3:
     image: hdao/truffle-application
     command: bash

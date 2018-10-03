@@ -1,5 +1,5 @@
 # Node image
-FROM node:truffle
+FROM node:latest
 # Maintainer
 MAINTAINER Huy Dao <huy@littlstar.com>
 # Create code directory

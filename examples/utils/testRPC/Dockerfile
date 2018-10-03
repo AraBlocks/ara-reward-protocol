@@ -1,7 +1,7 @@
 # Node image
-FROM node:rpc
+FROM node:latest
 # Maintainer
-MAINTAINER Huy Dao <hdao@littlstar.com>
+MAINTAINER Huy Dao <huy@littlstar.com>
 # Install the packages
 RUN npm install -g --save ethereumjs-testrpc
 # Expose port
