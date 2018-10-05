@@ -1,14 +1,10 @@
-const url = require('url')
-const rc = require('ara-runtime-configuration')()
-
-const providerURL = url.parse(rc.web3.provider)
-
+// Allows us to use ES6 in our migrations and tests.
 module.exports = {
   networks: {
     development: {
-      host: `${providerURL.hostname}`,
-      port: `${providerURL.port}`,
-      network_id: '*'
+      host: 'ganachecli',
+      port: 8545,
+      network_id: '*' // Match any network id
     }
   }
 }
