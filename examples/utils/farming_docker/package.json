@@ -1,0 +1,10 @@
+{
+  "name": "docker_farming_app",
+  "version": "1.0.0",
+  "description": "AFP on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "test.js",
+  "dependencies": {
+    "web3": "^1.0.0-beta.34"
+  }
+}

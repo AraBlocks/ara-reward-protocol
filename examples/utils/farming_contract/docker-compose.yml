@@ -1,16 +1,27 @@
 version: '2'
 services:
-  ganachecli:
-    image: trufflesuite/ganache-cli:latest
-    command: "--seed littlstar --defaultBalanceEther 100000000 -h 0.0.0.0"
-    ports:
-      - "8545:8545"
-  truffle:
-    image: hdao/truffle-application
+  farmer:
+    image: hdao/farming
     command: bash
     stdin_open: true
     tty: true
-    ports:
-      - 8080:8080
     volumes:
-      - ./:/code
+      - ./:/root/local
+  requester:
+    image: hdao/farming
+    command: bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/root/local
+
+  # ganachecli:
+  #   image: trufflesuite/ganache-cli:latest
+  #   command: "--seed littlstar --defaultBalanceEther 100000000 -h 0.0.0.0"
+  #   ports:
+  #     - "8545:8545"
+  # truffle:
+  #   image: hdao/contract-migration
+  #   command: truffle migrate
+  #   volumes:
+  #     - ./:/code
