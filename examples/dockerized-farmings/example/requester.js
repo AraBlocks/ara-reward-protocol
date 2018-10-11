@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, RequesterBase, util } = require('../../index')
+const { messages, RequesterBase, util } = require('../index')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')

@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, FarmerBase, util } = require('../../index')
+const { messages, FarmerBase, util } = require('../index')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
@@ -131,15 +131,20 @@ class ExampleFarmer extends FarmerBase {
     const sow = agreement.getQuote().getSow()
     info(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
-    const { content } = this.afs.partitions.resolve(this.afs.HOME)
 
+    const { content } = this.afs.partitions.resolve(this.afs.HOME)
+    console.log(content);
     content.on('upload', (index, data) => {
       this.dataTransmitted(sowId, data.length)
     })
 
+    console.log("erwqrerrwew");
+
     const opts = {
       stream
     }
+
+    console.log("erwqrerrwew");
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
     swarm.listen(port)

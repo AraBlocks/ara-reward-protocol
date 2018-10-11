@@ -1,12 +1,12 @@
 const Web3 = require('web3')
-const { abi } = require('./build/contracts/Farming.json')
-const rc = require('ara-runtime-configuration')()
+const { abi, networks } = require('./build/contracts/Farming.json')
 
 class ContractABI {
-  constructor(contractAdd, walletAdd) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(rc.web3.provider))
+  constructor(walletAdd) {
+    const web3 = new Web3(new Web3.providers.HttpProvider('http://0.0.0.0:8545'))
+    const.addressKey = Object.keys(networks)[0]
     this.wallet = walletAdd
-    this.contract = new web3.eth.Contract(abi, contractAdd)
+    this.contract = new web3.eth.Contract(abi, network[addressKey].address)
   }
 
   // Budget in Wei
