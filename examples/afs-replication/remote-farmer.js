@@ -1,8 +1,6 @@
 const {
   unpackKeys, configFarmerHandshake, ContractABI, constants
 } = require('../index')
-const afsConst = require('./constants.json')
-const mirror = require('mirror-folder')
 const { messages, duplex, util } = require('../../index')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
@@ -10,19 +8,6 @@ const { info } = require('ara-console')
 const { create } = require('ara-filesystem')
 const duplexify = require('duplexify')
 const debug = require('debug')('afp:duplex-example:main')
-const aid = require('ara-filesystem/aid')
-const { createAFSKeyPath } = require('ara-filesystem/key-path')
-const {
-  join,
-  basename,
-  resolve
-} = require('path')
-const {
-  web3: { toHex }
-} = require('ara-util')
-const { defaultStorage } = require('ara-filesystem/storage')
-const { createCFS } = require('cfsnet/create')
-
 
 const {
   contractAddress, walletAddresses, afsDIDs, farmerDID
@@ -57,19 +42,8 @@ async function broadcast(did, price, keypath) {
   farmerSig.setAraId(farmerID)
   farmerSig.setData('avalidsignature')
 
-  let afs
-  try {
-    console.log(Buffer.from(afsConst.key, 'hex'));
-    afs = await createCFS({
-      id: afsConst.id,
-      key: Buffer.from(afsConst.key, 'hex'),
-      path: './.ara/cfs/farmerAFS'
-    })
-  } catch (e) {
-    console.log(e);
-  }
-
-
+  // Load the afs
+  const { afs } = await create({ did })
 
   // Convert Ether/GB to Wei/Byte
   const convertedPrice = etherToWei(price) / gbsToBytes(1)

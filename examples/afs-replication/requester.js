@@ -153,8 +153,6 @@ class ExampleRequester extends RequesterBase {
   async startWork(peer, port) {
     const connectionId = idify(peer.host, port)
     debug(`Starting AFS Connection with ${connectionId}`)
-    console.log("requester port: ", port);
-
     this.contentSwarm.addPeer(connectionId, { host: peer.host, port })
   }
 

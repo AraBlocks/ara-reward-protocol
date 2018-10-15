@@ -2,18 +2,8 @@ const {
   unpackKeys, configRequesterHandshake, ContractABI, constants
 } = require('../index')
 const {
-  join,
-  basename,
-  resolve
-} = require('path')
-const pify = require('pify')
-const isFile = require('is-file')
-const afsConst = require('./constants.json')
-
-const {
   messages, matchers, duplex, util
 } = require('../../index')
-const mirror = require('mirror-folder')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { create } = require('ara-filesystem')
@@ -22,13 +12,6 @@ const duplexify = require('duplexify')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
-const aid = require('ara-filesystem/aid')
-const { createAFSKeyPath } = require('ara-filesystem/key-path')
-const {
-  web3: { toHex }
-} = require('ara-util')
-const { defaultStorage } = require('ara-filesystem/storage')
-const { createCFS } = require('cfsnet/create')
 
 const {
   contractAddress, walletAddresses, afsDIDs, requesterDID
@@ -71,16 +54,8 @@ async function download(did, reward, keypath) {
   sow.setWorkUnit('Byte')
   sow.setRequester(requesterID)
 
-  let afs
-  try {
-    afs = await createCFS({
-      id: afsConst.id,
-      key: Buffer.from(afsConst.key, 'hex'),
-      path: './.ara/cfs/requesterCFS'
-    })
-  } catch (e) {
-    console.log(e);
-  }
+  // Load the sparse afs
+  const { afs } = await create({ did })
 
   // Create the requester object
   const requester = new ExampleRequester(sow, matcher, requesterSig, wallet, afs, onComplete)
@@ -108,7 +83,6 @@ async function download(did, reward, keypath) {
     if (farmerSwarm) farmerSwarm.destroy()
     process.exit(0)
   }
-
 }
 
 // Creates a swarm to find farmers

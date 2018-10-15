@@ -1,9 +1,14 @@
+const url = require('url')
+const rc = require('ara-runtime-configuration')()
+
+const providerURL = url.parse(rc.web3.provider)
+
 module.exports = {
   networks: {
     development: {
-      host: 'ganachecli',
-      port: 8545,
-      network_id: '*' // Match any network id
+      host: `${providerURL.hostname}`,
+      port: `${providerURL.port}`,
+      network_id: '*'
     }
   }
 }
