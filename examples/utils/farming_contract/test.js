@@ -7,7 +7,7 @@ async function testABI() {
 
   hex = Buffer.from('test', 'hex') // hi huy
 
-  console.log(await contract.submitJob(hex, 100))
+  console.log(await contract.submitJob(hex, 29171000000000))
 }
 
 testABI()

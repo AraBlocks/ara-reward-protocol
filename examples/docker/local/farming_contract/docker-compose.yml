@@ -1,0 +1,12 @@
+version: '2'
+services:
+  ganachecli:
+    image: trufflesuite/ganache-cli:latest
+    command: "--seed littlstar -h 0.0.0.0"
+    ports:
+      - "8545:8545"
+  truffle:
+    image: hdao/truffle-migration
+    command: truffle migrate
+    volumes:
+      - ./:/code

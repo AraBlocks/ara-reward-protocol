@@ -11,8 +11,6 @@ const walletAddresses = [
   '0x3062b6a5d51c88d70ee28b890b17e3c7e97e050f'
 ]
 
-
-
 module.exports = {
   contractAddress,
   walletAddresses,

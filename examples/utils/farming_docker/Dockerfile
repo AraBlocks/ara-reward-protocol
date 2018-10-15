@@ -17,6 +17,3 @@ COPY . .
 
 RUN mkdir /usr/code
 WORKDIR /code
-
-
-# CMD [ "npm", "start" ]
