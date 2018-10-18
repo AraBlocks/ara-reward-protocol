@@ -7,7 +7,6 @@ const {
   weiToEther
 } = require('../../src/util')
 const { messages } = require('farming-protocol-buffers')
-const sinon = require('sinon')
 const test = require('ava')
 
 const { Agreement } = messages
@@ -18,10 +17,10 @@ test('util.idify', (t) => {
 })
 
 test('util.nonceString', (t) => {
-  	const id = 'abcd'
-  	const bb = Buffer.from(id, 'hex')
+  const id = 'abcd'
+  const bb = Buffer.from(id, 'hex')
   const agreeement = new Agreement()
-  	agreeement.setNonce(bb)
+  agreeement.setNonce(bb)
 
   t.true(id === nonceString(agreeement))
 })

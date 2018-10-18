@@ -1,3 +1,4 @@
+/* eslint no-new: off */
 const { MSG, DuplexConnection } = require('../../src/duplex/duplex-connection')
 const { messages } = require('farming-protocol-buffers')
 const { Duplex } = require('stream')
