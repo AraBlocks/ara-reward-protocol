@@ -162,8 +162,9 @@ test('duplex.emit.withStream', async (t) => {
   await connection.onTimeout()
   await connection.onClose()
   await connection.onEnd()
+  await connection.close()
 
-  t.true(3 === duplex.destroy.callCount)
+  t.true(4 === duplex.destroy.callCount)
 })
 
 test('duplex.emit.withoutStream', async (t) => {
@@ -177,6 +178,7 @@ test('duplex.emit.withoutStream', async (t) => {
   await connection.onTimeout()
   await connection.onClose()
   await connection.onEnd()
+  await connection.close()
 
   t.true(duplex.destroy.notCalled)
 })

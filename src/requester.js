@@ -52,7 +52,13 @@ class RequesterBase extends EventEmitter {
     const self = this
     const valid = await this.validateQuote(quote)
     if (valid) {
-      const callback = async () => self.hireFarmer(quote, connection)
+      const callback = async (hire) => {
+        if (hire) {
+          self.hireFarmer(quote, connection)
+        } else {
+          connection.close()
+        }
+      }
       this.matcher.addQuote(quote, callback)
     } else {
       this.emit('invalidQuote', quote)

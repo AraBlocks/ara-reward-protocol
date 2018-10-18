@@ -31,7 +31,7 @@ class DuplexConnection extends PeerConnection {
 
     if (!peer || 'object' !== typeof peer) {
       throw new TypeError('Expecting peer object.')
-    } else if (!connection || 'object' !== typeof connection){
+    } else if (!connection || 'object' !== typeof connection) {
       throw new TypeError('Expecting connection object.')
     }
 
@@ -46,7 +46,6 @@ class DuplexConnection extends PeerConnection {
     this.stream.once('close', this.onClose.bind(this))
 
     this.timeout = null
-    this.ended = false
   }
 
   async sendSow(sow) {
@@ -77,6 +76,10 @@ class DuplexConnection extends PeerConnection {
     debug(`Sending Receipt: ${nonceString(receipt)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
     this.stream.write(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
+  }
+
+  async close() {
+    if (this.stream) this.stream.destroy()
   }
 
   async onTimeout() {

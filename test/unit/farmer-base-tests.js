@@ -54,8 +54,10 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
   agreement.setNonce(agreementId)
 
   const farmer = new FarmerBase()
+  const hireConfirmFake = sinon.fake()
   sinon.stub(farmer, 'validateAgreement').resolves(true)
   sinon.stub(farmer, 'signAgreement').resolves(agreement)
+  sinon.stub(farmer, 'onHireConfirmed').callsFake(hireConfirmFake)
 
   const connection = new PeerConnection()
   const sendFake = sinon.fake()
@@ -63,6 +65,7 @@ test('farmer.onAgreement.ValidAgreement', async (t) => {
 
   await farmer.onAgreement(agreement, connection)
   t.true(sendFake.calledOnce)
+  t.true(hireConfirmFake.calledOnce)
 })
 
 test('farmer.onAgreement.InvalidAgreement', async (t) => {
@@ -159,4 +162,6 @@ test('farmer.noOverride', async (t) => {
   const reward = new Reward()
   await t.throws(farmer.validateReward(reward), Error)
   await t.throws(farmer.generateReceipt(reward), Error)
+
+  await t.throws(farmer.onHireConfirmed(), Error)
 })
