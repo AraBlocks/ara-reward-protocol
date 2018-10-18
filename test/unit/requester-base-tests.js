@@ -26,7 +26,7 @@ test('requester.onQuote.ValidQuoteHire', async (t) => {
   const closeFake = sinon.fake()
   const connection = new PeerConnection()
   sinon.stub(connection, 'close').callsFake(closeFake)
-  
+
   await requester.onQuote(quote, connection)
 
   t.true(matchFake.calledOnce)
