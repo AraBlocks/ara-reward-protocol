@@ -45,6 +45,11 @@ class PeerConnection extends EventEmitter {
     throw new Error('Extended classes must implement sendReceipt.')
   }
 
+  // Close the connection with the peer.
+  async close() {
+    throw new Error('Extended classes must implement close')
+  }
+
   async onSow(sow) {
     this.emit('sow', sow)
   }

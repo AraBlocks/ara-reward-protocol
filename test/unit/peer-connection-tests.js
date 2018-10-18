@@ -28,6 +28,8 @@ test('peer-connection.send.noOverride', async (t) => {
 
   const receipt = new Receipt()
   await t.throws(connection.sendReceipt(receipt), Error)
+
+  await t.throws(connection.close(), Error)
 })
 
 test('peer-connection.on.validData', async (t) => {

@@ -40,7 +40,8 @@ class FarmerBase extends EventEmitter {
     const valid = await this.validateAgreement(agreement)
     if (valid) {
       const signedAgreement = await this.signAgreement(agreement)
-      connection.sendAgreement(signedAgreement)
+      await connection.sendAgreement(signedAgreement)
+      this.onHireConfirmed(agreement, connection)
     } else {
       this.emit('invalidAgreement', agreement, connection)
     }
@@ -113,6 +114,16 @@ class FarmerBase extends EventEmitter {
    */
   async signAgreement(agreement) {
     throw new Error('Extended classes must implement signAgreement.')
+  }
+
+  /**
+   * Called when an agreement has been marked as valid and a requester
+   * is ready to start work.
+   * @param {messages.Agreement} agreement
+   * @param {PeerConnection} connection
+   */
+  async onHireConfirmed(agreement, connection) {
+    throw new Error('Extended classes must implement onHireConfirmed')
   }
 }
 

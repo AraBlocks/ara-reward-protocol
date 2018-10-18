@@ -11,11 +11,14 @@ class MaxCostMatcher extends MatcherBase {
     this.reserveWorkers = []
   }
 
-  async addQuote(quote, hireFarmerCallback) {
+  async addQuote(quote, callback) {
     const farmerId = quote.getFarmer().getDid()
-    this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, hireFarmerCallback))
+    this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, callback))
 
-    if (quote.getPerUnitCost() > this.maxCost) return
+    if (quote.getPerUnitCost() > this.maxCost) {
+      callback(false)
+      return
+    }
 
     if (this.hiredQuoteCallbacks.size < this.maxWorkers) {
       this.hireFarmer(farmerId)
@@ -41,7 +44,7 @@ class MaxCostMatcher extends MatcherBase {
   hireFarmer(farmerId) {
     const quoteCallback = this.allQuoteCallbacks.get(farmerId)
     this.hiredQuoteCallbacks.set(farmerId, quoteCallback)
-    quoteCallback.callback()
+    quoteCallback.callback(true)
   }
 }
 

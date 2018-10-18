@@ -9,6 +9,12 @@ class FarmerConnection extends DuplexConnection {
     debug('Request Stream received SOW. Destroying Stream.')
     this.stream.destroy()
   }
+
+  // Communication finished, do not expect response
+  async sendReceipt(receipt) {
+    super.sendReceipt(receipt)
+    if (this.timeout) clearTimeout(this.timeout)
+  }
 }
 
 module.exports = {

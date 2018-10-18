@@ -12,7 +12,7 @@ const {
   SOW
 } = messages
 
-test('requester.onQuote.ValidQuote', async (t) => {
+test('requester.onQuote.ValidQuoteHire', async (t) => {
   const sow = new SOW()
   const quote = new Quote()
 
@@ -23,7 +23,36 @@ test('requester.onQuote.ValidQuote', async (t) => {
   const requester = new RequesterBase(sow, matcher)
   sinon.stub(requester, 'validateQuote').resolves(true)
 
+  const closeFake = sinon.fake()
   const connection = new PeerConnection()
+  sinon.stub(connection, 'close').callsFake(closeFake)
+  
+  await requester.onQuote(quote, connection)
+
+  t.true(matchFake.calledOnce)
+
+  const hireFake = sinon.fake()
+  sinon.stub(requester, 'hireFarmer').callsFake(hireFake)
+
+  await matchFake.getCall(0).args[1](true)
+  t.true(hireFake.calledOnce)
+  t.true(closeFake.notCalled)
+})
+
+test('requester.onQuote.ValidQuoteReject', async (t) => {
+  const sow = new SOW()
+  const quote = new Quote()
+
+  const matcher = new MatcherBase()
+  const matchFake = sinon.fake()
+  sinon.stub(matcher, 'addQuote').callsFake(matchFake)
+
+  const requester = new RequesterBase(sow, matcher)
+  sinon.stub(requester, 'validateQuote').resolves(true)
+
+  const closeFake = sinon.fake()
+  const connection = new PeerConnection()
+  sinon.stub(connection, 'close').callsFake(closeFake)
 
   await requester.onQuote(quote, connection)
 
@@ -32,8 +61,9 @@ test('requester.onQuote.ValidQuote', async (t) => {
   const hireFake = sinon.fake()
   sinon.stub(requester, 'hireFarmer').callsFake(hireFake)
 
-  await matchFake.getCall(0).args[1]()
-  t.true(hireFake.calledOnce)
+  await matchFake.getCall(0).args[1](false)
+  t.true(hireFake.notCalled)
+  t.true(closeFake.calledOnce)
 })
 
 test('requester.onQuote.InvalidQuote', async (t) => {

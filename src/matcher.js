@@ -5,12 +5,12 @@ const { messages } = require('farming-protocol-buffers')
 class MatcherBase {
   /**
    * Add a quote for consideration. If a quote is considered
-   * valid, then call hireFarmerCallback to continue
-   * agreement process.
+   * valid, then call callback(bool) to continue/discontinue
+   * the agreement process.
    * @param {messages.Quote} quote
-   * @param {function(messages.Agreement)} hireFarmerCallback
+   * @param {function(messages.Agreement)} callback
    */
-  async addQuote(quote, hireFarmerCallback) {
+  async addQuote(quote, callback) {
     throw new Error('Extended classes must implement addQuote')
   }
 

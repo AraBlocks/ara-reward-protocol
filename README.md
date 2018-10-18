@@ -136,6 +136,11 @@ async sendReward(reward) {
 async sendReceipt(receipt) {
   throw new Error('Extended classes must implement sendReceipt.')
 }
+
+// Close the connection with the peer.
+async close() {
+  throw new Error('Extended classes must implement close')
+}
 ```
 
 #### RequesterBase
@@ -248,6 +253,16 @@ async generateQuote(sow) {
 async signAgreement(agreement) {
   throw new Error('Extended classes must implement signAgreement.')
 }
+
+/**
+ * Called when an agreement has been marked as valid and a requester
+ * is ready to start work.
+ * @param {messages.Agreement} agreement
+ * @param {PeerConnection} connection
+ */
+async onHireConfirmed(agreement, connection) {
+  throw new Error('Extended classes must implement onHireConfirmed')
+}
 ```
 
 #### MatcherBase
@@ -257,12 +272,12 @@ Different service requesters may have different needs when selecting peers, such
 ```js
 /**
  * Add a quote for consideration. If a quote is considered
- * valid, then call hireFarmerCallback to continue
- * agreement process.
+ * valid, then call callback(bool) to continue/discontinue
+ * the agreement process.
  * @param {messages.Quote} quote
- * @param {function(messages.Agreement)} hireFarmerCallback
+ * @param {function(messages.Agreement)} callback
  */
-async addQuote(quote, hireFarmerCallback) {
+async addQuote(quote, callback) {
   throw new Error('Extended classes must implement addQuote')
 }
 
