@@ -232,7 +232,7 @@ class ExampleRequester extends RequesterBase {
     const sowId = nonceString(quote.getSow())
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
-    
+
     info(
       `Sending reward to farmer ${farmerId} for ${weiToEther(amount)} tokens`
     )
