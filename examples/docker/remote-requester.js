@@ -9,14 +9,15 @@ const clip = require('cli-progress')
 const { createCFS } = require('cfsnet/create')
 const { idify, gbsToBytes, etherToWei } = util
 const { FarmerConnection } = duplex
+const constants = require('./local/constants.json')
 const { walletAddresses } = require('./ganache-addresses')
-const wallet = new ContractABI(walletAddresses[0])
+const wallet = new ContractABI(walletAddresses[constants.requesterWalletIndex])
 
 const cfsPath = './local/.ara/cfs/requesterCFS'
 const jsonPath = './local/.ara/cfs/cfsDid.json'
 const cfsJson = require(jsonPath)
 
-download(1)
+download(constants.requesterPrice)
 
 /**
  * Download a specific AFS
@@ -28,8 +29,8 @@ async function download(reward) {
   // Convert Ether/GB to Wei/Byte
   const convertedReward = etherToWei(reward) / gbsToBytes(1)
 
-  // A default matcher which will match for a max cost to a max of 5 farmers
-  const matcher = new matchers.MaxCostMatcher(convertedReward, 5)
+  // A default matcher which will match for a max cost to a max of number of farmingCount in constants
+  const matcher = new matchers.MaxCostMatcher(convertedReward, constants.farmingCount)
 
   // The ARAid of the Requester
   const requesterDID = '402a5807434506ea83268177b0dc84d6ec785cf6836dc44b54794e925c104610'

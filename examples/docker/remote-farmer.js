@@ -10,13 +10,14 @@ const { createCFS } = require('cfsnet/create')
 const { idify, etherToWei, gbsToBytes } = util
 const { RequesterConnection } = duplex
 const { walletAddresses } = require('./ganache-addresses')
-const wallet = new ContractABI(walletAddresses[1])
+const constants = require('./local/constants.json')
+const wallet = new ContractABI(walletAddresses[constants.farmingWalletIndex])
 
 const imagePath = './example-content.mp4'
 const cfsPath = './local/.ara/cfs/farmerCFS'
 const jsonPath = './local/.ara/cfs/cfsDid.json'
 
-broadcast(1)
+broadcast(constants.farmerPrice)
 
 /**
  * Broadcast the ability to farm for an AFS
