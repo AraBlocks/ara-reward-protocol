@@ -26,9 +26,9 @@ This script will do the following:
 2. Create AIDs for the farmer and the requester
 3. Create an AFS with sample content
 4. Create an ANK for encryption
-4. Populate the `/examples/constants.js` with the corresponding information
+4. Populate the `/examples/local/constants.js` with the corresponding information
 
-**Important**: Replace the wallet addresses in `examples/constants.js` with those in your blockchain.
+**Important**: Replace the wallet addresses in `examples/local/constants.js` with those in your blockchain.
 
 ## Examples
 
@@ -42,12 +42,42 @@ The farmer example broadcasts the ability to replicate an AFS for a certain pric
 
 On the farmer's computer/terminal:
 ```
-$ node examples/afs-replication/remote-farmer.js
+$ node examples/local/afs-replication/remote-farmer.js
 ```
 
 On the requester's computer/terminal:
 ```
-$ node examples/afs-replication/remote-requester.js
+$ node examples/local/afs-replication/remote-requester.js
 ```
 
 To enable subnet encryption add the argument `--subnet` to both of the above commands.
+
+#### Running the example in docker
+
+Prior to running the example in docker, make sure that you have Docker and Docker-compose installed. Replace the default variables in `examples/docker/local/constants.js` to experiment with different settings.
+
+Build the docker image:
+```
+$ cd examples/docker
+$ docker build . -t ara/ara-farming
+```
+
+Run `docker-compose.yml` to create three separate containers, one for ganache-cli (contract), one for farmer and another for requester.
+
+```
+$ docker-compose -f ./local/docker-compose.yml up
+```
+
+After ganache is up and running in the current terminal, you can open other terminals to give instructions to the farmer and requester.
+
+**Important**: there is a `local` folder inside farmer and requester dockers that directly binds to `examples/docker/local`. This folder on the host machine can be moved elsewhere as long as `docker-compose.yml` is called from there.
+
+Farmer
+```
+$ docker exec -it local_farmer_1 node remote-farmer
+```
+
+Requester
+```
+$ docker exec -it local_requester_1 node remote-requester
+```
