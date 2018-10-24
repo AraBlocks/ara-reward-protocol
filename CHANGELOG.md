@@ -1,5 +1,15 @@
-<a name="0.0.2"></a>
-## 0.0.2 (2018-10-18)
+<a name="0.0.3"></a>
+## [0.0.3](https://github.com/littlstar/farming-protocol/compare/0.0.1...0.0.3) (2018-10-24)
+
+
+### Features
+
+* **farmer:** added onHireConfirmed to farmer ([fa4a2c1](https://github.com/littlstar/farming-protocol/commit/fa4a2c1))
+
+
+
+<a name="0.0.1"></a>
+## [0.0.1](https://github.com/littlstar/farming-protocol/compare/2acfc1b...0.0.1) (2018-09-19)
 
 
 ### Bug Fixes
@@ -26,7 +36,6 @@
 * **example:** streaming protocol with syncing ([32fd3f0](https://github.com/littlstar/farming-protocol/commit/32fd3f0))
 * **example:** wip duplex rewards ([3adb32a](https://github.com/littlstar/farming-protocol/commit/3adb32a))
 * **examples:** Added to afs create. ([fe21bca](https://github.com/littlstar/farming-protocol/commit/fe21bca))
-* **farmer:** added onHireConfirmed to farmer ([5448bf5](https://github.com/littlstar/farming-protocol/commit/5448bf5))
 * **farmer-stream:** functional farmer stream ([02f363d](https://github.com/littlstar/farming-protocol/commit/02f363d))
 * **matcher:** Added new signature to matcher for invalidating quote. ([45fd457](https://github.com/littlstar/farming-protocol/commit/45fd457))
 * **proto:** added proto files ([7d27d87](https://github.com/littlstar/farming-protocol/commit/7d27d87))
