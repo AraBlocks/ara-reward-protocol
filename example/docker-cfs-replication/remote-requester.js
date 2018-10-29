@@ -32,10 +32,8 @@ async function download(reward) {
   )
 
   // The ARAid of the Requester
-  const requesterDID =
-    '402a5807434506ea83268177b0dc84d6ec785cf6836dc44b54794e925c104610'
   const requesterID = new messages.AraId()
-  requesterID.setDid(requesterDID)
+  requesterID.setDid(constants.requesterDID)
 
   // A signature that a farmer can use to verify that the requester has signed an agreement
   const requesterSig = new messages.Signature()

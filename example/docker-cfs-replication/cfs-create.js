@@ -17,8 +17,7 @@ async function createFarmerCFS(filePath, cfsPath) {
   await mirrorPath(filePath, cfs)
   let json = JSON.parse(fs.readFileSync(jsonPath).toString());
   json.cfsKey = cfs.key.toString('hex')
-
-  await fs.writeFileSync(jsonPath, JSON.stringify(json));
+  await fs.writeFileSync(jsonPath, JSON.stringify(json, null, 2));
   const cfsJson = { id: cfsId, key: cfs.key.toString('hex') }
 
   return { cfs, cfsJson }

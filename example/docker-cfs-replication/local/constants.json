@@ -1,1 +1,12 @@
-{"farmerPrice":1,"requesterPrice":5,"farmingCount":5,"farmingWalletIndex":1,"requesterWalletIndex":0,"contentPath":"example-content.mp4","cfsPath":".ara/cfs","cfsKey":"0f7882dc0f5263ac064a46fdbc8393c4a89b25396dc295a0e2f5c0fae22db0d8"}
+{
+  "farmerPrice": 1,
+  "farmerDID": "f05074eecbe4589f0b6ba8ea54b1a91bc17f167afdc66d63eea4bddd9d51f63e",
+  "requesterPrice": 5,
+  "requesterDID": "402a5807434506ea83268177b0dc84d6ec785cf6836dc44b54794e925c104610"
+  "farmingCount": 5,
+  "farmerWalletIndex": 1,
+  "requesterWalletIndex": 0,
+  "contentPath": "example-content.mp4",
+  "cfsPath": ".ara/cfs",
+  "cfsKey": "d56ed01fa3dbf0210d608047e40386bcc2337fb69e29a9eb1ed11b965f653a9d"
+}

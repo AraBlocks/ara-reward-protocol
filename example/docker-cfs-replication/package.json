@@ -1,42 +1,13 @@
 {
-  "name": "ara-farming-protocol",
-  "version": "0.0.1",
-  "description": "ARA Farming Protocol",
+  "name": "ara-farming-docker-example",
+  "version": "1.0.0",
+  "description": "Docker example for ARA Farming Protocol",
   "main": "index.js",
-  "scripts": {
-    "test": "ava test",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
-    "coverage": "npm run nyc",
-    "nyc": "nyc npm test",
-    "release-version": "./scripts/changelog"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/littlstar/farming-protocol.git"
-  },
-  "keywords": [
-    "ara",
-    "farming",
-    "farming-protocol"
-  ],
   "contributors": [
     "Brandon Plaster <brandon@littlstar.com>",
     "Huy Dao <huy@littlstar.com>"
   ],
   "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/littlstar/farming-protocol/issues"
-  },
-  "homepage": "https://github.com/littlstar/farming-protocol#readme",
-  "devDependencies": {
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-config-ara": "github:arablocks/eslint-config-ara",
-    "eslint": "^4.19.1",
-    "sinon": "^6.0.1",
-    "ava": "^0.25.0",
-    "nyc": "^12.0.2"
-  },
   "dependencies": {
     "ara-farming-protocol": "github:littlstar/farming-protocol#semver:0.0.x",
     "ara-console": "github:arablocks/ara-console#semver:0.2.x",

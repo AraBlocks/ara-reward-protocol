@@ -33,6 +33,6 @@ contract Farming {
         uint reward = job.rewards[farmerId];
         job.rewards[farmerId] = 0;
         job.budget -= reward;
-        msg.sender.transfer(31910898000000000);
+        msg.sender.transfer(reward);
     }
 }

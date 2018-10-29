@@ -11,7 +11,7 @@ const { idify, etherToWei, gbsToBytes } = util
 const { RequesterConnection } = duplex
 const { walletAddresses } = require('./ganache-addresses')
 let constants = require('./local/constants.json')
-const wallet = new ContractABI(walletAddresses[constants.farmingWalletIndex])
+const wallet = new ContractABI(walletAddresses[constants.farmerWalletIndex])
 const rootPath = './local/'
 const contentPath = rootPath + constants.contentPath
 const cfsPath = rootPath + constants.cfsPath + '/farmer'
@@ -19,20 +19,19 @@ const cfsPath = rootPath + constants.cfsPath + '/farmer'
 broadcast(constants.farmerPrice)
 
 /**
- * Broadcast the ability to farm for an AFS
+ * Broadcast the ability to farm for a CFS
  * @param {int} price Desired Cost in Ether per GB
  */
 async function broadcast(price) {
   info('Broadcasting')
 
   // The ARAid of the Farmer
-  const farmerDID = 'f05074eecbe4589f0b6ba8ea54b1a91bc17f167afdc66d63eea4bddd9d51f63e'
   const farmerID = new messages.AraId()
-  farmerID.setDid(farmerDID)
+  farmerID.setDid(constants.farmerDID)
 
   // A signature that a requester can use to verify that the farmer has signed an agreement
   const farmerSig = new messages.Signature()
-  farmerSig.setAraId(farmerID)
+  farmerSig.setAraId(constants.farmerID)
   farmerSig.setData('avalidsignature')
 
   const farmerCFS = await createFarmerCFS(contentPath, cfsPath)

@@ -12,20 +12,20 @@ const { nonceString, weiToEther, bytesToGBs } = util
 
 class ExampleFarmer extends FarmerBase {
   /**
-   * Example Farmer replicates an AFS for a min price
+   * Example Farmer replicates an CFS for a min price
    * @param {*} farmerId
    * @param {*} farmerSig
    * @param {int} price Desired price in wei/byte
    * @param {ContractABI} wallet Farmer's Wallet Contract ABI
-   * @param {AFS} afs Instance of AFS
+   * @param {CFS} cfs Instance of CFS
    */
-  constructor(farmerId, farmerSig, price, wallet, afs) {
+  constructor(farmerId, farmerSig, price, wallet, cfs) {
     super()
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
     this.wallet = wallet
-    this.afs = afs
+    this.cfs = cfs
     this.deliveryMap = new Map()
   }
 
@@ -132,7 +132,7 @@ class ExampleFarmer extends FarmerBase {
     info(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
 
-    const { content } = this.afs.partitions.resolve(this.afs.HOME)
+    const { content } = this.cfs.partitions.resolve(this.cfs.HOME)
 
     content.on('upload', (index, data) => {
       this.dataTransmitted(sowId, data.length)
@@ -146,17 +146,17 @@ class ExampleFarmer extends FarmerBase {
     swarm.on('connection', handleConnection)
     swarm.listen(port)
     function stream() {
-      const afsstream = self.afs.replicate({
+      const cfsstream = self.cfs.replicate({
         upload: true,
         download: false
       })
-      afsstream.once('end', onend)
+      cfsstream.once('end', onend)
 
       function onend() {
         swarm.destroy()
       }
 
-      return afsstream
+      return cfsstream
     }
 
     function handleConnection(connection, peer) {
