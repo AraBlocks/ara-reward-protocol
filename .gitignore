@@ -72,3 +72,6 @@ package-lock.json
 
 # MacOS
 .DS_Store
+
+# ssh
+example/docker-cfs-replication/.ssh/
