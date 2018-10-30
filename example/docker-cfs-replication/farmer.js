@@ -1,5 +1,6 @@
 /* eslint class-methods-use-this: 1 */
-const { messages, FarmerBase, util } = require('../../index')
+/* eslint-disable-next-line import/no-unresolved */
+const { messages, FarmerBase, util } = require('ara-farming-protocol')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
@@ -12,20 +13,20 @@ const { nonceString, weiToEther, bytesToGBs } = util
 
 class ExampleFarmer extends FarmerBase {
   /**
-   * Example Farmer replicates an AFS for a min price
+   * Example Farmer replicates an CFS for a min price
    * @param {*} farmerId
    * @param {*} farmerSig
    * @param {int} price Desired price in wei/byte
    * @param {ContractABI} wallet Farmer's Wallet Contract ABI
-   * @param {AFS} afs Instance of AFS
+   * @param {CFS} cfs Instance of CFS
    */
-  constructor(farmerId, farmerSig, price, wallet, afs) {
+  constructor(farmerId, farmerSig, price, wallet, cfs) {
     super()
     this.price = price
     this.farmerId = farmerId
     this.farmerSig = farmerSig
     this.wallet = wallet
-    this.afs = afs
+    this.cfs = cfs
     this.deliveryMap = new Map()
   }
 
@@ -67,8 +68,6 @@ class ExampleFarmer extends FarmerBase {
     data.writeInt32LE(port, 0)
     agreement.setData(data)
 
-    // Start work on port
-    this.startWork(agreement, port)
     return agreement
   }
 
@@ -91,8 +90,7 @@ class ExampleFarmer extends FarmerBase {
     info(`Uploaded ${bytesToGBs(this.deliveryMap.get(sowId))} Gbs for job ${sowId}`)
 
     const farmerDid = this.farmerId.getDid()
-    this.wallet
-      .claimReward(sowId, farmerDid)
+    await this.wallet.getRewardBalance(sowId, farmerDid)
       .then(() => {
         info(`Reward amount ${weiToEther(reward.getAmount())} withdrawn for SOW ${sowId}`)
       })
@@ -118,7 +116,7 @@ class ExampleFarmer extends FarmerBase {
    * @returns {messages.Receipt}
    */
   async generateReceipt(reward) {
-    this.withdrawReward(reward)
+    await this.withdrawReward(reward)
     const receipt = new messages.Receipt()
     receipt.setNonce(crypto.randomBytes(32))
     receipt.setReward(reward)
@@ -126,12 +124,16 @@ class ExampleFarmer extends FarmerBase {
     return receipt
   }
 
-  async startWork(agreement, port) {
+  async onHireConfirmed(agreement) {
+    const agreementData = Buffer.from(agreement.getData())
+    const port = agreementData.readUInt32LE(0)
+
     const self = this
     const sow = agreement.getQuote().getSow()
     info(`Listening for requester ${sow.getRequester().getDid()} on port ${port}`)
     const sowId = nonceString(sow)
-    const { content } = this.afs.partitions.resolve(this.afs.HOME)
+
+    const { content } = this.cfs.partitions.resolve(this.cfs.HOME)
 
     content.on('upload', (index, data) => {
       this.dataTransmitted(sowId, data.length)
@@ -140,22 +142,22 @@ class ExampleFarmer extends FarmerBase {
     const opts = {
       stream
     }
+
     const swarm = createSwarm(opts)
     swarm.on('connection', handleConnection)
     swarm.listen(port)
-
     function stream() {
-      const afsstream = self.afs.replicate({
+      const cfsstream = self.cfs.replicate({
         upload: true,
         download: false
       })
-      afsstream.once('end', onend)
+      cfsstream.once('end', onend)
 
       function onend() {
         swarm.destroy()
       }
 
-      return afsstream
+      return cfsstream
     }
 
     function handleConnection(connection, peer) {

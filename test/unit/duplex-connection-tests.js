@@ -148,9 +148,14 @@ test('duplex.constructor', (t) => {
   const peer = {}
   const duplex = sinon.createStubInstance(Duplex)
 
-  t.true(Boolean(new DuplexConnection(peer, duplex, opts)))
-  t.true(Boolean(new DuplexConnection(peer, duplex, null)))
+  const correctContructorA = new DuplexConnection(peer, duplex, opts)
+  const correctContructorB = new DuplexConnection(peer, duplex, null)
+  t.true(Boolean(correctContructorA))
+  t.true(Boolean(correctContructorB))
+
+  /* eslint-disable-next-line no-new */
   t.throws(() => { new DuplexConnection(null, duplex, opts) }, TypeError)
+  /* eslint-disable-next-line no-new */
   t.throws(() => { new DuplexConnection(peer, null, opts) }, TypeError)
 })
 

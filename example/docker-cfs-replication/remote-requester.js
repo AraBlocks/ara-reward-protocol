@@ -1,47 +1,44 @@
-const {
-  unpackKeys, configRequesterHandshake, ContractABI, constants
-} = require('../index')
+/* eslint-disable import/no-unresolved */
 const {
   messages, matchers, duplex, util
-} = require('../../index')
+} = require('ara-farming-protocol')
+const ContractABI = require('./contract/contract-abi')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
-const { create } = require('ara-filesystem')
 const { info, warn } = require('ara-console')
-const duplexify = require('duplexify')
 const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
+const { createCFS } = require('cfsnet/create')
 
-const {
-  contractAddress, walletAddresses, afsDIDs, requesterDID
-} = constants
 const { idify, gbsToBytes, etherToWei } = util
 const { FarmerConnection } = duplex
-const wallet = new ContractABI(contractAddress, walletAddresses[2])
+const constants = require('./local/constants.json')
+const { walletAddresses } = require('./ganache-addresses')
 
-const useSubnet = ('--subnet' === process.argv[2])
+const wallet = new ContractABI(walletAddresses[constants.requesterWalletIndex])
+const rootPath = './local/'
+const cfsPath = `${rootPath + constants.cfsPath}/requester`
 
-const networkkeypath = (useSubnet) ? constants.networkSecretKeypath : null
-
-download(afsDIDs[0], 1, networkkeypath)
+download(constants.requesterPrice)
 
 /**
- * Download a specific AFS
- * @param {string} did DID of the AFS
+ * Download a specific CFS
  * @param {float} reward Reward in Ether/GB
- * @param {string} keypath Path to Ara Network Key
  */
-async function download(did, reward, keypath) {
+async function download(reward) {
   // Convert Ether/GB to Wei/Byte
   const convertedReward = etherToWei(reward) / gbsToBytes(1)
 
-  // A default matcher which will match for a max cost to a max of 5 farmers
-  const matcher = new matchers.MaxCostMatcher(convertedReward, 5)
+  // A default matcher which will match for a max cost to a max of number of farmingCount in constants
+  const matcher = new matchers.MaxCostMatcher(
+    convertedReward,
+    constants.farmingCount
+  )
 
   // The ARAid of the Requester
   const requesterID = new messages.AraId()
-  requesterID.setDid(requesterDID)
+  requesterID.setDid(constants.requesterDID)
 
   // A signature that a farmer can use to verify that the requester has signed an agreement
   const requesterSig = new messages.Signature()
@@ -54,24 +51,32 @@ async function download(did, reward, keypath) {
   sow.setWorkUnit('Byte')
   sow.setRequester(requesterID)
 
-  // Load the sparse afs
-  const { afs } = await create({ did })
+  let cfs
+  try {
+    cfs = await createCFS({
+      id: 'farming-docker',
+      key: Buffer.from(constants.cfsKey, 'hex'),
+      path: cfsPath
+    })
+  } catch (e) {
+    debug(e)
+  }
 
   // Create the requester object
-  const requester = new ExampleRequester(sow, matcher, requesterSig, wallet, afs, onComplete)
+  const requester = new ExampleRequester(
+    sow,
+    matcher,
+    requesterSig,
+    wallet,
+    cfs,
+    onComplete
+  )
 
   // Visualize the download progress
   setupDownloadVisualizer(requester)
 
-  // Load network keys if applicable
-  let handshakeConf
-  if (keypath) {
-    info('Using subnetwork encryption')
-    try { handshakeConf = await unpackKeys(requesterDID, keypath) } catch (e) { debug({ e }) }
-  }
-
   // Find farmers
-  const farmerSwarm = createFarmerSwarm(did, requester, handshakeConf)
+  const farmerSwarm = createFarmerSwarm(constants.cfsKey, requester)
 
   // Handle when the swarms end
   async function onComplete(error) {
@@ -79,30 +84,23 @@ async function download(did, reward, keypath) {
       warn(error)
     }
     info('Swarm destroyed')
-    if (afs) afs.close()
+    if (cfs) cfs.close()
     if (farmerSwarm) farmerSwarm.destroy()
     process.exit(0)
   }
 }
 
 // Creates a swarm to find farmers
-function createFarmerSwarm(did, requester, conf) {
-  // Override the stream if encryption handshake required
-  const stream = conf ? () => configRequesterHandshake(conf) : null
-  const swarm = createSwarm({
-    stream
-  })
+function createFarmerSwarm(did, requester) {
+  const swarm = createSwarm()
   swarm.on('connection', handleConnection)
   swarm.join(did)
 
   function handleConnection(connection, peer) {
     info(`Farmer Swarm: Peer connected: ${idify(peer.host, peer.port)}`)
-    if (conf) {
-      const writer = connection.createWriteStream()
-      const reader = connection.createReadStream()
-      connection = duplexify(writer, reader)
-    }
-    const farmerConnection = new FarmerConnection(peer, connection, { timeout: 6000 })
+    const farmerConnection = new FarmerConnection(peer, connection, {
+      timeout: 6000
+    })
     process.nextTick(() => requester.addFarmer(farmerConnection))
   }
 

@@ -1,12 +1,13 @@
 const Web3 = require('web3')
-const { abi } = require('./build/contracts/Farming.json')
-const rc = require('ara-runtime-configuration')()
+const { abi, networks } = require('../local/contract-address.json')
 
 class ContractABI {
-  constructor(contractAdd, walletAdd) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(rc.web3.provider))
+  // use 'localhost' to test locally, 'ganachecli' to test on docker
+  constructor(walletAdd) {
+    const web3 = new Web3(new Web3.providers.HttpProvider('http://ganachecli:8545'))
+    const addressKey = Object.keys(networks)[0]
     this.wallet = walletAdd
-    this.contract = new web3.eth.Contract(abi, contractAdd)
+    this.contract = new web3.eth.Contract(abi, networks[addressKey].address)
   }
 
   // Budget in Wei
@@ -15,6 +16,12 @@ class ContractABI {
       from: this.wallet,
       value: `${budget}`
     })
+  }
+
+  getRewardBalance(jobId, farmerId) {
+    return this.contract.methods
+      .getRewardBalance(maskHex(jobId), maskHex(farmerId))
+      .send({ from: this.wallet })
   }
 
   // Reward in Wei

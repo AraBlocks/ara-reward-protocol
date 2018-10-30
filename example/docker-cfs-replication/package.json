@@ -1,0 +1,34 @@
+{
+  "name": "ara-farming-docker-example",
+  "version": "1.0.0",
+  "description": "Docker example for ARA Farming Protocol",
+  "main": "index.js",
+  "contributors": [
+    "Brandon Plaster <brandon@littlstar.com>",
+    "Huy Dao <huy@littlstar.com>"
+  ],
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "ara-farming-protocol": "github:littlstar/farming-protocol#semver:0.0.x",
+    "ara-console": "github:arablocks/ara-console#semver:0.2.x",
+    "ara-crypto": "github:arablocks/ara-crypto#semver:0.7.x",
+    "ara-network": "github:arablocks/ara-network#semver:1.0.0-beta.4",
+    "farming-protocol-buffers": "github:arablocks/farming-protocol-buffers#semver:0.1.x",
+    "cli-progress": "^2.0.0",
+    "debug": "^3.1.0",
+    "did-uri": "^0.2.5",
+    "duplexify": "^3.6.0",
+    "find-free-port": "^2.0.0",
+    "ip": "^1.1.5",
+    "pify": "^3.0.0",
+    "pump": "^3.0.0",
+    "pumpify": "^1.5.1",
+    "through": "^2.3.8",
+    "through2": "^2.0.3",
+    "unixify": "^1.0.0",
+    "varint": "^5.0.0",
+    "web3": "^1.0.0-beta.34",
+    "mirror-folder": "^3.0.0",
+    "cfsnet": "github:arablocks/cfsnet"
+  }
+}

@@ -19,9 +19,9 @@ contract Farming {
         return jobs[jobId].budget;
     }
 
-    function submitReward(bytes32 jobId, bytes32 farmerId, uint reward) public {
+    function submitReward(bytes32 jobId, bytes32 farmerId, bytes32 reward) public {
         Job storage job = jobs[jobId];
-        job.rewards[farmerId] = reward;
+        job.rewards[farmerId] = uint(reward);
     }
 
     function getRewardBalance(bytes32 jobId, bytes32 farmerId) public view returns(uint) {
