@@ -1,7 +1,7 @@
 {
   "name": "ara-farming-protocol",
   "version": "0.0.4",
-  "description": "ARA Farming Protocol",
+  "description": "Ara Farming Protocol",
   "main": "index.js",
   "scripts": {
     "test": "ava test",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/littlstar/farming-protocol.git"
+    "url": "git+https://github.com/littlstar/ara-farming-protocol.git"
   },
   "keywords": [
     "ara",
@@ -27,9 +27,9 @@
   ],
   "license": "LGPL-3.0",
   "bugs": {
-    "url": "https://github.com/littlstar/farming-protocol/issues"
+    "url": "https://github.com/littlstar/ara-farming-protocol/issues"
   },
-  "homepage": "https://github.com/littlstar/farming-protocol#readme",
+  "homepage": "https://github.com/littlstar/ara-farming-protocol#readme",
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0",
     "eslint-config-ara": "arablocks/eslint-config-ara#semver:2.1.x",
