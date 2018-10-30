@@ -14,18 +14,14 @@ test('matcher.addQuote', async (t) => {
   goodQuote.setNonce(goodQuoteId)
   goodQuote.setPerUnitCost(5)
 
-  matcher.addQuote(goodQuote, (hire) => {
-    t.true(hire)
-  })
+  t.true(await matcher.addQuote(goodQuote, () => {}))
 
   const badQuoteId = Buffer.from('1234', 'hex')
   const badQuote = new Quote()
   badQuote.setNonce(badQuoteId)
   badQuote.setPerUnitCost(10)
 
-  matcher.addQuote(badQuote, (hire) => {
-    t.false(hire)
-  })
+  t.false(await matcher.addQuote(badQuote, () => {}))
 })
 
 test('matcher.removeQuote', async (t) => {
@@ -62,13 +58,9 @@ test('matcher.hireFromReserve', async (t) => {
   quote2.setNonce(quoteId2)
   quote2.setPerUnitCost(5)
 
-  matcher.addQuote(quote1, (hire) => {
-    t.true(hire)
-  })
-  matcher.addQuote(quote2, (hire) => {
-    t.true(hire)
-    t.false(matcher.hiredQuoteCallbacks.has(nonceString1))
-    t.true(matcher.hiredQuoteCallbacks.has(nonceString2))
-  })
+  t.true(await matcher.addQuote(quote1, () => {}))
+  t.true(await matcher.addQuote(quote2, () => {}))
   matcher.removeQuote(quote1)
+  t.false(matcher.hiredQuoteCallbacks.has(nonceString1))
+  t.true(matcher.hiredQuoteCallbacks.has(nonceString2))
 })

@@ -137,12 +137,6 @@ async sendReceipt(receipt) {
   throw new Error('Extended classes must implement sendReceipt.')
 }
 
-// Close the connection with the peer.
-async close() {
-  throw new Error('Extended classes must implement close')
-}
-```
-
 #### RequesterBase
 
 A requester must extend the RequesterBase class to define the requester's specifications for validating quotes for a task, creating and validating agreements for a task, and for starting a task.
@@ -272,10 +266,10 @@ Different service requesters may have different needs when selecting peers, such
 ```js
 /**
  * Add a quote for consideration. If a quote is considered
- * valid, then call callback(bool) to continue/discontinue
- * the agreement process.
+ * valid, then call callback() to continue the agreement process.
  * @param {messages.Quote} quote
  * @param {function(messages.Agreement)} callback
+ * @returns {boolean} Returns whether quote was added
  */
 async addQuote(quote, callback) {
   throw new Error('Extended classes must implement addQuote')

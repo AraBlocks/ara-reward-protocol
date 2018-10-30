@@ -51,18 +51,19 @@ class RequesterBase extends EventEmitter {
   async onQuote(quote, connection) {
     const self = this
     const valid = await this.validateQuote(quote)
-    if (valid) {
-      const callback = async (hire) => {
-        if (hire) {
-          self.hireFarmer(quote, connection)
-        } else {
-          connection.close()
-        }
-      }
-      this.matcher.addQuote(quote, callback)
-    } else {
+    if (!valid) {
+      connection.close()
       this.emit('invalidQuote', quote)
+      return
     }
+
+    const match = await this.matcher.addQuote(quote, () => self.hireFarmer(quote, connection))
+    if (!match) {
+      connection.close()
+      return
+    }
+
+    connection.once('close', () => self.matcher.removeQuote(quote))
   }
 
   /**
@@ -83,12 +84,13 @@ class RequesterBase extends EventEmitter {
    */
   async onAgreement(agreement, connection) {
     const valid = await this.validateAgreement(agreement)
-    if (valid) {
-      this.onHireConfirmed(agreement, connection)
-    } else {
-      this.matcher.removeQuote(agreement.getQuote())
+    if (!valid) {
+      connection.close()
       this.emit('invalidAgreement', agreement)
+      return
     }
+
+    this.onHireConfirmed(agreement, connection)
   }
 
   /**

@@ -1,4 +1,5 @@
 const { MatcherBase } = require('../matcher')
+const { nonceString } = require('../util')
 
 // Matcher which hires a maximum number of workers for a maximum cost
 class MaxCostMatcher extends MatcherBase {
@@ -12,25 +13,32 @@ class MaxCostMatcher extends MatcherBase {
   }
 
   async addQuote(quote, callback) {
-    const farmerId = quote.getFarmer().getDid()
-    this.allQuoteCallbacks.set(farmerId, new QuoteCallback(quote, callback))
+    const quoteId = nonceString(quote)
+    this.allQuoteCallbacks.set(quoteId, new QuoteCallback(quote, callback))
 
     if (quote.getPerUnitCost() > this.maxCost) {
-      callback(false)
-      return
+      return false
     }
 
     if (this.hiredQuoteCallbacks.size < this.maxWorkers) {
-      this.hireFarmer(farmerId)
+      this.hireFarmer(quoteId)
     } else {
-      this.reserveWorkers.unshift(farmerId)
+      this.reserveWorkers.unshift(quoteId)
     }
+    return true
   }
 
   async removeQuote(quote) {
-    const farmerId = quote.getFarmer().getDid()
-    this.hiredQuoteCallbacks.delete(farmerId)
+    const quoteId = nonceString(quote)
 
+    // Remove from active workers
+    if (this.hiredQuoteCallbacks.has(quoteId)) this.hiredQuoteCallbacks.delete(quoteId)
+
+    // Remove from reserve workers
+    const index = this.reserveWorkers.indexOf(quoteId)
+    if (-1 != index) this.reserveWorkers.splice(index, 1)
+
+    // Hire new worker
     if (this.hiredQuoteCallbacks.size < this.maxWorkers) this.hireFromReserve()
   }
 
@@ -41,10 +49,10 @@ class MaxCostMatcher extends MatcherBase {
     }
   }
 
-  hireFarmer(farmerId) {
-    const quoteCallback = this.allQuoteCallbacks.get(farmerId)
-    this.hiredQuoteCallbacks.set(farmerId, quoteCallback)
-    quoteCallback.callback(true)
+  hireFarmer(quoteId) {
+    const quoteCallback = this.allQuoteCallbacks.get(quoteId)
+    this.hiredQuoteCallbacks.set(quoteId, quoteCallback)
+    quoteCallback.callback()
   }
 }
 
