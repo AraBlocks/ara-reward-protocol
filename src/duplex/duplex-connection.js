@@ -79,6 +79,7 @@ class DuplexConnection extends PeerConnection {
   }
 
   async close() {
+    super.close()
     if (this.stream) this.stream.destroy()
   }
 
