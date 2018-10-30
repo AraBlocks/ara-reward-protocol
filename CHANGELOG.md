@@ -1,5 +1,5 @@
-<a name="0.0.3"></a>
-## [0.0.3](https://github.com/littlstar/farming-protocol/compare/0.0.1...0.0.3) (2018-10-24)
+<a name="0.0.4"></a>
+## [0.0.4](https://github.com/littlstar/farming-protocol/compare/0.0.1...0.0.4) (2018-10-30)
 
 
 ### Features
