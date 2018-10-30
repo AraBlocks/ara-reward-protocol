@@ -1,4 +1,5 @@
 /* eslint class-methods-use-this: 1 */
+/* eslint-disable-next-line import/no-unresolved */
 const { messages, FarmerBase, util } = require('ara-farming-protocol')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
@@ -123,9 +124,9 @@ class ExampleFarmer extends FarmerBase {
     return receipt
   }
 
-  async onHireConfirmed(agreement, connection) {
-    const data = Buffer.from(agreement.getData())
-    const port = data.readUInt32LE(0)
+  async onHireConfirmed(agreement) {
+    const agreementData = Buffer.from(agreement.getData())
+    const port = agreementData.readUInt32LE(0)
 
     const self = this
     const sow = agreement.getQuote().getSow()

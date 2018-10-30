@@ -1,4 +1,5 @@
 /* eslint class-methods-use-this: 1 */
+/* eslint-disable-next-line import/no-unresolved */
 const { messages, RequesterBase, util } = require('ara-farming-protocol')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')

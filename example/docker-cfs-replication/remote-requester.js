@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const {
   messages, matchers, duplex, util
 } = require('ara-farming-protocol')

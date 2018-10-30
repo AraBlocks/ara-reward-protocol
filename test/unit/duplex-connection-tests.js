@@ -147,10 +147,19 @@ test('duplex.constructor', (t) => {
   const peer = {}
   const duplex = sinon.createStubInstance(Duplex)
 
-  t.true(Boolean(new DuplexConnection(peer, duplex, opts)))
-  t.true(Boolean(new DuplexConnection(peer, duplex, null)))
-  t.throws(() => { new DuplexConnection(null, duplex, opts) }, TypeError)
-  t.throws(() => { new DuplexConnection(peer, null, opts) }, TypeError)
+  const correctContructorA = new DuplexConnection(peer, duplex, opts)
+  const correctContructorB = new DuplexConnection(peer, duplex, null)
+
+  t.true(Boolean(correctContructorA))
+  t.true(Boolean(correctContructorB))
+
+  const wrongConstructorA = new DuplexConnection(null, duplex, opts)
+  const wrongConstructorB = new DuplexConnection(peer, null, opts)
+
+  /* eslint-disable-next-line no-unused-expressions */
+  t.throws(() => { wrongConstructorA }, TypeError)
+  /* eslint-disable-next-line no-unused-expressions */
+  t.throws(() => { wrongConstructorB }, TypeError)
 })
 
 test('duplex.emit.withStream', async (t) => {

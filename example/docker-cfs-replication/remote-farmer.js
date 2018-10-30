@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-unresolved */
 const { messages, duplex, util } = require('ara-farming-protocol')
 const ContractABI = require('./contract/contract-abi')
 const { ExampleFarmer } = require('./farmer')
@@ -34,17 +35,15 @@ async function broadcast(price) {
   farmerSig.setData('avalidsignature')
 
   const farmerCFS = await createFarmerCFS(contentPath, cfsPath)
-  const cfs = farmerCFS.cfs
-  const cfsJson = farmerCFS.cfsJson
 
   // Convert Ether/GB to Wei/Byte
   const convertedPrice = etherToWei(price) / gbsToBytes(1)
 
   // The Farmer instance which sets a specific price, an ID, and a signature
-  const farmer = new ExampleFarmer(farmerID, farmerSig, convertedPrice, wallet, cfs)
+  const farmer = new ExampleFarmer(farmerID, farmerSig, convertedPrice, wallet, farmerCFS.cfs)
 
   // Join the discovery swarm for the requested content
-  createFarmingSwarm(cfsJson.key, farmer)
+  createFarmingSwarm(farmerCFS.cfsJson.key, farmer)
 }
 
 // Creates a swarm to find requesters
