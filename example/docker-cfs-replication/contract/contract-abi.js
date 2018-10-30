@@ -2,8 +2,9 @@ const Web3 = require('web3')
 const { abi, networks } = require('../local/contract-address.json')
 
 class ContractABI {
+  // use 'localhost' to test locally, 'ganachecli' to test on docker
   constructor(walletAdd) {
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://ganachecli:8545')) // use 'localhost' to test locally, 'ganachecli' to test on docker
+    const web3 = new Web3(new Web3.providers.HttpProvider('http://ganachecli:8545'))
     const addressKey = Object.keys(networks)[0]
     this.wallet = walletAdd
     this.contract = new web3.eth.Contract(abi, networks[addressKey].address)

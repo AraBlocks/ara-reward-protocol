@@ -1,9 +1,9 @@
 const { createCFS } = require('cfsnet/create')
 const debug = require('debug')('afp:create')
-const { info } = require('ara-console')
 const mirror = require('mirror-folder')
-const { join, basename, resolve } = require('path')
+const { join, basename } = require('path')
 const fs = require('fs')
+
 const cfsId = 'farming-docker'
 const jsonPath = './local/constants.json'
 
@@ -13,11 +13,10 @@ async function createFarmerCFS(filePath, cfsPath) {
     path: cfsPath
   })
 
-
   await mirrorPath(filePath, cfs)
-  let json = JSON.parse(fs.readFileSync(jsonPath).toString());
+  const json = JSON.parse(fs.readFileSync(jsonPath).toString())
   json.cfsKey = cfs.key.toString('hex')
-  await fs.writeFileSync(jsonPath, JSON.stringify(json, null, 2));
+  await fs.writeFileSync(jsonPath, JSON.stringify(json, null, 2))
   const cfsJson = { id: cfsId, key: cfs.key.toString('hex') }
 
   return { cfs, cfsJson }
@@ -39,14 +38,13 @@ async function mirrorPath(filePath, cfs) {
   progress.on('skip', (src, dst) => {
     debug(`skipping path ${dst.name}`)
   })
-  progress.on('del', dst => {
+  progress.on('del', (dst) => {
     debug(`deleting path ${dst.name}`)
   })
 
   // Await end or error
   const error = await new Promise((accept, reject) =>
-    progress.once('end', accept).once('error', reject)
-  )
+    progress.once('end', accept).once('error', reject))
 
   if (error) {
     debug(`copy error: ${filePath}: ${error}`)

@@ -90,14 +90,14 @@ class ExampleFarmer extends FarmerBase {
 
     const farmerDid = this.farmerId.getDid()
     await this.wallet.getRewardBalance(sowId, farmerDid)
-        .then(() => {
-          info(`Reward amount ${weiToEther(reward.getAmount())} withdrawn for SOW ${sowId}`)
-        })
-        .catch((err) => {
-          warn(`Failed to withdraw reward for SOW ${sowId}`)
-          debug(err)
-        })
-      }
+      .then(() => {
+        info(`Reward amount ${weiToEther(reward.getAmount())} withdrawn for SOW ${sowId}`)
+      })
+      .catch((err) => {
+        warn(`Failed to withdraw reward for SOW ${sowId}`)
+        debug(err)
+      })
+  }
 
   /**
    * This should returns whether a reward is valid.

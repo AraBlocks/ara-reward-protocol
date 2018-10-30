@@ -31,7 +31,7 @@ class DuplexConnection extends PeerConnection {
 
     if (!peer || 'object' !== typeof peer) {
       throw new TypeError('Expecting peer object.')
-    } else if (!connection || 'object' !== typeof connection){
+    } else if (!connection || 'object' !== typeof connection) {
       throw new TypeError('Expecting connection object.')
     }
 

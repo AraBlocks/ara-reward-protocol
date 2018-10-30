@@ -6,7 +6,9 @@ const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:requester')
 const web3 = require('web3')
 
-const { idify, nonceString, bytesToGBs, weiToEther } = util
+const {
+  idify, nonceString, weiToEther
+} = util
 
 class ExampleRequester extends RequesterBase {
   constructor(sow, matcher, requesterSig, wallet, cfs, onComplete) {
@@ -28,7 +30,6 @@ class ExampleRequester extends RequesterBase {
     let stakeSubmitted = false
 
     if (content) {
-      // TODO: calc current downloaded size in bytes
       oldByteLength = 0
       attachDownloadListener(content)
     } else {
@@ -73,10 +74,8 @@ class ExampleRequester extends RequesterBase {
       feed.once('download', () => {
         debug(`old size: ${oldByteLength}, new size: ${feed.byteLength}`)
         const amount = self.matcher.maxCost
-        info(
-          `Staking ${weiToEther(amount)} for the requested content`
-        )
-        self.submitStake(amount, err => {
+        info(`Staking ${weiToEther(amount)} for the requested content`)
+        self.submitStake(amount, (err) => {
           if (err) onComplete(err)
           else stakeSubmitted = true
         })
@@ -110,7 +109,7 @@ class ExampleRequester extends RequesterBase {
       .then(() => {
         onComplete()
       })
-      .catch(err => {
+      .catch((err) => {
         onComplete(err)
       })
   }
@@ -228,9 +227,7 @@ class ExampleRequester extends RequesterBase {
     const farmerId = quote.getFarmer().getDid()
     const amount = reward.getAmount()
 
-    info(
-      `Sending reward to farmer ${farmerId} for ${weiToEther(amount)} tokens`
-    )
+    info(`Sending reward to farmer ${farmerId} for ${weiToEther(amount)} tokens`)
     try {
       const hexAmount = web3.utils.numberToHex(amount / 1000)
       await this.wallet
@@ -238,10 +235,8 @@ class ExampleRequester extends RequesterBase {
         .then(() => {
           connection.sendReward(reward)
         })
-        .catch(err => {
-          warn(
-            `Failed to submit the reward to farmer ${farmerId} for job ${sowId}`
-          )
+        .catch((err) => {
+          warn(`Failed to submit the reward to farmer ${farmerId} for job ${sowId}`)
           debug(err)
         })
     } catch (e) {

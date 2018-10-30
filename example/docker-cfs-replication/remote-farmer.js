@@ -3,18 +3,17 @@ const ContractABI = require('./contract/contract-abi')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
 const { info } = require('ara-console')
-const debug = require('debug')('afp:duplex-example:main')
-const { join, basename } = require('path')
-const {createFarmerCFS} = require('./cfs-create')
-const { createCFS } = require('cfsnet/create')
+const { createFarmerCFS } = require('./cfs-create')
+
 const { idify, etherToWei, gbsToBytes } = util
 const { RequesterConnection } = duplex
 const { walletAddresses } = require('./ganache-addresses')
-let constants = require('./local/constants.json')
+const constants = require('./local/constants.json')
+
 const wallet = new ContractABI(walletAddresses[constants.farmerWalletIndex])
 const rootPath = './local/'
 const contentPath = rootPath + constants.contentPath
-const cfsPath = rootPath + constants.cfsPath + '/farmer'
+const cfsPath = `${rootPath + constants.cfsPath}/farmer`
 
 broadcast(constants.farmerPrice)
 

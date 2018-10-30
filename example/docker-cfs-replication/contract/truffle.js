@@ -1,9 +1,11 @@
 module.exports = {
   networks: {
     development: {
-      host: 'ganachecli', // use 'localhost' to test locally, 'ganachecli' to test on docker
+      host: 'ganachecli',
       port: 8545,
-      network_id: '*' // Match any network id
+      network_id: '*'
     }
   }
 }
+
+// use 'localhost' with 'host' to test locally, 'ganachecli' to test on docker

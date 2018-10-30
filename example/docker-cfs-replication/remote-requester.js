@@ -1,4 +1,6 @@
-const { messages, matchers, duplex, util } = require('ara-farming-protocol')
+const {
+  messages, matchers, duplex, util
+} = require('ara-farming-protocol')
 const ContractABI = require('./contract/contract-abi')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
@@ -7,13 +9,15 @@ const crypto = require('ara-crypto')
 const debug = require('debug')('afp:duplex-example:main')
 const clip = require('cli-progress')
 const { createCFS } = require('cfsnet/create')
+
 const { idify, gbsToBytes, etherToWei } = util
 const { FarmerConnection } = duplex
 const constants = require('./local/constants.json')
 const { walletAddresses } = require('./ganache-addresses')
+
 const wallet = new ContractABI(walletAddresses[constants.requesterWalletIndex])
 const rootPath = './local/'
-const cfsPath = rootPath + constants.cfsPath + '/requester'
+const cfsPath = `${rootPath + constants.cfsPath}/requester`
 
 download(constants.requesterPrice)
 
@@ -56,7 +60,6 @@ async function download(reward) {
   } catch (e) {
     debug(e)
   }
-
 
   // Create the requester object
   const requester = new ExampleRequester(
