@@ -136,6 +136,7 @@ async sendReward(reward) {
 async sendReceipt(receipt) {
   throw new Error('Extended classes must implement sendReceipt.')
 }
+```
 
 #### RequesterBase
 
