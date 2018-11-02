@@ -41,7 +41,7 @@ A receipt for a reward, sent by a verifiable peer.
 
 ### Introduction
 
-AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers) via AFP's `PeerConnection` interface. 
+AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers) via AFP's `PeerConnection` interface.
 
 The default interaction between a requester and a farmer is the following:
 1. Requester sends `SOW` to farmer
@@ -292,6 +292,7 @@ async removeQuote(quote) {
 * [How to contribute](/.github/CONTRIBUTING.md)
 * [Commit message format](/.github/COMMIT_FORMAT.md)
 * [Commit message examples](/.github/COMMIT_FORMAT_EXAMPLES.md)
+- [Release versioning guidelines](https://semver.org/)
 
 ## See Also
 * [RFC](https://github.com/AraBlocks/RFCs/blob/0000-AFP/text/0000-afp.md)
