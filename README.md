@@ -59,8 +59,8 @@ This project is **Stable**.
 
 ## Dependencies
 
-* [node](https://nodejs.org)
-* [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers)
+- [node](https://nodejs.org)
+- [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers)
 
 ## Installation
 
@@ -72,10 +72,10 @@ $ npm i ara-farming-protocol
 
 Extend the following classes:
 
-* [PeerConnection](#peerconnection)
-* [FarmerBase](#farmerbase)
-* [MatcherBase](#matcherbase)
-* [RequesterBase](#requesterbase)
+- [PeerConnection](#peerconnection)
+- [FarmerBase](#farmerbase)
+- [MatcherBase](#matcherbase)
+- [RequesterBase](#requesterbase)
 
 Communication: Extend the `PeerConnection` interface to enable your own method of communication, or use AFP's `DuplexConnection` class to communicate via [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex).
 
@@ -87,10 +87,10 @@ Requesting: Extend AFP's `RequesterBase` class to define the specifications to v
 
 ### API
 
-* [PeerConnection](#peerconnection)
-* [FarmerBase](#farmerbase)
-* [MatcherBase](#matcherbase)
-* [RequesterBase](#requesterbase)
+- [PeerConnection](#peerconnection)
+- [FarmerBase](#farmerbase)
+- [MatcherBase](#matcherbase)
+- [RequesterBase](#requesterbase)
 
 #### PeerConnection
 
@@ -289,18 +289,18 @@ async removeQuote(quote) {
 
 ## Contributing
 
-* [How to contribute](/.github/CONTRIBUTING.md)
-* [Commit message format](/.github/COMMIT_FORMAT.md)
-* [Commit message examples](/.github/COMMIT_FORMAT_EXAMPLES.md)
+- [How to contribute](/.github/CONTRIBUTING.md)
+- [Commit message format](/.github/COMMIT_FORMAT.md)
+- [Commit message examples](/.github/COMMIT_FORMAT_EXAMPLES.md)
 - [Release versioning guidelines](https://semver.org/)
 
 ## See Also
-* [RFC](https://github.com/AraBlocks/RFCs/blob/0000-AFP/text/0000-afp.md)
-* [ara-identity](https://github.com/AraBlocks/ara-identity)
-* [ara-filesystem](https://github.com/AraBlocks/ara-filesystem)
-* [ara-network](https://github.com/AraBlocks/ara-network)
-* [discovery-swarm](https://github.com/mafintosh/discovery-swarm)
-* [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex)
+- [RFC](https://github.com/AraBlocks/RFCs/blob/0000-AFP/text/0000-afp.md)
+- [ara-identity](https://github.com/AraBlocks/ara-identity)
+- [ara-filesystem](https://github.com/AraBlocks/ara-filesystem)
+- [ara-network](https://github.com/AraBlocks/ara-network)
+- [discovery-swarm](https://github.com/mafintosh/discovery-swarm)
+- [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex)
 
 ## License
 
