@@ -1,3 +1,8 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/arablocks/ara-farming-protocol/compare/0.0.6...0.1.0) (2018-11-13)
+
+
+
 <a name="0.0.6"></a>
 ## [0.0.6](https://github.com/arablocks/ara-farming-protocol/compare/0.0.5...0.0.6) (2018-10-31)
 

@@ -1,6 +1,6 @@
 {
   "name": "ara-farming-protocol",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Ara Farming Protocol",
   "main": "index.js",
   "scripts": {
