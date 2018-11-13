@@ -3,7 +3,6 @@
 const { PeerConnection } = require('./peer-connection')
 const { messages } = require('farming-protocol-buffers')
 const EventEmitter = require('events')
-const debug = require('debug')('afp:requester-base')
 
 class RequesterBase extends EventEmitter {
   /**
