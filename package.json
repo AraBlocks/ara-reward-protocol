@@ -12,6 +12,10 @@
     "changelog": "conventional-changelog --same-file --preset angular --release-count 0 --infile CHANGELOG.md",
     "version": "npm run changelog && git add CHANGELOG.md"
   },
+  "files": [
+    "*.js",
+    "/src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arablocks/ara-farming-protocol.git"
