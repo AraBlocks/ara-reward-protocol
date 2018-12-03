@@ -1,6 +1,7 @@
 const { idify, nonceString } = require('../util')
 const { messages } = require('farming-protocol-buffers')
 const { PeerConnection } = require('../peer-connection')
+const bufferFrom = require('buffer-from')
 const debug = require('debug')('afp:hypercore')
 
 // Helper object for determining message types
@@ -34,7 +35,6 @@ class HypercoreConnection extends PeerConnection {
 
     this.stream = stream
     this.stream.peerId = this.peerId
-    this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
     this.stream.on('error', this.onError.bind(this))
 
@@ -44,31 +44,31 @@ class HypercoreConnection extends PeerConnection {
   async sendSow(sow) {
     debug(`Sending Sow: ${nonceString(sow)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.feed.extension(MSG.SOW, sow.serializeBinary())
+    this.feed.extension(MSG.SOW, bufferFrom(sow.serializeBinary()))
   }
 
   async sendQuote(quote) {
     debug(`Sending Quote: ${nonceString(quote)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.feed.extension(MSG.QUOTE, quote.serializeBinary())
+    this.feed.extension(MSG.QUOTE, bufferFrom(quote.serializeBinary()))
   }
 
   async sendAgreement(agreement) {
     debug(`Sending Agreement: ${nonceString(agreement)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.feed.extension(MSG.AGREEMENT, agreement.serializeBinary())
+    this.feed.extension(MSG.AGREEMENT, bufferFrom(agreement.serializeBinary()))
   }
 
   async sendReward(reward) {
     debug(`Sending Reward: ${nonceString(reward)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.feed.extension(MSG.REWARD, reward.serializeBinary())
+    this.feed.extension(MSG.REWARD, bufferFrom(reward.serializeBinary()))
   }
 
   async sendReceipt(receipt) {
     debug(`Sending Receipt: ${nonceString(receipt)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.feed.extension(MSG.RECEIPT, receipt.serializeBinary())
+    this.feed.extension(MSG.RECEIPT, bufferFrom(receipt.serializeBinary()))
   }
 
   async close() {
