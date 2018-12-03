@@ -1,37 +1,25 @@
 const { idify, nonceString } = require('../util')
 const { messages } = require('farming-protocol-buffers')
 const { PeerConnection } = require('../peer-connection')
-const varint = require('varint')
-const debug = require('debug')('afp:duplex')
+const debug = require('debug')('afp:hypercore')
 
 // Helper object for determining message types
 const MSG = {
-  SOW: { head: 1, str: 'sow' },
-  QUOTE: { head: 2, str: 'quote' },
-  AGREEMENT: { head: 3, str: 'agreement' },
-  REWARD: { head: 4, str: 'reward' },
-  RECEIPT: { head: 5, str: 'receipt' },
-
-  encode(head, data) {
-    head = Buffer.from(varint.encode(head))
-    return Buffer.concat([ head, data ])
-  },
-
-  decode(chunk) {
-    const head = varint.decode(chunk, 0)
-    const data = chunk.slice(varint.decode.bytes)
-    return { head, data }
-  }
+  SOW: 'sow',
+  QUOTE: 'quote',
+  AGREEMENT: 'agreement',
+  REWARD: 'reward',
+  RECEIPT: 'receipt'
 }
 
-// Class for managing a duplex stream connection to a peer.
-class DuplexConnection extends PeerConnection {
-  constructor(peer, connection, opts) {
+// Class for managing a hypercore feed connection with a peer.
+class HypercoreConnection extends PeerConnection {
+  constructor(peer, stream, feed, opts) {
     super()
 
     if (!peer || 'object' !== typeof peer) {
       throw new TypeError('Expecting peer object.')
-    } else if (!connection || 'object' !== typeof connection) {
+    } else if (!feed || 'object' !== typeof feed) {
       throw new TypeError('Expecting connection object.')
     }
 
@@ -40,8 +28,12 @@ class DuplexConnection extends PeerConnection {
     this.opts.timeout = this.opts.timeout || 10000
     this.peerId = idify(this.peer.host, this.peer.port)
 
-    this.stream = connection
-    this.stream.on('data', this.onData.bind(this))
+    this.feed = feed
+    this.feed.on('extension', this.onExtension.bind(this))
+    this.feed.on('close', this.onClose.bind(this))
+
+    this.stream = stream
+    this.stream.peerId = this.peerId
     this.stream.once('end', this.onEnd.bind(this))
     this.stream.once('close', this.onClose.bind(this))
     this.stream.on('error', this.onError.bind(this))
@@ -52,62 +44,56 @@ class DuplexConnection extends PeerConnection {
   async sendSow(sow) {
     debug(`Sending Sow: ${nonceString(sow)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.write(MSG.encode(MSG.SOW.head, sow.serializeBinary()))
+    this.feed.extension(MSG.SOW, sow.serializeBinary())
   }
 
   async sendQuote(quote) {
     debug(`Sending Quote: ${nonceString(quote)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.write(MSG.encode(MSG.QUOTE.head, quote.serializeBinary()))
+    this.feed.extension(MSG.QUOTE, quote.serializeBinary())
   }
 
   async sendAgreement(agreement) {
     debug(`Sending Agreement: ${nonceString(agreement)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.write(MSG.encode(MSG.AGREEMENT.head, agreement.serializeBinary()))
+    this.feed.extension(MSG.AGREEMENT, agreement.serializeBinary())
   }
 
   async sendReward(reward) {
     debug(`Sending Reward: ${nonceString(reward)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.write(MSG.encode(MSG.REWARD.head, reward.serializeBinary()))
+    this.feed.extension(MSG.REWARD, reward.serializeBinary())
   }
 
   async sendReceipt(receipt) {
     debug(`Sending Receipt: ${nonceString(receipt)} to ${this.peerId}`)
     this.timeout = setTimeout(this.onTimeout.bind(this), this.opts.timeout)
-    this.stream.write(MSG.encode(MSG.RECEIPT.head, receipt.serializeBinary()))
+    this.feed.extension(MSG.RECEIPT, receipt.serializeBinary())
   }
 
   async close() {
     super.close()
     clearTimeout(this.timeout)
+    if (this.feed) {
+      this.feed.removeListener('extension', this.onExtension.bind(this))
+    }
     if (this.stream) {
-      this.stream.removeListener('data', this.onData.bind(this))
-      this.stream.destroy()
+      this.stream.finalize()
     }
   }
 
+  async onClose() {
+    debug(`Feed closed with peer: ${this.peerId}`)
+    this.close()
+  }
+
   async onTimeout() {
-    debug(`Stream timed out with peer: ${this.peerId}`)
-    if (this.stream) {
-      this.stream.emit('timeout', this.peer)
-    }
+    debug(`Feed timed out with peer: ${this.peerId}`)
     this.close()
   }
 
   async onError(err) {
     debug(`Stream error with peer: ${this.peerId}: ${err}`)
-    this.close()
-  }
-
-  async onClose() {
-    debug(`Stream closed with peer: ${this.peerId}`)
-    this.close()
-  }
-
-  async onEnd() {
-    debug(`Stream ended with peer: ${this.peerId}`)
     this.close()
   }
 
@@ -141,16 +127,15 @@ class DuplexConnection extends PeerConnection {
     super.onReceipt(receipt)
   }
 
-  onData(chunk) {
+  onExtension(type, message) {
     try {
-      const { head, data } = MSG.decode(chunk)
-      switch (head) {
-      case MSG.SOW.head: this.onSow(messages.SOW.deserializeBinary(data)); break
-      case MSG.QUOTE.head: this.onQuote(messages.Quote.deserializeBinary(data)); break
-      case MSG.AGREEMENT.head: this.onAgreement(messages.Agreement.deserializeBinary(data)); break
-      case MSG.REWARD.head: this.onReward(messages.Reward.deserializeBinary(data)); break
-      case MSG.RECEIPT.head: this.onReceipt(messages.Receipt.deserializeBinary(data)); break
-      default: throw new TypeError(`Unknown message type: ${head}`)
+      switch (type) {
+      case MSG.SOW: this.onSow(messages.SOW.deserializeBinary(message)); break
+      case MSG.QUOTE: this.onQuote(messages.Quote.deserializeBinary(message)); break
+      case MSG.AGREEMENT: this.onAgreement(messages.Agreement.deserializeBinary(message)); break
+      case MSG.REWARD: this.onReward(messages.Reward.deserializeBinary(message)); break
+      case MSG.RECEIPT: this.onReceipt(messages.Receipt.deserializeBinary(message)); break
+      default: throw new TypeError(`Unknown message type: ${type}`)
       }
       return true
     } catch (e) {
@@ -160,7 +145,4 @@ class DuplexConnection extends PeerConnection {
   }
 }
 
-module.exports = {
-  DuplexConnection,
-  MSG
-}
+module.exports = { MSG, HypercoreConnection }

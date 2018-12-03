@@ -1,8 +1,8 @@
-const { DuplexConnection } = require('./duplex-connection')
-const debug = require('debug')('afp:duplex')
+const { HypercoreConnection } = require('./hypercore-connection')
+const debug = require('debug')('afp:hypercore')
 
 // Class for managing a duplex stream connection to a requester
-class RequesterConnection extends DuplexConnection {
+class RequesterConnection extends HypercoreConnection {
   // If quote, peer is not a requester, then destroy
   async onQuote(quote) {
     super.onQuote(quote)
