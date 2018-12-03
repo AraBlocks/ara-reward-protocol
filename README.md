@@ -41,7 +41,7 @@ A receipt for a reward, sent by a verifiable peer.
 
 ### Introduction
 
-AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [reward-protocol-buffers](https://github.com/AraBlocks/reward-protocol-buffers) via AFP's `PeerConnection` interface.
+ARP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [reward-protocol-buffers](https://github.com/AraBlocks/reward-protocol-buffers) via ARP's `PeerConnection` interface.
 
 The default interaction between a requester and a farmer is the following:
 1. Requester sends `SOW` to farmer
@@ -77,13 +77,13 @@ Extend the following classes:
 - [MatcherBase](#matcherbase)
 - [RequesterBase](#requesterbase)
 
-Communication: Extend the `PeerConnection` interface to enable your own method of communication, or use AFP's `DuplexConnection` class to communicate via [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex).
+Communication: Extend the `PeerConnection` interface to enable your own method of communication, or use ARP's `DuplexConnection` class to communicate via [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex).
 
-Farming: Extend AFP's `FarmerBase` class to define the specifications to generate a quote for a task, validate a peer/`SOW` for a task, and to sign and validate an agreement for a task.
+Farming: Extend ARP's `FarmerBase` class to define the specifications to generate a quote for a task, validate a peer/`SOW` for a task, and to sign and validate an agreement for a task.
 
-Requesting: Extend AFP's `RequesterBase` class to define the specifications to validate peers/quotes for a task, create and validate agreements for a task, and to start work for a task. Also extend AFP's `MatcherBase` class to define the specifications to select and hire a set of peers given their quotes for a task.
+Requesting: Extend ARP's `RequesterBase` class to define the specifications to validate peers/quotes for a task, create and validate agreements for a task, and to start work for a task. Also extend ARP's `MatcherBase` class to define the specifications to select and hire a set of peers given their quotes for a task.
 
-**Note**: AFP requires applications implement their own peer discovery method, such as a [discovery-swarm](https://github.com/mafintosh/discovery-swarm).
+**Note**: ARP requires applications implement their own peer discovery method, such as a [discovery-swarm](https://github.com/mafintosh/discovery-swarm).
 
 ### API
 
