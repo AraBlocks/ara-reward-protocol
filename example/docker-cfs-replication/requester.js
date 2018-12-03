@@ -4,7 +4,7 @@ const { messages, RequesterBase, util } = require('ara-reward-protocol')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:requester')
+const debug = require('debug')('arp:duplex-example:requester')
 const web3 = require('web3')
 
 const {
