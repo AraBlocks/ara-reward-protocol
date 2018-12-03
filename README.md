@@ -1,9 +1,9 @@
-<img src="https://github.com/AraBlocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol
+<img src="https://github.com/AraBlocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-reward-protocol
 ========
-[![Build Status](https://travis-ci.com/AraBlocks/ara-farming-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-farming-protocol)
+[![Build Status](https://travis-ci.com/AraBlocks/ara-reward-protocol.svg?token=6WjTyCg41y8MBmCzro5x&branch=master)](https://travis-ci.com/AraBlocks/ara-reward-protocol)
 
 
-Ara Farming Protocol (AFP) provides methods for distributed decentralized services in the Ara Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details).
+Ara Reward Protocol (ARP) provides methods for distributed decentralized services in the Ara Network to request work from its peers and determine the specifications of work contracts (i.e. rewards and other service-specific details).
 
 ### Terminology
 
@@ -41,7 +41,7 @@ A receipt for a reward, sent by a verifiable peer.
 
 ### Introduction
 
-AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers) via AFP's `PeerConnection` interface.
+AFP defines a set of extensible Javascript classes to enable peers of a distributed service to communicate about and define `SOW`s for a specific service. Peers exchange messages in the form of [reward-protocol-buffers](https://github.com/AraBlocks/reward-protocol-buffers) via AFP's `PeerConnection` interface.
 
 The default interaction between a requester and a farmer is the following:
 1. Requester sends `SOW` to farmer
@@ -60,12 +60,12 @@ This project is **Stable**.
 ## Dependencies
 
 - [node](https://nodejs.org)
-- [farming-protocol-buffers](https://github.com/AraBlocks/farming-protocol-buffers)
+- [reward-protocol-buffers](https://github.com/AraBlocks/reward-protocol-buffers)
 
 ## Installation
 
 ```
-$ npm i ara-farming-protocol
+$ npm i ara-reward-protocol
 ```
 
 ## Usage
@@ -301,6 +301,7 @@ async removeQuote(quote) {
 - [ara-network](https://github.com/AraBlocks/ara-network)
 - [discovery-swarm](https://github.com/mafintosh/discovery-swarm)
 - [duplex streams](https://nodejs.org/api/stream.html#stream_class_stream_duplex)
+- [hypercore-protocol](https://github.com/mafintosh/hypercore-protocol)
 
 ## License
 

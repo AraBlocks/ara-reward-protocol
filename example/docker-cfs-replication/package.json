@@ -1,7 +1,7 @@
 {
-  "name": "ara-farming-docker-example",
+  "name": "ara-reward-docker-example",
   "version": "1.0.0",
-  "description": "Docker example for ARA Farming Protocol",
+  "description": "Docker example for Ara Reward Protocol",
   "main": "index.js",
   "contributors": [
     "Brandon Plaster <brandon@littlstar.com>",
@@ -9,11 +9,11 @@
   ],
   "license": "LGPL-3.0",
   "dependencies": {
-    "ara-farming-protocol": "github:littlstar/farming-protocol#semver:0.0.x",
+    "ara-reward-protocol": "github:arablocks/ara-reward-protocol#semver:0.0.x",
     "ara-console": "github:arablocks/ara-console#semver:0.2.x",
     "ara-crypto": "github:arablocks/ara-crypto#semver:0.7.x",
     "ara-network": "github:arablocks/ara-network#semver:1.0.0-beta.4",
-    "farming-protocol-buffers": "github:arablocks/farming-protocol-buffers#semver:0.1.x",
+    "reward-protocol-buffers": "github:arablocks/reward-protocol-buffers#semver:0.1.x",
     "cli-progress": "^2.0.0",
     "debug": "^3.1.0",
     "did-uri": "^0.2.5",

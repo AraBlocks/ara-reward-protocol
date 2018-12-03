@@ -6,7 +6,7 @@ const {
   etherToWei,
   weiToEther
 } = require('../../src/util')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const test = require('ava')
 
 const { Agreement } = messages

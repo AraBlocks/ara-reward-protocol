@@ -1,10 +1,10 @@
 /* eslint class-methods-use-this: 1 */
 /* eslint-disable-next-line import/no-unresolved */
-const { messages, FarmerBase, util } = require('ara-farming-protocol')
+const { messages, FarmerBase, util } = require('ara-reward-protocol')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:farmer')
+const debug = require('debug')('arp:duplex-example:farmer')
 const pify = require('pify')
 const fp = require('find-free-port')
 const ip = require('ip')

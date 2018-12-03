@@ -1,9 +1,9 @@
-<img src="https://github.com/arablocks/ara-farming-protocol/blob/master/ara.png" width="30" height="30" /> ara-farming-protocol duplex streams
+<img src="https://github.com/AraBlocks/ara-module-template/blob/master/ara.png" width="30" height="30" /> ara-reward-protocol duplex streams
 ========
 
 ## Implementation
 
-To use AFP with duplex streams, you can wrap a duplex stream with the classes `FarmerConnection` in `src/duplex/farmer-connection` and `RequesterConnection` in `src/duplex/requester-connection`.
+To use ARP with duplex streams, you can wrap a duplex stream with the classes `FarmerConnection` in `src/duplex/farmer-connection` and `RequesterConnection` in `src/duplex/requester-connection`.
 
 ### Farming
 
@@ -12,7 +12,7 @@ A simple example for farming via a discovery swarm:
 ```js
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')
-const { duplex } = require('ara-farming-protocol')
+const { duplex } = require('ara-reward-protocol')
 
 const did = "617e5e325147ee167b710eb75a6b09181ea103157422c0567a18b001757025a6"
 
@@ -36,7 +36,7 @@ A simple example for requesting via a discovery swarm:
 ```js
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
-const { duplex } = require('ara-farming-protocol')
+const { duplex } = require('ara-reward-protocol')
 
 const did = "617e5e325147ee167b710eb75a6b09181ea103157422c0567a18b001757025a6"
 

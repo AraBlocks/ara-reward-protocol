@@ -1,7 +1,7 @@
 /* eslint class-methods-use-this: off */
 /* eslint no-unused-vars: off */
 const { PeerConnection } = require('./peer-connection')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const EventEmitter = require('events')
 
 // Base Farmer class handling connections with requesters

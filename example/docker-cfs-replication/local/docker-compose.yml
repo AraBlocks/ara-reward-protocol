@@ -7,7 +7,7 @@ services:
     ports:
       - "8545:8545"
   farmer:
-    image: ara/ara-farming
+    image: ara/ara-reward
     command: bash -c "cd contract
       && truffle migrate
       && cp build/contracts/Farming.json ../local/contract-address.json
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./:/root/local
   requester:
-      image: ara/ara-farming
+      image: ara/ara-reward
       stdin_open: true
       tty: true
       depends_on:

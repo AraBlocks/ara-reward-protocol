@@ -1,6 +1,6 @@
 /* eslint no-new: off */
 const { MSG, DuplexConnection } = require('../../src/duplex/duplex-connection')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const { Duplex } = require('stream')
 const sinon = require('sinon')
 const test = require('ava')
@@ -168,9 +168,10 @@ test('duplex.emit.withStream', async (t) => {
   await connection.onTimeout()
   await connection.onClose()
   await connection.onEnd()
+  await connection.onError()
   await connection.close()
 
-  t.true(4 === duplex.destroy.callCount)
+  t.true(5 === duplex.destroy.callCount)
 })
 
 test('duplex.emit.withoutStream', async (t) => {

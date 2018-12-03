@@ -1,5 +1,5 @@
 const { DuplexConnection } = require('./duplex-connection')
-const debug = require('debug')('afp:duplex')
+const debug = require('debug')('arp:duplex')
 
 // Class for managing a duplex stream connection to a farmer
 class FarmerConnection extends DuplexConnection {
