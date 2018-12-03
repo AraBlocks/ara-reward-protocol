@@ -3,7 +3,7 @@ const {
   messages: {
     Quote
   }
-} = require('farming-protocol-buffers')
+} = require('reward-protocol-buffers')
 const test = require('ava')
 
 test('matcher.addQuote', async (t) => {

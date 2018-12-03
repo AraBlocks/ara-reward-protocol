@@ -1,8 +1,8 @@
 const { idify, nonceString } = require('../util')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const { PeerConnection } = require('../peer-connection')
 const varint = require('varint')
-const debug = require('debug')('afp:duplex')
+const debug = require('debug')('arp:duplex')
 
 // Helper object for determining message types
 const MSG = {

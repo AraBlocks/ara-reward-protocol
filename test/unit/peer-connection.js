@@ -1,5 +1,5 @@
 const { PeerConnection } = require('../../src/peer-connection')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const sinon = require('sinon')
 const test = require('ava')
 

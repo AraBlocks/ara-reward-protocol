@@ -1,5 +1,5 @@
 const { MatcherBase } = require('../../src/matcher')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const test = require('ava')
 
 const { Quote } = messages

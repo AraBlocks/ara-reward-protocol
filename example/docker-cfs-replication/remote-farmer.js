@@ -1,5 +1,5 @@
 /* eslint-disable-next-line import/no-unresolved */
-const { messages, duplex, util } = require('ara-farming-protocol')
+const { messages, duplex, util } = require('ara-reward-protocol')
 const ContractABI = require('./contract/contract-abi')
 const { ExampleFarmer } = require('./farmer')
 const { createSwarm } = require('ara-network/discovery')

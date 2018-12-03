@@ -1,13 +1,13 @@
 /* eslint-disable import/no-unresolved */
 const {
   messages, matchers, duplex, util
-} = require('ara-farming-protocol')
+} = require('ara-reward-protocol')
 const ContractABI = require('./contract/contract-abi')
 const { ExampleRequester } = require('./requester')
 const { createSwarm } = require('ara-network/discovery')
 const { info, warn } = require('ara-console')
 const crypto = require('ara-crypto')
-const debug = require('debug')('afp:duplex-example:main')
+const debug = require('debug')('arp:duplex-example:main')
 const clip = require('cli-progress')
 const { createCFS } = require('cfsnet/create')
 

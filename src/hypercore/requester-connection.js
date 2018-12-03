@@ -1,5 +1,5 @@
 const { HypercoreConnection } = require('./hypercore-connection')
-const debug = require('debug')('afp:hypercore')
+const debug = require('debug')('arp:hypercore')
 
 // Class for managing a duplex stream connection to a requester
 class RequesterConnection extends HypercoreConnection {

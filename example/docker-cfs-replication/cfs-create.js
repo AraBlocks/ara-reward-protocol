@@ -1,5 +1,5 @@
 const { createCFS } = require('cfsnet/create')
-const debug = require('debug')('afp:create')
+const debug = require('debug')('arp:create')
 const mirror = require('mirror-folder')
 const { join, basename } = require('path')
 const fs = require('fs')

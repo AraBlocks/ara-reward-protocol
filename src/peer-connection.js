@@ -1,6 +1,6 @@
 /* eslint class-methods-use-this: off */
 /* eslint no-unused-vars: off */
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const EventEmitter = require('events')
 
 // Abstract Class for managing connection to peer

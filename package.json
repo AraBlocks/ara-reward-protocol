@@ -1,7 +1,7 @@
 {
-  "name": "ara-farming-protocol",
+  "name": "ara-reward-protocol",
   "version": "0.1.0",
-  "description": "Ara Farming Protocol",
+  "description": "Ara Reward Protocol",
   "main": "index.js",
   "scripts": {
     "test": "ava test",
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arablocks/ara-farming-protocol.git"
+    "url": "git+https://github.com/arablocks/ara-reward-protocol.git"
   },
   "keywords": [
     "ara",
-    "farming",
-    "farming-protocol"
+    "reward",
+    "reward-protocol"
   ],
   "contributors": [
     "Brandon Plaster <brandon@littlstar.com>",
@@ -27,9 +27,9 @@
   ],
   "license": "LGPL-3.0",
   "bugs": {
-    "url": "https://github.com/arablocks/ara-farming-protocol/issues"
+    "url": "https://github.com/arablocks/ara-reward-protocol/issues"
   },
-  "homepage": "https://github.com/arablocks/ara-farming-protocol#readme",
+  "homepage": "https://github.com/arablocks/ara-reward-protocol#readme",
   "devDependencies": {
     "eslint-plugin-import": "^2.12.0",
     "eslint-config-ara": "arablocks/eslint-config-ara#semver:2.1.x",
@@ -41,7 +41,8 @@
   "dependencies": {
     "buffer-from": "^1.1.1",
     "debug": "^3.1.0",
-    "farming-protocol-buffers": "arablocks/farming-protocol-buffers#semver:0.2.x",
+    "hypercore-protocol": "^6.8.0",
+    "reward-protocol-buffers": "arablocks/reward-protocol-buffers#semver:0.3.x",
     "varint": "^5.0.0"
   }
 }

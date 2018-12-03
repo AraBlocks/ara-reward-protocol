@@ -1,8 +1,8 @@
 const { idify, nonceString } = require('../util')
-const { messages } = require('farming-protocol-buffers')
+const { messages } = require('reward-protocol-buffers')
 const { PeerConnection } = require('../peer-connection')
 const bufferFrom = require('buffer-from')
-const debug = require('debug')('afp:hypercore')
+const debug = require('debug')('arp:hypercore')
 
 // Helper object for determining message types
 const MSG = {
@@ -36,6 +36,7 @@ class HypercoreConnection extends PeerConnection {
     this.stream = stream
     this.stream.peerId = this.peerId
     this.stream.once('close', this.onClose.bind(this))
+    this.stream.once('end', this.onEnd.bind(this))
     this.stream.on('error', this.onError.bind(this))
 
     this.timeout = null
@@ -74,16 +75,22 @@ class HypercoreConnection extends PeerConnection {
   async close() {
     super.close()
     clearTimeout(this.timeout)
-    if (this.feed) {
-      this.feed.removeListener('extension', this.onExtension.bind(this))
-    }
     if (this.stream) {
       this.stream.finalize()
+    }
+    if (this.feed) {
+      this.feed.removeListener('extension', this.onExtension.bind(this))
+      this.feed.close()
     }
   }
 
   async onClose() {
     debug(`Feed closed with peer: ${this.peerId}`)
+    this.close()
+  }
+
+  async onEnd() {
+    debug(`Stream ended with peer: ${this.peerId}`)
     this.close()
   }
 
