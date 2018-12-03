@@ -1,8 +1,8 @@
-const { DuplexConnection } = require('./duplex-connection')
-const debug = require('debug')('afp:duplex')
+const { HypercoreConnection } = require('./hypercore-connection')
+const debug = require('debug')('afp:hypercore')
 
 // Class for managing a duplex stream connection to a farmer
-class FarmerConnection extends DuplexConnection {
+class FarmerConnection extends HypercoreConnection {
   // If sow, peer is not a farmer, then destroy
   async onSow(sow) {
     super.onSow(sow)
