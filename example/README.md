@@ -28,7 +28,7 @@ Prior to running the example, make sure that you have Docker and Docker-compose 
 Build the docker image:
 
 ```
-$ cd examples/docker-cfs-replication
+$ cd example/docker-cfs-replication
 $ docker build . -t ara/ara-farming
 ```
 
