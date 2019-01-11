@@ -1,15 +1,16 @@
-<a name="0.2.0"></a>
-# [0.2.0](https://github.com/arablocks/ara-reward-protocol/compare/0.0.6...0.2.0) (2018-12-03)
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/arablocks/ara-reward-protocol/compare/0.0.6...0.3.0) (2019-01-11)
 
 
 ### Bug Fixes
 
-* **hypercore:** pass in bufferFrom ([86aac95](https://github.com/arablocks/ara-reward-protocol/commit/86aac95))
+* **hypercore:** pass in bufferFrom ([bdca78b](https://github.com/arablocks/ara-reward-protocol/commit/bdca78b))
 
 
 ### Features
 
-* **hypercore:** added hypercore compatability ([1d6475a](https://github.com/arablocks/ara-reward-protocol/commit/1d6475a))
+* **hypercore:** added hypercore compatability ([baeb2f5](https://github.com/arablocks/ara-reward-protocol/commit/baeb2f5))
+* **package:** bumped reward protocol to use string as price ([c33c892](https://github.com/arablocks/ara-reward-protocol/commit/c33c892))
 
 
 
