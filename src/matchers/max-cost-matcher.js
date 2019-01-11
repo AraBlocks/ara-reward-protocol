@@ -3,9 +3,15 @@ const { nonceString } = require('../util')
 
 // Matcher which hires a maximum number of workers for a maximum cost
 class MaxCostMatcher extends MatcherBase {
+  /**
+   * Create a max-cost matcher
+   * @param {string} maxCost
+   * @param {int} maxWorkers
+   */
   constructor(maxCost, maxWorkers) {
     super()
-    this.maxCost = maxCost
+    this.maxCost = Number.parseFloat(maxCost)
+    if (Number.isNaN(this.maxCost)) throw new Error('maxCost should be string')
     this.maxWorkers = maxWorkers
     this.allQuoteCallbacks = new Map()
     this.hiredQuoteCallbacks = new Map()
@@ -16,7 +22,8 @@ class MaxCostMatcher extends MatcherBase {
     const quoteId = nonceString(quote)
     this.allQuoteCallbacks.set(quoteId, new QuoteCallback(quote, callback))
 
-    if (quote.getPerUnitCost() > this.maxCost) {
+    const cost = Number.parseFloat(quote.getPerUnitCost())
+    if (Number.isNaN(cost) || cost > this.maxCost) {
       return false
     }
 
