@@ -285,8 +285,6 @@ async removeQuote(quote) {
 }
 ```
 
-## [Examples](/examples/README.md)
-
 ## Contributing
 
 - [How to contribute](/.github/CONTRIBUTING.md)
