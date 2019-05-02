@@ -1,5 +1,4 @@
-<a name="0.3.0"></a>
-# [0.3.0](https://github.com/arablocks/ara-reward-protocol/compare/0.0.6...0.3.0) (2019-01-11)
+## [0.3.1](https://github.com/arablocks/ara-reward-protocol/compare/0.0.6...0.3.1) (2019-05-02)
 
 
 ### Bug Fixes
@@ -10,21 +9,18 @@
 ### Features
 
 * **hypercore:** added hypercore compatability ([baeb2f5](https://github.com/arablocks/ara-reward-protocol/commit/baeb2f5))
-* **package:** bumped reward protocol to use string as price ([c33c892](https://github.com/arablocks/ara-reward-protocol/commit/c33c892))
+* **package:** bumped reward protocol to use string as price ([34540c9](https://github.com/arablocks/ara-reward-protocol/commit/34540c9))
 
 
 
-<a name="0.0.6"></a>
 ## [0.0.6](https://github.com/arablocks/ara-reward-protocol/compare/0.0.5...0.0.6) (2018-10-31)
 
 
 
-<a name="0.0.5"></a>
 ## [0.0.5](https://github.com/arablocks/ara-reward-protocol/compare/0.0.4...0.0.5) (2018-10-31)
 
 
 
-<a name="0.0.4"></a>
 ## [0.0.4](https://github.com/arablocks/ara-reward-protocol/compare/0.0.1...0.0.4) (2018-10-30)
 
 
@@ -34,7 +30,6 @@
 
 
 
-<a name="0.0.1"></a>
 ## [0.0.1](https://github.com/arablocks/ara-reward-protocol/compare/2acfc1b...0.0.1) (2018-09-19)
 
 
