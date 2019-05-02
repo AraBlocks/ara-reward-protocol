@@ -1,6 +1,6 @@
 {
   "name": "ara-reward-protocol",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Ara Reward Protocol",
   "main": "index.js",
   "scripts": {
