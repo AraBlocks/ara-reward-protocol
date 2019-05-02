@@ -32,6 +32,7 @@
   "homepage": "https://github.com/arablocks/ara-reward-protocol#readme",
   "devDependencies": {
     "ava": "^1.4.1",
+    "conventional-changelog-cli": "^2.0.17",
     "eslint": "^5.16.0",
     "eslint-config-ara": "github:arablocks/eslint-config-ara#semver:2.1.x",
     "eslint-plugin-import": "^2.12.0",
