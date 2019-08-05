@@ -42,7 +42,7 @@
   "dependencies": {
     "buffer-from": "^1.1.1",
     "debug": "^3.1.0",
-    "hypercore-protocol": "6.9.0",
+    "hypercore-protocol": "^6.9.0",
     "reward-protocol-buffers": "arablocks/reward-protocol-buffers#semver:0.4.x",
     "varint": "^5.0.0"
   }
